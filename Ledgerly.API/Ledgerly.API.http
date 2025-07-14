@@ -1,0 +1,6 @@
+@Ledgerly.API_HostAddress = http://localhost:5159
+
+GET {{Ledgerly.API_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
