@@ -9,6 +9,8 @@ namespace Ledgerly.API.Models
         [Key]
         public int Id { get; set; }
 
+        public int? ParentId { get; set; }
+
         [Required]
         [StringLength(100)]
         [Column(TypeName = "nvarchar")]
@@ -16,6 +18,9 @@ namespace Ledgerly.API.Models
 
         [Required]
         public int CategoryTypeId { get; set; }
+
+        public Category? Parent { get; set; }
+        public ICollection<Category> Children { get; set; } = new List<Category>();
 
         public ICollection<Transaction> Transactions { get; set; } = new List<Transaction>();
 
