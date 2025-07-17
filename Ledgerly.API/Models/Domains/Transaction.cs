@@ -1,7 +1,7 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
-namespace Ledgerly.API.Models
+namespace Ledgerly.API.Models.Domains
 {
     [Table("Transaction")]
     public class Transaction

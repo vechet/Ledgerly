@@ -1,10 +1,10 @@
 ﻿using System.ComponentModel.DataAnnotations.Schema;
 using System.ComponentModel.DataAnnotations;
 
-namespace Ledgerly.API.Models
+namespace Ledgerly.API.Models.Domains
 {
-    [Table("CategoryType")]
-    public class CategoryType
+    [Table("TransactionType")]
+    public class TransactionType
     {
         [Key]
         public int Id { get; set; }
@@ -14,6 +14,6 @@ namespace Ledgerly.API.Models
         [Column(TypeName = "nvarchar")]
         public string Name { get; set; } = null!;
 
-        public ICollection<Category> categories { get; set; } = new List<Category>();
+        public ICollection<Transaction> Transactions { get; set; } = new List<Transaction>();
     }
 }

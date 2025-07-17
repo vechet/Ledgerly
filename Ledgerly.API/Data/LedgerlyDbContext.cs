@@ -1,4 +1,4 @@
-﻿using Ledgerly.API.Models;
+﻿using Ledgerly.API.Models.Domains;
 using Microsoft.EntityFrameworkCore;
 
 namespace Udemy.Data
@@ -12,5 +12,9 @@ namespace Udemy.Data
         public DbSet<Category> categories { get; set; }
 
         public DbSet<Account> accounts { get; set; }
+
+        public DbSet<TransactionType> transactionTypes { get; set; }
+
+        public DbSet<CategoryType> categoryTypes { get; set; }
     }
 }

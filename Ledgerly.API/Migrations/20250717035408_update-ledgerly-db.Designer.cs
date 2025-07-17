@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Udemy.Data;
 
@@ -11,9 +12,11 @@ using Udemy.Data;
 namespace Ledgerly.API.Migrations
 {
     [DbContext(typeof(LedgerlyDbContext))]
-    partial class LedgerlyDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250717035408_update-ledgerly-db")]
+    partial class updateledgerlydb
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder

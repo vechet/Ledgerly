@@ -1,3 +1,6 @@
+using Ledgerly.API.Repositories;
+using Ledgerly.API.Services;
+using Ledgerly.Services;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
@@ -50,8 +53,11 @@ builder.Services.AddDbContext<LedgerlyAuthDbContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("LedgerlyAuthConnectionString")));
 
 //repositories
+builder.Services.AddScoped<ITransactionTypeRepository, TransactionTypeRepository>();
 
 //services
+builder.Services.AddScoped<ITokenService, TokenService>();
+builder.Services.AddScoped<ITransactionTypeService, TransactionTypeService>();
 
 //mapping
 

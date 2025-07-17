@@ -1,10 +1,10 @@
-﻿using System.ComponentModel.DataAnnotations.Schema;
-using System.ComponentModel.DataAnnotations;
+﻿using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
-namespace Ledgerly.API.Models
+namespace Ledgerly.API.Models.Domains
 {
-    [Table("TransactionType")]
-    public class TransactionType
+    [Table("Account")]
+    public class Account
     {
         [Key]
         public int Id { get; set; }
@@ -16,4 +16,5 @@ namespace Ledgerly.API.Models
 
         public ICollection<Transaction> Transactions { get; set; } = new List<Transaction>();
     }
+
 }
