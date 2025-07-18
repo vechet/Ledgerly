@@ -6,6 +6,8 @@ using Ledgerly.API.Models.DTOs.TransactionType;
 using Ledgerly.API.Repositories;
 using Ledgerly.Helpers;
 using Microsoft.EntityFrameworkCore;
+using NLog;
+using System.Text.Json;
 using Udemy.Data;
 
 namespace Ledgerly.API.Services
@@ -16,11 +18,15 @@ namespace Ledgerly.API.Services
         private readonly ITransactionTypeRepository _transactionTypeRepository = transactionTypeRepository;
         private readonly IMapper _mapper  = mapper;
         private readonly LedgerlyDbContext _db = db;
+        private Logger _logger = LogManager.GetCurrentClassLogger();
 
         public async Task<ApiResponse<CreateTransactionTypeResponse>> CreateTransactionType(CreateTransactionTypeRequest req)
         {
             try
             {
+                var a = 0;
+                var b = 0;
+                var c = a / b;
                 var transactionType = _mapper.Map<TransactionType>(req);
                 var newTransactionType = await _transactionTypeRepository.CreateTransactionType(transactionType);
                 var transactionTypeRes = _mapper.Map<CreateTransactionTypeResponse>(newTransactionType);
@@ -28,6 +34,7 @@ namespace Ledgerly.API.Services
             }
             catch(Exception e)
             {
+                _logger.Info($"TransactionTypeService/CreateTransactionType, Param:{JsonSerializer.Serialize(req)}, ErrorCode:'{e.HResult}', ErrorMessage:'{e.Message}'");
                 return ApiResponse<CreateTransactionTypeResponse>.Failure(ApiResponseStatus.InternalError);
             }
         }
