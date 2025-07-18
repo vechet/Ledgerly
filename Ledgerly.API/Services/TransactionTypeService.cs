@@ -19,10 +19,17 @@ namespace Ledgerly.API.Services
 
         public async Task<ApiResponse<CreateTransactionTypeResponse>> CreateTransactionType(CreateTransactionTypeRequest req)
         {
-            var transactionType = _mapper.Map<TransactionType>(req);
-            var newTransactionType = await _transactionTypeRepository.CreateTransactionType(transactionType);
-            var transactionTypeRes = _mapper.Map<CreateTransactionTypeResponse>(newTransactionType);
-            return ApiResponse<CreateTransactionTypeResponse>.Success(transactionTypeRes);
+            try
+            {
+                var transactionType = _mapper.Map<TransactionType>(req);
+                var newTransactionType = await _transactionTypeRepository.CreateTransactionType(transactionType);
+                var transactionTypeRes = _mapper.Map<CreateTransactionTypeResponse>(newTransactionType);
+                return ApiResponse<CreateTransactionTypeResponse>.Success(transactionTypeRes);
+            }
+            catch(Exception e)
+            {
+                return ApiResponse<CreateTransactionTypeResponse>.Failure(ApiResponseStatus.InternalError);
+            }
         }
 
         public async Task<ApiResponse<GetTransactionTypeResponse>> GetTransactionType(GetTransactionTypeRequest req)

@@ -15,9 +15,19 @@ namespace Ledgerly.API.Repositories
 
         public async Task<TransactionType> CreateTransactionType(TransactionType req)
         {
-            var newTransaction = await _db.transactionTypes.AddAsync(req);
-            await _db.SaveChangesAsync();
-            return newTransaction.Entity;
+            await using var transaction = await _db.Database.BeginTransactionAsync();
+            try
+            {
+                var newTransaction = await _db.transactionTypes.AddAsync(req);
+                await _db.SaveChangesAsync();
+                await transaction.CommitAsync();
+                return newTransaction.Entity;
+            }
+            catch (Exception e)
+            {
+                await transaction.RollbackAsync();
+                throw;
+            }
         }
 
         public async Task<TransactionType> GetTransactionType(int id)
@@ -34,10 +44,20 @@ namespace Ledgerly.API.Repositories
 
         public async Task<TransactionType> UpdateTransactionType(TransactionType req)
         {
-            var currentTransaction = await _db.transactionTypes.FindAsync(req.Id);
-            currentTransaction.Name = req.Name;
-            await _db.SaveChangesAsync();
-            return currentTransaction;
+            await using var transaction = await _db.Database.BeginTransactionAsync();
+            try
+            {
+                var currentTransaction = await _db.transactionTypes.FindAsync(req.Id);
+                currentTransaction.Name = req.Name;
+                await _db.SaveChangesAsync();
+                await transaction.CommitAsync();
+                return currentTransaction;
+            }
+            catch (Exception)
+            {
+                await transaction.RollbackAsync();
+                throw;
+            }
         }
     }
 }
