@@ -23,7 +23,7 @@ namespace Ledgerly.API.Repositories
         public async Task<TransactionType> GetTransactionType(int id)
         {
             var transactionType = await _db.transactionTypes.FirstOrDefaultAsync(t => t.Id == id);
-            return transactionType!;
+            return transactionType;
         }
 
         public async Task<List<TransactionType>> GetTransactionTypes()

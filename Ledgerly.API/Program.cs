@@ -1,3 +1,4 @@
+using Ledgerly.API.Mappings;
 using Ledgerly.API.Repositories;
 using Ledgerly.API.Services;
 using Ledgerly.Services;
@@ -60,6 +61,7 @@ builder.Services.AddScoped<ITokenService, TokenService>();
 builder.Services.AddScoped<ITransactionTypeService, TransactionTypeService>();
 
 //mapping
+builder.Services.AddAutoMapper(typeof(AutoMapperProfiles));
 
 //identity
 builder.Services.AddIdentityCore<IdentityUser>()

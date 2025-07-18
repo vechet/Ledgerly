@@ -2,5 +2,6 @@
 {
     public class GetTransactionTypeRequest
     {
+        public int id { get; set; }
     }
 }

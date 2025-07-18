@@ -1,11 +1,12 @@
-﻿using Ledgerly.API.Models.DTOs.TransactionType;
+﻿using Ledgerly.API.Helpers;
+using Ledgerly.API.Models.DTOs.TransactionType;
 using Ledgerly.Helpers;
 
 namespace Ledgerly.API.Services
 {
     public interface ITransactionTypeService
     {
-        Task<ApiResponse<GetTransactionTypesResponse>> GetTransactionTypes(GetTransactionTypesRequest req);
+        Task<ApiResponse<GetTransactionTypesResponse>> GetTransactionTypes(PaginationRequest req);
 
         Task<ApiResponse<GetTransactionTypeResponse>> GetTransactionType(GetTransactionTypeRequest req);
 

@@ -1,4 +1,5 @@
-﻿using Ledgerly.API.Models.DTOs.TransactionType;
+﻿using Ledgerly.API.Helpers;
+using Ledgerly.API.Models.DTOs.TransactionType;
 using Ledgerly.API.Services;
 using Ledgerly.Helpers;
 using Microsoft.AspNetCore.Mvc;
@@ -23,7 +24,7 @@ namespace Ledgerly.API.Controllers
         }
 
         [HttpPost("v1/transaction-type/get-transaction-types")]
-        public async Task<ApiResponse<GetTransactionTypesResponse>> GetBrands([FromBody] GetTransactionTypesRequest req)
+        public async Task<ApiResponse<GetTransactionTypesResponse>> GetBrands([FromBody] PaginationRequest req)
         {
             return await _transactionTypeService.GetTransactionTypes(req);
         }
