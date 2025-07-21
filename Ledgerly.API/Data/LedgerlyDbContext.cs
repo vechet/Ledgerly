@@ -1,4 +1,5 @@
 ﻿using Ledgerly.API.Models.Domains;
+using Ledgerly.Models;
 using Microsoft.EntityFrameworkCore;
 
 namespace Udemy.Data
@@ -7,14 +8,18 @@ namespace Udemy.Data
     {
         public LedgerlyDbContext(DbContextOptions<LedgerlyDbContext> options) : base(options) { }
 
-        public DbSet<Transaction> transactions { get; set; }
+        public DbSet<Transaction> Transaction { get; set; }
 
-        public DbSet<Category> categories { get; set; }
+        public DbSet<Category> Category { get; set; }
 
-        public DbSet<Account> accounts { get; set; }
+        public DbSet<Account> Account { get; set; }
 
-        public DbSet<TransactionType> transactionTypes { get; set; }
+        public DbSet<TransactionType> TransactionType { get; set; }
 
-        public DbSet<CategoryType> categoryTypes { get; set; }
+        public DbSet<CategoryType> CategoryType { get; set; }
+
+        public DbSet<AuditLog> AuditLog { get; set; }
+
+        public DbSet<Status> Status { get; set; }
     }
 }

@@ -8,7 +8,10 @@ using Ledgerly.API.Services.Interfaces;
 using Ledgerly.Helpers;
 using Microsoft.EntityFrameworkCore;
 using NLog;
+using System;
+using System.Reflection.Metadata;
 using System.Text.Json;
+using System.Xml;
 using Udemy.Data;
 
 namespace Ledgerly.API.Services
@@ -56,7 +59,7 @@ namespace Ledgerly.API.Services
         {
             try
             {
-                var query = _db.transactionTypes.AsQueryable();
+                var query = _db.TransactionType.AsQueryable();
 
                 var filter = req.Filter;
 
@@ -114,8 +117,12 @@ namespace Ledgerly.API.Services
             try
             {
                 var transactionType = _mapper.Map<TransactionType>(req);
-                var newTransactionType = await _transactionTypeRepository.UpdateTransactionType(transactionType);
-                var transactionTypeRes = _mapper.Map<UpdateTransactionTypeResponse>(newTransactionType);
+                var currentTransactionType = await _transactionTypeRepository.UpdateTransactionType(transactionType);
+                var transactionTypeRes = _mapper.Map<UpdateTransactionTypeResponse>(currentTransactionType);
+
+                // Add audit log
+                await GlobalFunction.RecordAuditLog(/*userId*/ "", "TransactionType", "UpdateTransactionType", currentTransactionType.Id, currentTransactionType.Name, await GetAuditDescription(_db, currentTransactionType.Id), _db);
+
                 return ApiResponse<UpdateTransactionTypeResponse>.Success(transactionTypeRes);
             }
             catch (Exception e)
@@ -124,5 +131,16 @@ namespace Ledgerly.API.Services
                 return ApiResponse<UpdateTransactionTypeResponse>.Failure(ApiResponseStatus.InternalError);
             }
         }
+
+        public async Task<string> GetAuditDescription(LedgerlyDbContext context, int id)
+        {
+            var brand = await context.TransactionType.Where(x => x.Id == id).Select(x => new
+            {
+                x.Id,
+                x.Name
+            }).FirstOrDefaultAsync();
+            return JsonSerializer.Serialize(brand);        
+        }
+    
     }
 }

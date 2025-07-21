@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using Ledgerly.Models;
+using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Ledgerly.API.Models.Domains
@@ -32,9 +33,29 @@ namespace Ledgerly.API.Models.Domains
         [Column(TypeName = "nvarchar")]
         public string? Notes { get; set; }
 
+        [Required]
+        public short StatusId { get; set; }
+
+        [Required]
+        [StringLength(450)]
+        [Column(TypeName = "nvarchar")]
+        public string CreatedBy { get; set; } = null!;
+
+        [Required]
+        public DateTime CreatedDate { get; set; }
+
+        [StringLength(450)]
+        [Column(TypeName = "nvarchar")]
+        public string? ModifiedBy { get; set; }
+
+        public DateTime? ModifiedDate { get; set; }
+
+
         public Category Category { get; set; } = null!;
         public Account Account { get; set; } = null!;
         public TransactionType TransactionType { get; set; } = null!;
+
+        public Status Status { get; set; } = null!;
     }
 
 }

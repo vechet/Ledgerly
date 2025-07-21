@@ -19,7 +19,7 @@ namespace Ledgerly.API.Repositories
             await using var transaction = await _db.Database.BeginTransactionAsync();
             try
             {
-                var newTransaction = await _db.transactionTypes.AddAsync(req);
+                var newTransaction = await _db.TransactionType.AddAsync(req);
                 await _db.SaveChangesAsync();
                 await transaction.CommitAsync();
                 return newTransaction.Entity;
@@ -35,7 +35,7 @@ namespace Ledgerly.API.Repositories
         {
             try
             {
-                var transactionType = await _db.transactionTypes.FirstOrDefaultAsync(t => t.Id == id);
+                var transactionType = await _db.TransactionType.FirstOrDefaultAsync(t => t.Id == id);
                 return transactionType;
             }
             catch (Exception e)
@@ -48,7 +48,7 @@ namespace Ledgerly.API.Repositories
         {
             try
             {
-                var transactionTypes = await _db.transactionTypes.ToListAsync();
+                var transactionTypes = await _db.TransactionType.ToListAsync();
                 return transactionTypes;
             }
             catch (Exception e)
@@ -62,7 +62,7 @@ namespace Ledgerly.API.Repositories
             await using var transaction = await _db.Database.BeginTransactionAsync();
             try
             {
-                var currentTransaction = await _db.transactionTypes.FindAsync(req.Id);
+                var currentTransaction = await _db.TransactionType.FindAsync(req.Id);
                 currentTransaction.Name = req.Name;
                 await _db.SaveChangesAsync();
                 await transaction.CommitAsync();

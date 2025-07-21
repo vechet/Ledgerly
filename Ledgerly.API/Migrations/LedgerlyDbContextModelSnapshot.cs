@@ -30,12 +30,32 @@ namespace Ledgerly.API.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
+                    b.Property<string>("CreatedBy")
+                        .IsRequired()
+                        .HasMaxLength(450)
+                        .HasColumnType("nvarchar");
+
+                    b.Property<DateTime>("CreatedDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("ModifiedBy")
+                        .HasMaxLength(450)
+                        .HasColumnType("nvarchar");
+
+                    b.Property<DateTime?>("ModifiedDate")
+                        .HasColumnType("datetime2");
+
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasMaxLength(100)
                         .HasColumnType("nvarchar");
 
+                    b.Property<short>("StatusId")
+                        .HasColumnType("smallint");
+
                     b.HasKey("Id");
+
+                    b.HasIndex("StatusId");
 
                     b.ToTable("Account");
                 });
@@ -51,19 +71,34 @@ namespace Ledgerly.API.Migrations
                     b.Property<int>("CategoryTypeId")
                         .HasColumnType("int");
 
+                    b.Property<string>("CreatedBy")
+                        .IsRequired()
+                        .HasMaxLength(450)
+                        .HasColumnType("nvarchar");
+
+                    b.Property<DateTime>("CreatedDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("ModifiedBy")
+                        .HasMaxLength(450)
+                        .HasColumnType("nvarchar");
+
+                    b.Property<DateTime?>("ModifiedDate")
+                        .HasColumnType("datetime2");
+
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasMaxLength(100)
                         .HasColumnType("nvarchar");
 
-                    b.Property<int?>("ParentId")
-                        .HasColumnType("int");
+                    b.Property<short>("StatusId")
+                        .HasColumnType("smallint");
 
                     b.HasKey("Id");
 
                     b.HasIndex("CategoryTypeId");
 
-                    b.HasIndex("ParentId");
+                    b.HasIndex("StatusId");
 
                     b.ToTable("Category");
                 });
@@ -76,12 +111,32 @@ namespace Ledgerly.API.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
+                    b.Property<string>("CreatedBy")
+                        .IsRequired()
+                        .HasMaxLength(450)
+                        .HasColumnType("nvarchar");
+
+                    b.Property<DateTime>("CreatedDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("ModifiedBy")
+                        .HasMaxLength(450)
+                        .HasColumnType("nvarchar");
+
+                    b.Property<DateTime?>("ModifiedDate")
+                        .HasColumnType("datetime2");
+
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasMaxLength(100)
                         .HasColumnType("nvarchar");
 
+                    b.Property<short>("StatusId")
+                        .HasColumnType("smallint");
+
                     b.HasKey("Id");
+
+                    b.HasIndex("StatusId");
 
                     b.ToTable("CategoryType");
                 });
@@ -103,9 +158,27 @@ namespace Ledgerly.API.Migrations
                     b.Property<int>("CategoryId")
                         .HasColumnType("int");
 
+                    b.Property<string>("CreatedBy")
+                        .IsRequired()
+                        .HasMaxLength(450)
+                        .HasColumnType("nvarchar");
+
+                    b.Property<DateTime>("CreatedDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("ModifiedBy")
+                        .HasMaxLength(450)
+                        .HasColumnType("nvarchar");
+
+                    b.Property<DateTime?>("ModifiedDate")
+                        .HasColumnType("datetime2");
+
                     b.Property<string>("Notes")
                         .HasMaxLength(500)
                         .HasColumnType("nvarchar");
+
+                    b.Property<short>("StatusId")
+                        .HasColumnType("smallint");
 
                     b.Property<DateTime>("TransactionDate")
                         .HasColumnType("datetime2");
@@ -123,6 +196,8 @@ namespace Ledgerly.API.Migrations
 
                     b.HasIndex("CategoryId");
 
+                    b.HasIndex("StatusId");
+
                     b.HasIndex("TransactionTypeId");
 
                     b.ToTable("Transaction");
@@ -136,6 +211,104 @@ namespace Ledgerly.API.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
+                    b.Property<string>("CreatedBy")
+                        .IsRequired()
+                        .HasMaxLength(450)
+                        .HasColumnType("nvarchar");
+
+                    b.Property<DateTime>("CreatedDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("ModifiedBy")
+                        .HasMaxLength(450)
+                        .HasColumnType("nvarchar");
+
+                    b.Property<DateTime?>("ModifiedDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar");
+
+                    b.Property<short>("StatusId")
+                        .HasColumnType("smallint");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("StatusId");
+
+                    b.ToTable("TransactionType");
+                });
+
+            modelBuilder.Entity("Ledgerly.Models.AuditLog", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("ControllerName")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("CreatedBy")
+                        .IsRequired()
+                        .HasMaxLength(450)
+                        .HasColumnType("nvarchar");
+
+                    b.Property<DateTime>("CreatedDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("Description")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("MethodName")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int?>("TransactionId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("TransactionKeyValue")
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar");
+
+                    b.Property<int>("Version")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("AuditLog");
+                });
+
+            modelBuilder.Entity("Ledgerly.Models.Status", b =>
+                {
+                    b.Property<short>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("smallint");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<short>("Id"));
+
+                    b.Property<string>("CreatedBy")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime>("CreatedDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("KeyName")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar");
+
+                    b.Property<string>("ModifiedBy")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime?>("ModifiedDate")
+                        .HasColumnType("datetime2");
+
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasMaxLength(100)
@@ -143,7 +316,18 @@ namespace Ledgerly.API.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("TransactionType");
+                    b.ToTable("Status");
+                });
+
+            modelBuilder.Entity("Ledgerly.API.Models.Domains.Account", b =>
+                {
+                    b.HasOne("Ledgerly.Models.Status", "Status")
+                        .WithMany("Accounts")
+                        .HasForeignKey("StatusId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Status");
                 });
 
             modelBuilder.Entity("Ledgerly.API.Models.Domains.Category", b =>
@@ -154,13 +338,26 @@ namespace Ledgerly.API.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("Ledgerly.API.Models.Domains.Category", "Parent")
-                        .WithMany("Children")
-                        .HasForeignKey("ParentId");
+                    b.HasOne("Ledgerly.Models.Status", "Status")
+                        .WithMany("Categories")
+                        .HasForeignKey("StatusId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.Navigation("CategoryType");
 
-                    b.Navigation("Parent");
+                    b.Navigation("Status");
+                });
+
+            modelBuilder.Entity("Ledgerly.API.Models.Domains.CategoryType", b =>
+                {
+                    b.HasOne("Ledgerly.Models.Status", "Status")
+                        .WithMany("CategoryTypes")
+                        .HasForeignKey("StatusId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Status");
                 });
 
             modelBuilder.Entity("Ledgerly.API.Models.Domains.Transaction", b =>
@@ -177,6 +374,12 @@ namespace Ledgerly.API.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
+                    b.HasOne("Ledgerly.Models.Status", "Status")
+                        .WithMany("Transactions")
+                        .HasForeignKey("StatusId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
                     b.HasOne("Ledgerly.API.Models.Domains.TransactionType", "TransactionType")
                         .WithMany("Transactions")
                         .HasForeignKey("TransactionTypeId")
@@ -187,7 +390,20 @@ namespace Ledgerly.API.Migrations
 
                     b.Navigation("Category");
 
+                    b.Navigation("Status");
+
                     b.Navigation("TransactionType");
+                });
+
+            modelBuilder.Entity("Ledgerly.API.Models.Domains.TransactionType", b =>
+                {
+                    b.HasOne("Ledgerly.Models.Status", "Status")
+                        .WithMany("TransactionTypes")
+                        .HasForeignKey("StatusId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Status");
                 });
 
             modelBuilder.Entity("Ledgerly.API.Models.Domains.Account", b =>
@@ -197,8 +413,6 @@ namespace Ledgerly.API.Migrations
 
             modelBuilder.Entity("Ledgerly.API.Models.Domains.Category", b =>
                 {
-                    b.Navigation("Children");
-
                     b.Navigation("Transactions");
                 });
 
@@ -209,6 +423,19 @@ namespace Ledgerly.API.Migrations
 
             modelBuilder.Entity("Ledgerly.API.Models.Domains.TransactionType", b =>
                 {
+                    b.Navigation("Transactions");
+                });
+
+            modelBuilder.Entity("Ledgerly.Models.Status", b =>
+                {
+                    b.Navigation("Accounts");
+
+                    b.Navigation("Categories");
+
+                    b.Navigation("CategoryTypes");
+
+                    b.Navigation("TransactionTypes");
+
                     b.Navigation("Transactions");
                 });
 #pragma warning restore 612, 618
