@@ -1,6 +1,6 @@
 ﻿using Ledgerly.API.Models.Domains;
 
-namespace Ledgerly.API.Repositories
+namespace Ledgerly.API.Repositories.Interfaces
 {
     public interface ITransactionTypeRepository
     {

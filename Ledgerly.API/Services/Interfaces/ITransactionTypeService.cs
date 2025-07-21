@@ -2,7 +2,7 @@
 using Ledgerly.API.Models.DTOs.TransactionType;
 using Ledgerly.Helpers;
 
-namespace Ledgerly.API.Services
+namespace Ledgerly.API.Services.Interfaces
 {
     public interface ITransactionTypeService
     {

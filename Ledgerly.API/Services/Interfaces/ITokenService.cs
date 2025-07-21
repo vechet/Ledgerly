@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Identity;
 
-namespace Ledgerly.Services
+namespace Ledgerly.API.Services.Interfaces
 {
     public interface ITokenService
     {

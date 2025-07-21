@@ -1,6 +1,6 @@
 ﻿using Ledgerly.API.Helpers;
 using Ledgerly.API.Models.DTOs.TransactionType;
-using Ledgerly.API.Services;
+using Ledgerly.API.Services.Interfaces;
 using Ledgerly.Helpers;
 using Microsoft.AspNetCore.Mvc;
 

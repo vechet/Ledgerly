@@ -1,5 +1,5 @@
 ﻿using Ledgerly.API.Models.DTOs.User;
-using Ledgerly.Services;
+using Ledgerly.API.Services.Interfaces;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 

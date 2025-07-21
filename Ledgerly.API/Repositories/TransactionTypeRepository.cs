@@ -1,4 +1,5 @@
 ﻿using Ledgerly.API.Models.Domains;
+using Ledgerly.API.Repositories.Interfaces;
 using Microsoft.EntityFrameworkCore;
 using Udemy.Data;
 
@@ -32,14 +33,28 @@ namespace Ledgerly.API.Repositories
 
         public async Task<TransactionType> GetTransactionType(int id)
         {
-            var transactionType = await _db.transactionTypes.FirstOrDefaultAsync(t => t.Id == id);
-            return transactionType;
+            try
+            {
+                var transactionType = await _db.transactionTypes.FirstOrDefaultAsync(t => t.Id == id);
+                return transactionType;
+            }
+            catch (Exception e)
+            {
+                throw;
+            }
         }
 
         public async Task<List<TransactionType>> GetTransactionTypes()
         {
-            var transactionTypes =  await _db.transactionTypes.ToListAsync();
-            return transactionTypes;
+            try
+            {
+                var transactionTypes = await _db.transactionTypes.ToListAsync();
+                return transactionTypes;
+            }
+            catch (Exception e)
+            {
+                throw;
+            }
         }
 
         public async Task<TransactionType> UpdateTransactionType(TransactionType req)
@@ -53,7 +68,7 @@ namespace Ledgerly.API.Repositories
                 await transaction.CommitAsync();
                 return currentTransaction;
             }
-            catch (Exception)
+            catch (Exception e)
             {
                 await transaction.RollbackAsync();
                 throw;
