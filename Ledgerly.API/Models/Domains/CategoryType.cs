@@ -32,7 +32,7 @@ namespace Ledgerly.API.Models.Domains
 
         public DateTime? ModifiedDate { get; set; }
 
-        public ICollection<Category> categories { get; set; } = new List<Category>();
+        public ICollection<Category> Categories { get; set; } = new List<Category>();
 
         public Status Status { get; set; } = null!;
     }

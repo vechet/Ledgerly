@@ -21,5 +21,43 @@ namespace Udemy.Data
         public DbSet<AuditLog> AuditLog { get; set; }
 
         public DbSet<Status> Status { get; set; }
+        protected override void OnModelCreating(ModelBuilder modelBuilder)
+        {
+            // Set the collation for the entire database
+            modelBuilder.UseCollation("SQL_Latin1_General_CP850_BIN");
+
+            modelBuilder.Entity<Category>(entity =>
+            {
+                entity.ToTable("Category");
+
+                entity.HasOne(e => e.Status).WithMany(p => p.Categories)
+                    .HasForeignKey(e => e.StatusId)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("FK_Category_Status_StatusId");
+
+                entity.HasOne(e => e.CategoryType).WithMany(p => p.Categories)
+                    .HasForeignKey(e => e.CategoryTypeId)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("FK_Category_CategoryType_CategoryTypeId");
+
+                entity.HasOne(e => e.Parent).WithMany(p => p.Children)
+                    .HasForeignKey(e => e.ParentId)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("FK_Category_Parent_ParentId");
+
+                // Seed a default record for Category
+                entity.HasData(new Category
+                {
+                    Id = 1,
+                    Name = "Main",
+                    StatusId = 1,
+                    CreatedBy = "1",
+                    CreatedDate = new DateTime(2025, 07, 22),
+                });
+            });
+
+            base.OnModelCreating(modelBuilder);
+        }
+
     }
 }
