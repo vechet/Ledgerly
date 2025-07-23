@@ -30,7 +30,7 @@ namespace Ledgerly.API.Services
             {
                 var transactionType = _mapper.Map<TransactionType>(req);
                 transactionType.CreatedBy = "1";
-                transactionType.CreatedDate = DateTime.Now;
+                transactionType.CreatedDate = GlobalFunction.GetCurrentDateTime();
                 var newTransactionType = await _transactionTypeRepository.CreateTransactionType(transactionType);
                 var transactionTypeRes = _mapper.Map<CreateTransactionTypeResponse>(newTransactionType);
 
@@ -124,7 +124,7 @@ namespace Ledgerly.API.Services
             {
                 var transactionType = _mapper.Map<TransactionType>(req);
                 transactionType.ModifiedBy = "2";
-                transactionType.ModifiedDate = DateTime.Now;
+                transactionType.ModifiedDate = GlobalFunction.GetCurrentDateTime();
                 var currentTransactionType = await _transactionTypeRepository.UpdateTransactionType(transactionType);
                 var transactionTypeRes = _mapper.Map<UpdateTransactionTypeResponse>(currentTransactionType);
 

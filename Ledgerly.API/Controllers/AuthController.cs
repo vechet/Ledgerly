@@ -1,5 +1,8 @@
-﻿using Ledgerly.API.Models.DTOs.User;
+﻿using Ledgerly.API.Models.DTOs.TransactionType;
+using Ledgerly.API.Models.DTOs.User;
+using Ledgerly.API.Services;
 using Ledgerly.API.Services.Interfaces;
+using Ledgerly.Helpers;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 
@@ -7,61 +10,20 @@ namespace Ledgerly.API.Controllers
 {
     [Route("api")]
     [ApiController]
-    public class AuthController(UserManager<IdentityUser> userManager,
-        ITokenService tokenService) : ControllerBase
+    public class AuthController(IAuthService authService) : ControllerBase
     {
-        private readonly UserManager<IdentityUser> _userManager = userManager;
-        private readonly ITokenService _tokenService = tokenService;
+        private readonly IAuthService _authService = authService;
 
         [HttpPost("v1/auth/register")]
-        public async Task<IActionResult> Register([FromBody] RegisterRequest req)
+        public async Task<ApiResponse<RegisterResponse>> Register([FromForm] RegisterRequest req)
         {
-            var identityUser = new IdentityUser
-            {
-                UserName = req.Username,
-                Email = req.Username
-            };
-
-            var identityResult = await _userManager.CreateAsync(identityUser, req.Password);
-
-            if (identityResult.Succeeded)
-            {
-                return Ok("User was registerd! Please login.");
-            }
-
-            return BadRequest("Something went wrong");
+            return await _authService.Register(req);
         }
 
         [HttpPost("v1/auth/login")]
-        public async Task<IActionResult> Login([FromBody] LoginRequest req)
+        public async Task<ApiResponse<LoginResponse>> Login([FromForm] LoginRequest req)
         {
-            var user = await _userManager.FindByEmailAsync(req.Username);
-
-            if (user != null)
-            {
-                var checkPasswordResult = await _userManager.CheckPasswordAsync(user, req.Password);
-
-                if (checkPasswordResult)
-                {
-                    // Get Roles for this user
-                    var roles = await _userManager.GetRolesAsync(user);
-
-                    if (roles != null)
-                    {
-                        // Create Token
-                        var jwtToken = _tokenService.CreateJwtToken(user, roles.ToList());
-
-                        var response = new LoginResponse
-                        {
-                            Token = jwtToken
-                        };
-
-                        return Ok(response);
-                    }
-                }
-            }
-
-            return BadRequest("Username or password incorrect");
+            return await _authService.Login(req);
         }
     }
 }

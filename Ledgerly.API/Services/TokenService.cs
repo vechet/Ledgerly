@@ -1,4 +1,5 @@
-﻿using Ledgerly.API.Services.Interfaces;
+﻿using Ledgerly.API.Models;
+using Ledgerly.API.Services.Interfaces;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
@@ -10,12 +11,17 @@ namespace Ledgerly.Services
     public class TokenService(IConfiguration configuration) : ITokenService
     {
         private readonly IConfiguration _configuration = configuration;
-        public string CreateJwtToken(IdentityUser user, List<string> roles)
+        public AccessTokenResponse CreateAccessToken(IdentityUser user, List<string> roles)
         {
             // Create claims
-            var claims = new List<Claim>();
+            var claims = new List<Claim>
+            {
+                new Claim(ClaimTypes.NameIdentifier, user.Id),
+                new Claim(ClaimTypes.Name, user.UserName),
+                new Claim(ClaimTypes.Email, user.Email),
+                new Claim("TokenType", "AccessToken")
 
-            claims.Add(new Claim(ClaimTypes.Email, user.Email));
+            };
 
             foreach (var role in roles)
             {
@@ -25,14 +31,22 @@ namespace Ledgerly.Services
             var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration["Jwt:Key"]));
             var credentials = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
 
-            var token = new JwtSecurityToken(
+            var accessExpiration = DateTime.UtcNow.AddDays(1); // Use UtcNow
+            var jwtAccessToken = new JwtSecurityToken(
                 _configuration["Jwt:Issuer"],
                 _configuration["Jwt:Audience"],
                 claims,
-                expires: DateTime.Now.AddMinutes(15),
+                expires: accessExpiration,
                 signingCredentials: credentials);
 
-            return new JwtSecurityTokenHandler().WriteToken(token);
+            var accessToken = new JwtSecurityTokenHandler().WriteToken(jwtAccessToken);
+            var accessExpiresIn = (int)(accessExpiration - DateTime.UtcNow).TotalSeconds;
+
+            return new AccessTokenResponse
+            {
+                AccessToken = accessToken,
+                ExpiresIn = accessExpiresIn
+            };
         }
     }
 }

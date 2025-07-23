@@ -61,6 +61,7 @@ builder.Services.AddScoped<ITransactionTypeRepository, TransactionTypeRepository
 //services
 builder.Services.AddScoped<ITokenService, TokenService>();
 builder.Services.AddScoped<ITransactionTypeService, TransactionTypeService>();
+builder.Services.AddScoped<IAuthService, AuthService>();
 
 //mapping
 builder.Services.AddAutoMapper(typeof(AutoMapperProfiles));
