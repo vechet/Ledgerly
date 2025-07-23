@@ -46,11 +46,89 @@ namespace Udemy.Data
                     .HasConstraintName("FK_Category_Parent_ParentId");
 
                 // Seed a default record for Category
-                entity.HasData(new Category
+                //entity.HasData(new Category
+                //{
+                //    Id = 1,
+                //    Name = "Main",
+                //    StatusId = 1,
+                //    CreatedBy = "1",
+                //    CreatedDate = new DateTime(2025, 07, 22),
+                //});
+            });
+
+            modelBuilder.Entity<Transaction>(entity =>
+            {
+                entity.ToTable("Transaction");
+
+                entity.HasOne(e => e.Status).WithMany(p => p.Transactions)
+                    .HasForeignKey(e => e.StatusId)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("FK_Transaction_Status_StatusId");
+
+                entity.HasOne(e => e.Category).WithMany(p => p.Transactions)
+                    .HasForeignKey(e => e.CategoryId)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("FK_Transaction_Category_CategoryId");
+
+                entity.HasOne(e => e.TransactionType).WithMany(p => p.Transactions)
+                    .HasForeignKey(e => e.TransactionTypeId)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("FK_Transaction_TransactionType_TransactionTypeId");
+
+                entity.HasOne(e => e.Account).WithMany(p => p.Transactions)
+                    .HasForeignKey(e => e.AccountId)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("FK_Transaction_Account_AccountId");
+            });
+
+            modelBuilder.Entity<CategoryType>(entity =>
+            {
+                entity.ToTable("CategoryType");
+
+                entity.HasOne(e => e.Status).WithMany(p => p.CategoryTypes)
+                    .HasForeignKey(e => e.StatusId)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("FK_CategoryType_Status_StatusId");
+            });
+
+            modelBuilder.Entity<Account>(entity =>
+            {
+                entity.ToTable("Account");
+
+                entity.HasOne(e => e.Status).WithMany(p => p.Accounts)
+                    .HasForeignKey(e => e.StatusId)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("FK_Account_Status_StatusId");
+            });
+
+            modelBuilder.Entity<TransactionType>(entity =>
+            {
+                entity.ToTable("TransactionType");
+
+                entity.HasOne(e => e.Status).WithMany(p => p.TransactionTypes)
+                    .HasForeignKey(e => e.StatusId)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("FK_TransactionType_Status_StatusId");
+            });
+
+            modelBuilder.Entity<Status>(entity =>
+            {
+                entity.ToTable("Status");
+
+                // Seed a default record for Status
+                entity.HasData(new Status
                 {
                     Id = 1,
-                    Name = "Main",
-                    StatusId = 1,
+                    Name = "Active",
+                    KeyName = "Active",
+                    CreatedBy = "1",
+                    CreatedDate = new DateTime(2025, 07, 22),
+                });
+                entity.HasData(new Status
+                {
+                    Id = 2,
+                    Name = "Inactive",
+                    KeyName = "Inactive",
                     CreatedBy = "1",
                     CreatedDate = new DateTime(2025, 07, 22),
                 });

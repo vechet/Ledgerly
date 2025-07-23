@@ -29,8 +29,14 @@ namespace Ledgerly.API.Services
             try
             {
                 var transactionType = _mapper.Map<TransactionType>(req);
+                transactionType.CreatedBy = "1";
+                transactionType.CreatedDate = DateTime.Now;
                 var newTransactionType = await _transactionTypeRepository.CreateTransactionType(transactionType);
                 var transactionTypeRes = _mapper.Map<CreateTransactionTypeResponse>(newTransactionType);
+
+                // Add audit log
+                await GlobalFunction.RecordAuditLog(/*userId*/ "1", "TransactionType", "CreateTransactionType", newTransactionType.Id, newTransactionType.Name, await GetAuditDescription(_db, newTransactionType.Id), _db);
+
                 return ApiResponse<CreateTransactionTypeResponse>.Success(transactionTypeRes);
             }
             catch(Exception e)
@@ -117,11 +123,13 @@ namespace Ledgerly.API.Services
             try
             {
                 var transactionType = _mapper.Map<TransactionType>(req);
+                transactionType.ModifiedBy = "2";
+                transactionType.ModifiedDate = DateTime.Now;
                 var currentTransactionType = await _transactionTypeRepository.UpdateTransactionType(transactionType);
                 var transactionTypeRes = _mapper.Map<UpdateTransactionTypeResponse>(currentTransactionType);
 
                 // Add audit log
-                await GlobalFunction.RecordAuditLog(/*userId*/ "", "TransactionType", "UpdateTransactionType", currentTransactionType.Id, currentTransactionType.Name, await GetAuditDescription(_db, currentTransactionType.Id), _db);
+                await GlobalFunction.RecordAuditLog(/*userId*/ "2", "TransactionType", "UpdateTransactionType", currentTransactionType.Id, currentTransactionType.Name, await GetAuditDescription(_db, currentTransactionType.Id), _db);
 
                 return ApiResponse<UpdateTransactionTypeResponse>.Success(transactionTypeRes);
             }
