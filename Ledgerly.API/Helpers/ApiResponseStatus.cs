@@ -37,6 +37,9 @@ namespace Ledgerly.Helpers
         [Description("Duplicate Email")]
         DuplicateEmail = 414,
 
+        [Description("Role does not exist.")]
+        RoleDoesNotExist = 415,
+
         [Description("Already Deleted")]
         AlreadyDeleted = 422,
 

@@ -6,30 +6,27 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using NLog;
 using System.Text.Json;
+using Udemy.Data;
 
 namespace Ledgerly.API.Services
 {
     public class AuthService(UserManager<IdentityUser> userManager,
         RoleManager<IdentityRole> roleManager,
-        ITokenService tokenService) : IAuthService
+        ITokenService tokenService,
+        LedgerlyAuthDbContext db,
+        IConfiguration configuration) : IAuthService
     {
         private readonly UserManager<IdentityUser> _userManager = userManager;
         private readonly RoleManager<IdentityRole> _roleManager = roleManager;
         private readonly ITokenService _tokenService = tokenService;
         private Logger _logger = LogManager.GetCurrentClassLogger();
+        private readonly LedgerlyAuthDbContext _db = db;
+        private readonly IConfiguration _configuration = configuration;
 
         public async Task<ApiResponse<RegisterResponse>> Register(RegisterRequest req)
         {
             try
             {
-                var validRoles = await _roleManager.Roles.Select(r => r.Name).ToListAsync();
-                var invalidRoles = req.Roles.Except(validRoles).ToList();
-
-                if (invalidRoles.Any())
-                {
-                    //return BadRequest(new { message = $"Invalid roles: {string.Join(", ", invalidRoles)}" });
-                }
-
                 var identityUser = new IdentityUser
                 {
                     UserName = req.Username,
@@ -38,20 +35,22 @@ namespace Ledgerly.API.Services
 
                 var identityResult = await _userManager.CreateAsync(identityUser, req.Password);
 
-                if (identityResult.Succeeded)
+                if (!identityResult.Succeeded)
                 {
-                    // Add roles to this user
-                    if (req.Roles != null && req.Roles.Any())
-                    {
-                        identityResult = await _userManager.AddToRolesAsync(identityUser, req.Roles);
-
-                        if (identityResult.Succeeded)
-                        {
-                            return ApiResponse<RegisterResponse>.Success(null);
-                        }
-                    }
+                    return ApiResponse<RegisterResponse>.Failure(ApiResponseStatus.InternalError);
                 }
-                return null;
+
+                // Add roles to this user
+                var userRole = _configuration["UserSetting:DefaultUserRole"]!;
+                if (!await _roleManager.RoleExistsAsync(userRole))
+                {
+                    await _userManager.DeleteAsync(identityUser);
+                    return ApiResponse<RegisterResponse>.Failure(ApiResponseStatus.RoleDoesNotExist);
+                }
+
+                identityResult = await _userManager.AddToRolesAsync(identityUser, [userRole]);
+
+                return ApiResponse<RegisterResponse>.Success(new RegisterResponse());
             }
             catch (Exception e)
             {
