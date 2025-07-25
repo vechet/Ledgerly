@@ -1,10 +1,12 @@
-﻿using Ledgerly.API.Models.DTOs.TransactionType;
+﻿using AutoMapper;
+using Ledgerly.API.Models.DTOs.TransactionType;
 using Ledgerly.API.Models.DTOs.User;
 using Ledgerly.API.Services.Interfaces;
 using Ledgerly.Helpers;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using NLog;
+using System.Data;
 using System.Text.Json;
 using Udemy.Data;
 
@@ -12,16 +14,20 @@ namespace Ledgerly.API.Services
 {
     public class AuthService(UserManager<IdentityUser> userManager,
         RoleManager<IdentityRole> roleManager,
+        SignInManager<IdentityUser> signInManager,
         ITokenService tokenService,
         LedgerlyAuthDbContext db,
-        IConfiguration configuration) : IAuthService
+        IConfiguration configuration,
+        IMapper mapper) : IAuthService
     {
         private readonly UserManager<IdentityUser> _userManager = userManager;
         private readonly RoleManager<IdentityRole> _roleManager = roleManager;
+        private readonly SignInManager<IdentityUser> _signInManager = signInManager;
         private readonly ITokenService _tokenService = tokenService;
         private Logger _logger = LogManager.GetCurrentClassLogger();
         private readonly LedgerlyAuthDbContext _db = db;
         private readonly IConfiguration _configuration = configuration;
+        private readonly IMapper _mapper = mapper;
 
         public async Task<ApiResponse<RegisterResponse>> Register(RegisterRequest req)
         {
@@ -50,7 +56,9 @@ namespace Ledgerly.API.Services
 
                 identityResult = await _userManager.AddToRolesAsync(identityUser, [userRole]);
 
-                return ApiResponse<RegisterResponse>.Success(new RegisterResponse());
+                var res = _mapper.Map<RegisterResponse>(identityUser);
+
+                return ApiResponse<RegisterResponse>.Success(res);
             }
             catch (Exception e)
             {
@@ -63,35 +71,30 @@ namespace Ledgerly.API.Services
         {
             try
             {
-                var user = await _userManager.FindByEmailAsync(req.Username);
-
-                //handle when user doesn't exist
-
-
-                if (user != null)
+                var user = await _userManager.FindByNameAsync(req.Username);
+                if (user == null)
                 {
-                    var checkPasswordResult = await _userManager.CheckPasswordAsync(user, req.Password);
-
-                    if (checkPasswordResult)
-                    {
-                        // Get Roles for this user
-                        var roles = await _userManager.GetRolesAsync(user);
-
-                        if (roles != null)
-                        {
-                            // Create Token
-                            var jwtToken = _tokenService.CreateAccessToken(user, roles.ToList());
-
-                            var res = new LoginResponse
-                            {
-                                AccessToken = jwtToken.AccessToken,
-                                ExpiresIn = jwtToken.ExpiresIn
-                            };
-                            return ApiResponse<LoginResponse>.Success(res);
-                        }
-                    }
+                    _logger.Info($"AuthService/LoginResponse, Param:{JsonSerializer.Serialize(req)}, ErrorCode:'{ApiResponseStatus.UserNotExist}', ErrorMessage:'{ApiResponseStatus.UserNotExist.Description()}'");
+                    return ApiResponse<LoginResponse>.Failure(ApiResponseStatus.UserNotExist);
                 }
-                return null;
+
+                var result = await _signInManager.CheckPasswordSignInAsync(user, req.Password, false);
+                if (!result.Succeeded)
+                {
+                    _logger.Info($"AuthService/LoginResponse, Param:{JsonSerializer.Serialize(req)}, ErrorCode:'{ApiResponseStatus.WrongPassword}', ErrorMessage:'{ApiResponseStatus.WrongPassword.Description()}'");
+                    return ApiResponse<LoginResponse>.Failure(ApiResponseStatus.WrongPassword);
+                }
+
+                // Generate Access Token
+                var roles = await _userManager.GetRolesAsync(user);
+                var jwtToken = _tokenService.CreateAccessToken(user, roles.ToList());
+
+                var res = new LoginResponse
+                {
+                    AccessToken = jwtToken.AccessToken,
+                    ExpiresIn = jwtToken.ExpiresIn
+                };
+                return ApiResponse<LoginResponse>.Success(res);
             }
             catch (Exception e)
             {

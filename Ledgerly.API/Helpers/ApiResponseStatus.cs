@@ -50,6 +50,12 @@ namespace Ledgerly.Helpers
         [Description("Wrong Username Or Password")]
         WrongUserNameOrPassword = 200,
 
+        [Description("Wrong Password")]
+        WrongPassword = 201,
+
+        [Description("User Not Exist")]
+        UserNotExist = 406,
+
         [Description("Not found")]
         NotFound = 404,
 

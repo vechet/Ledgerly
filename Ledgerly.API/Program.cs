@@ -67,11 +67,14 @@ builder.Services.AddScoped<IAuthService, AuthService>();
 builder.Services.AddAutoMapper(typeof(AutoMapperProfiles));
 
 //identity
-builder.Services.AddIdentityCore<IdentityUser>()
+var identityBuilder = builder.Services.AddIdentityCore<IdentityUser>()
     .AddRoles<IdentityRole>()
     .AddTokenProvider<DataProtectorTokenProvider<IdentityUser>>("Ledgerly")
     .AddEntityFrameworkStores<LedgerlyAuthDbContext>()
     .AddDefaultTokenProviders();
+// Register SignInManager explicitly
+new IdentityBuilder(identityBuilder.UserType, identityBuilder.Services)
+    .AddSignInManager<SignInManager<IdentityUser>>();
 
 builder.Services.Configure<IdentityOptions>(options =>
 {

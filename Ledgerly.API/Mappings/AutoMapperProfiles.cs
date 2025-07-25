@@ -1,6 +1,8 @@
 ﻿using AutoMapper;
 using Ledgerly.API.Models.Domains;
 using Ledgerly.API.Models.DTOs.TransactionType;
+using Ledgerly.API.Models.DTOs.User;
+using Microsoft.AspNetCore.Identity;
 
 namespace Ledgerly.API.Mappings
 {
@@ -14,6 +16,8 @@ namespace Ledgerly.API.Mappings
             CreateMap<UpdateTransactionTypeRequest, TransactionType>();
             CreateMap<TransactionType, UpdateTransactionTypeResponse>();
             CreateMap<TransactionType, TransactionTypesResponse>();
+            CreateMap<IdentityUser, RegisterResponse>()
+                .ForMember(dest => dest.Username, opt => opt.MapFrom(src => src.UserName));
             //CreateMap<Brand, BrandDto>();
             //CreateMap<Brand, CreateBrandResDto>();
             //CreateMap<CreateBrandReqDto, Brand>()
