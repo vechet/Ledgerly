@@ -16,8 +16,12 @@ namespace Ledgerly.API.Mappings
             CreateMap<UpdateTransactionTypeRequest, TransactionType>();
             CreateMap<TransactionType, UpdateTransactionTypeResponse>();
             CreateMap<TransactionType, TransactionTypesResponse>();
+            CreateMap<RegisterRequest, IdentityUser>()
+                .ForMember(dest => dest.UserName, opt => opt.MapFrom(src => src.Username))
+                .ForMember(dest => dest.PhoneNumber, opt => opt.MapFrom(src => src.Phone));
             CreateMap<IdentityUser, RegisterResponse>()
-                .ForMember(dest => dest.Username, opt => opt.MapFrom(src => src.UserName));
+                .ForMember(dest => dest.Username, opt => opt.MapFrom(src => src.UserName))
+                .ForMember(dest => dest.Phone, opt => opt.MapFrom(src => src.PhoneNumber));
             //CreateMap<Brand, BrandDto>();
             //CreateMap<Brand, CreateBrandResDto>();
             //CreateMap<CreateBrandReqDto, Brand>()

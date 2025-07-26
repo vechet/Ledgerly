@@ -31,37 +31,34 @@ namespace Ledgerly.API.Services
 
         public async Task<ApiResponse<RegisterResponse>> Register(RegisterRequest req)
         {
+            // Mapping entity
+            var identityUser = _mapper.Map<IdentityUser>(req);
+
             try
             {
-                var identityUser = new IdentityUser
-                {
-                    UserName = req.Username,
-                    Email = req.Username
-                };
-
+                // Add new user
                 var identityResult = await _userManager.CreateAsync(identityUser, req.Password);
-
                 if (!identityResult.Succeeded)
                 {
                     return ApiResponse<RegisterResponse>.Failure(ApiResponseStatus.InternalError);
                 }
 
-                // Add roles to this user
-                var userRole = _configuration["UserSetting:DefaultUserRole"]!;
-                if (!await _roleManager.RoleExistsAsync(userRole))
-                {
-                    await _userManager.DeleteAsync(identityUser);
-                    return ApiResponse<RegisterResponse>.Failure(ApiResponseStatus.RoleDoesNotExist);
-                }
+                // Add roles to new user
+                var defaultUserRole = _configuration["UserSetting:DefaultUserRole"];
+                identityResult = await _userManager.AddToRolesAsync(identityUser, [defaultUserRole]);
 
-                identityResult = await _userManager.AddToRolesAsync(identityUser, [userRole]);
-
+                // Mapping dto
                 var res = _mapper.Map<RegisterResponse>(identityUser);
 
+                //response
                 return ApiResponse<RegisterResponse>.Success(res);
             }
             catch (Exception e)
             {
+                // Remove new user or Rollback
+                await _userManager.DeleteAsync(identityUser);
+
+                // Log Info
                 _logger.Info($"AuthService/Register, Param:{JsonSerializer.Serialize(req)}, ErrorCode:'{e.HResult}', ErrorMessage:'{e.Message}'");
                 return ApiResponse<RegisterResponse>.Failure(ApiResponseStatus.InternalError);
             }
@@ -94,6 +91,8 @@ namespace Ledgerly.API.Services
                     AccessToken = jwtToken.AccessToken,
                     ExpiresIn = jwtToken.ExpiresIn
                 };
+
+                // Response
                 return ApiResponse<LoginResponse>.Success(res);
             }
             catch (Exception e)

@@ -12,6 +12,11 @@ namespace Ledgerly.API.Models.DTOs.User
         [DataType(DataType.Password)]
         public string Password { get; set; } = null!;
 
+        [Required]
+        public string Email { get; set; } = null!;
+
+        public string? Phone { get; set; }
+
         //public string[] Roles { get; set; }
     }
 }
