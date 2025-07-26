@@ -1,4 +1,5 @@
-﻿using Ledgerly.API.Models;
+﻿using Ledgerly.API.Helpers;
+using Ledgerly.API.Models;
 using Ledgerly.API.Services.Interfaces;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.IdentityModel.Tokens;
@@ -31,7 +32,7 @@ namespace Ledgerly.Services
             var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration["Jwt:Key"]));
             var credentials = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
 
-            var accessExpiration = DateTime.UtcNow.AddDays(1); // Use UtcNow
+            var accessExpiration = TokenExpirationHelper.AccessTokenExpirationHandler(_configuration);
             var jwtAccessToken = new JwtSecurityToken(
                 _configuration["Jwt:Issuer"],
                 _configuration["Jwt:Audience"],

@@ -10,6 +10,7 @@ using Microsoft.EntityFrameworkCore;
 using NLog;
 using System;
 using System.Reflection.Metadata;
+using System.Security.Claims;
 using System.Text.Json;
 using System.Xml;
 using Udemy.Data;
@@ -17,25 +18,37 @@ using Udemy.Data;
 namespace Ledgerly.API.Services
 {
     public class TransactionTypeService(ITransactionTypeRepository transactionTypeRepository,
-        IMapper mapper, LedgerlyDbContext db) : ITransactionTypeService
+        IMapper mapper, 
+        LedgerlyDbContext db,
+        ICurrentUserService currentUserService) : ITransactionTypeService
     {
         private readonly ITransactionTypeRepository _transactionTypeRepository = transactionTypeRepository;
         private readonly IMapper _mapper  = mapper;
         private readonly LedgerlyDbContext _db = db;
         private Logger _logger = LogManager.GetCurrentClassLogger();
+        private readonly ICurrentUserService _currentUserService = currentUserService;
 
         public async Task<ApiResponse<CreateTransactionTypeResponse>> CreateTransactionType(CreateTransactionTypeRequest req)
         {
             try
             {
+                //get userId
+                var userId = _currentUserService.GetUserId();
+                if (userId == null)
+                {
+                    _logger.Error($"TransactionTypeService/CreateTransactionType, Param:{JsonSerializer.Serialize(req)}, ErrorCode:'{ApiResponseStatus.Unauthorized.Value()}', ErrorMessage:'{ApiResponseStatus.Unauthorized.Description()}'");
+                    return ApiResponse<CreateTransactionTypeResponse>.Failure(ApiResponseStatus.Unauthorized);
+                }
+
+                // add new transaction type
                 var transactionType = _mapper.Map<TransactionType>(req);
-                transactionType.CreatedBy = "1";
+                transactionType.CreatedBy = userId;
                 transactionType.CreatedDate = GlobalFunction.GetCurrentDateTime();
                 var newTransactionType = await _transactionTypeRepository.CreateTransactionType(transactionType);
                 var transactionTypeRes = _mapper.Map<CreateTransactionTypeResponse>(newTransactionType);
 
                 // Add audit log
-                await GlobalFunction.RecordAuditLog(/*userId*/ "1", "TransactionType", "CreateTransactionType", newTransactionType.Id, newTransactionType.Name, await GetAuditDescription(_db, newTransactionType.Id), _db);
+                await GlobalFunction.RecordAuditLog(userId, "TransactionType", "CreateTransactionType", newTransactionType.Id, newTransactionType.Name, await GetAuditDescription(_db, newTransactionType.Id), _db);
 
                 return ApiResponse<CreateTransactionTypeResponse>.Success(transactionTypeRes);
             }
@@ -122,14 +135,23 @@ namespace Ledgerly.API.Services
         {
             try
             {
+                //get user id
+                var userId = _currentUserService.GetUserId();
+                if (userId == null)
+                {
+                    _logger.Error($"TransactionTypeService/UpdateTransactionType, Param:{JsonSerializer.Serialize(req)}, ErrorCode:'{ApiResponseStatus.Unauthorized.Value()}', ErrorMessage:'{ApiResponseStatus.Unauthorized.Description()}'");
+                    return ApiResponse<UpdateTransactionTypeResponse>.Failure(ApiResponseStatus.Unauthorized);
+                }
+
+                // update transaction type
                 var transactionType = _mapper.Map<TransactionType>(req);
-                transactionType.ModifiedBy = "2";
+                transactionType.ModifiedBy = userId;
                 transactionType.ModifiedDate = GlobalFunction.GetCurrentDateTime();
                 var currentTransactionType = await _transactionTypeRepository.UpdateTransactionType(transactionType);
                 var transactionTypeRes = _mapper.Map<UpdateTransactionTypeResponse>(currentTransactionType);
 
                 // Add audit log
-                await GlobalFunction.RecordAuditLog(/*userId*/ "2", "TransactionType", "UpdateTransactionType", currentTransactionType.Id, currentTransactionType.Name, await GetAuditDescription(_db, currentTransactionType.Id), _db);
+                await GlobalFunction.RecordAuditLog(userId, "TransactionType", "UpdateTransactionType", currentTransactionType.Id, currentTransactionType.Name, await GetAuditDescription(_db, currentTransactionType.Id), _db);
 
                 return ApiResponse<UpdateTransactionTypeResponse>.Success(transactionTypeRes);
             }
