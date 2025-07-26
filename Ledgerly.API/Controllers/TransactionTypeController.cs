@@ -9,7 +9,7 @@ namespace Ledgerly.API.Controllers
 {
     [Route("api")]
     [ApiController]
-    [Authorize]
+    //[Authorize]
     public class TransactionTypeController : ControllerBase
     {
         private readonly ITransactionTypeService _transactionTypeService;
