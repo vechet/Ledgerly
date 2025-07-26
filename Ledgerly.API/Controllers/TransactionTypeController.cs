@@ -2,12 +2,14 @@
 using Ledgerly.API.Models.DTOs.TransactionType;
 using Ledgerly.API.Services.Interfaces;
 using Ledgerly.Helpers;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Ledgerly.API.Controllers
 {
     [Route("api")]
     [ApiController]
+    [Authorize]
     public class TransactionTypeController : ControllerBase
     {
         private readonly ITransactionTypeService _transactionTypeService;
