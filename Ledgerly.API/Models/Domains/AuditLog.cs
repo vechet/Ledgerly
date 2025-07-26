@@ -21,9 +21,6 @@ namespace Ledgerly.Models
         [Column(TypeName = "nvarchar")]
         public string? TransactionKeyValue { get; set; }
 
-        [Required]
-        public int Version { get; set; }
-
         [Column(TypeName = "nvarchar(max)")]
         public string? Description { get; set; }
 

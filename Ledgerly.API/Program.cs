@@ -63,6 +63,8 @@ builder.Services.AddScoped<ITransactionTypeRepository, TransactionTypeRepository
 builder.Services.AddScoped<ITokenService, TokenService>();
 builder.Services.AddScoped<ITransactionTypeService, TransactionTypeService>();
 builder.Services.AddScoped<IAuthService, AuthService>();
+builder.Services.AddScoped<ICurrentUserService, CurrentUserService>();
+builder.Services.AddHttpContextAccessor(); // required for IHttpContextAccessor
 
 //mapping
 builder.Services.AddAutoMapper(typeof(AutoMapperProfiles));
