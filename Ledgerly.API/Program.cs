@@ -1,4 +1,5 @@
 using Ledgerly.API.Mappings;
+using Ledgerly.API.Middlewares;
 using Ledgerly.API.Repositories;
 using Ledgerly.API.Repositories.Interfaces;
 using Ledgerly.API.Services;
@@ -21,7 +22,7 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen(options =>
 {
-    options.SwaggerDoc("v1", new OpenApiInfo { Title = "Udemy API", Version = "v1" });
+    options.SwaggerDoc("v1", new OpenApiInfo { Title = "Ledgerly API", Version = "v1" });
     options.AddSecurityDefinition(JwtBearerDefaults.AuthenticationScheme, new OpenApiSecurityScheme
     {
         Name = "Authorization",
@@ -110,6 +111,11 @@ if (app.Environment.IsDevelopment())
 
 app.UseHttpsRedirection();
 app.UseStaticFiles();
+
+//Handle Api Exception Middleware
+app.UseMiddleware<HandleApiExceptionMiddleware>();
+app.UseMiddleware<SqlExceptionMiddleware>();
+
 app.UseAuthorization();
 
 app.MapControllers();
