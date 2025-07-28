@@ -58,12 +58,14 @@ builder.Services.AddDbContext<LedgerlyAuthDbContext>(options =>
 
 //repositories
 builder.Services.AddScoped<ITransactionTypeRepository, TransactionTypeRepository>();
+builder.Services.AddScoped<IAuditLogRepository, AuditLogRepository>();
 
 //services
 builder.Services.AddScoped<ITokenService, TokenService>();
 builder.Services.AddScoped<ITransactionTypeService, TransactionTypeService>();
 builder.Services.AddScoped<IAuthService, AuthService>();
 builder.Services.AddScoped<ICurrentUserService, CurrentUserService>();
+builder.Services.AddScoped<IAuditLogService, AuditLogService>();
 builder.Services.AddHttpContextAccessor(); // required for IHttpContextAccessor
 
 //mapping
@@ -115,8 +117,8 @@ app.UseHttpsRedirection();
 app.UseStaticFiles();
 
 //Handle Api Exception Middleware
-//app.UseMiddleware<HandleApiExceptionMiddleware>();
-//app.UseMiddleware<SqlExceptionMiddleware>();
+app.UseMiddleware<HandleApiExceptionMiddleware>();
+app.UseMiddleware<SqlExceptionMiddleware>();
 
 app.UseAuthorization();
 
