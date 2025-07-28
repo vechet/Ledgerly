@@ -68,6 +68,9 @@ namespace Ledgerly.API.Repositories
             {
                 var currentTransactionType = await _db.TransactionType.FindAsync(req.Id);
                 currentTransactionType.Name = req.Name;
+                currentTransactionType.StatusId = req.StatusId;
+                currentTransactionType.ModifiedBy = req.ModifiedBy;
+                currentTransactionType.ModifiedDate = req.ModifiedDate;
                 await _db.SaveChangesAsync();
                 await transaction.CommitAsync();
                 return currentTransactionType;
