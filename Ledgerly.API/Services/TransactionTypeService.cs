@@ -2,6 +2,7 @@
 using AutoMapper.QueryableExtensions;
 using Ledgerly.API.Helpers;
 using Ledgerly.API.Models.Domains;
+using Ledgerly.API.Models.DTOs.AuditLog;
 using Ledgerly.API.Models.DTOs.TransactionType;
 using Ledgerly.API.Repositories.Interfaces;
 using Ledgerly.API.Services.Interfaces;
@@ -17,27 +18,25 @@ namespace Ledgerly.API.Services
     public class TransactionTypeService(ITransactionTypeRepository transactionTypeRepository,
         IMapper mapper, 
         LedgerlyDbContext db,
-        ICurrentUserService currentUserService) : ITransactionTypeService
+        ICurrentUserService currentUserService,
+        IAuditLogService auditLogService) : ITransactionTypeService
     {
         private readonly ITransactionTypeRepository _transactionTypeRepository = transactionTypeRepository;
         private readonly IMapper _mapper  = mapper;
         private readonly LedgerlyDbContext _db = db;
         private Logger _logger = LogManager.GetCurrentClassLogger();
         private readonly ICurrentUserService _currentUserService = currentUserService;
+        private readonly IAuditLogService _auditLogService = auditLogService;
 
         public async Task<ApiResponse<CreateTransactionTypeResponse>> CreateTransactionType(CreateTransactionTypeRequest req)
         {
-            // Log Request
-            var traceId = Guid.NewGuid();
-            _logger.Info($"TransactionTypeService/CreateTransactionType, Trace:'{traceId}', Request:{JsonSerializer.Serialize(req)}");
-
             try
             {
                 //get userId
                 var userId = _currentUserService.GetUserId();
                 if (userId == null)
                 {
-                    _logger.Error($"TransactionTypeService/CreateTransactionType, Trace:'{traceId}', Request:{JsonSerializer.Serialize(req)}, ErrorCode:'{ApiResponseStatus.Unauthorized.Value()}', ErrorMessage:'{ApiResponseStatus.Unauthorized.Description()}'");
+                    _logger.Error($"TransactionTypeService/CreateTransactionType, Param:{JsonSerializer.Serialize(req)}, ErrorCode:'{ApiResponseStatus.Unauthorized.Value()}', ErrorMessage:'{ApiResponseStatus.Unauthorized.Description()}'");
                     return ApiResponse<CreateTransactionTypeResponse>.Failure(ApiResponseStatus.Unauthorized);
                 }
 
@@ -49,45 +48,41 @@ namespace Ledgerly.API.Services
                 var transactionTypeRes = _mapper.Map<CreateTransactionTypeResponse>(newTransactionType);
 
                 // Add audit log
-                await GlobalFunction.RecordAuditLog(userId, "TransactionType", "CreateTransactionType", newTransactionType.Id, newTransactionType.Name, await GetAuditDescription(_db, newTransactionType.Id), _db);
+                var transactionTypeAuditLog = new RecordAuditLog
+                {
+                    ControllerName = "TransactionType",
+                    MethodName = "CreateTransactionType",
+                    TransactionId = newTransactionType.Id,
+                    TransactionKeyValue = newTransactionType.Name,
+                    Description = await GetAuditDescription(newTransactionType.Id),
+                    CreatedBy = userId,
+                    CreatedDate = GlobalFunction.GetCurrentDateTime(),
+                };
+                await _auditLogService.RecordAuditLog(transactionTypeAuditLog);
 
                 // Response
-                var res = ApiResponse<CreateTransactionTypeResponse>.Success(transactionTypeRes);
-
-                // Log Response
-                _logger.Info($"TransactionTypeService/CreateTransactionType, Trace:'{traceId}', Response:{JsonSerializer.Serialize(res)}");
-
-                return res;
+                return ApiResponse<CreateTransactionTypeResponse>.Success(transactionTypeRes);
             }
             catch(Exception e)
             {
-                _logger.Info($"TransactionTypeService/CreateTransactionType, Trace:'{traceId}', Request:{JsonSerializer.Serialize(req)}, ErrorCode:'{e.HResult}', ErrorMessage:'{e.Message}'");
+                _logger.Info($"TransactionTypeService/CreateTransactionType, Param:{JsonSerializer.Serialize(req)}, ErrorCode:'{e.HResult}', ErrorMessage:'{e.Message}'");
                 return ApiResponse<CreateTransactionTypeResponse>.Failure(ApiResponseStatus.InternalError);
             }
         }
 
         public async Task<ApiResponse<GetTransactionTypeResponse>> GetTransactionType(GetTransactionTypeRequest req)
         {
-            // Log Request
-            var traceId = Guid.NewGuid();
-            _logger.Info($"TransactionTypeService/GetTransactionType, Trace:'{traceId}', Request:{JsonSerializer.Serialize(req)}");
-
             try
             {
                 var transactionType = await _transactionTypeRepository.GetTransactionType(req.id);
                 var transactionTypeRes = _mapper.Map<GetTransactionTypeResponse>(transactionType);
 
                 // Response
-                var res = ApiResponse<GetTransactionTypeResponse>.Success(transactionTypeRes);
-
-                // Log Response
-                _logger.Info($"TransactionTypeService/CreateTransactionType, Trace:'{traceId}', Response:{JsonSerializer.Serialize(res)}");
-
-                return res;
+                return ApiResponse<GetTransactionTypeResponse>.Success(transactionTypeRes);
             }
             catch (Exception e)
             {
-                _logger.Info($"TransactionTypeService/GetTransactionType, Trace:'{traceId}', Request:{JsonSerializer.Serialize(req)}, ErrorCode:'{e.HResult}', ErrorMessage:'{e.Message}'");
+                _logger.Info($"TransactionTypeService/GetTransactionType, Param:{JsonSerializer.Serialize(req)}, ErrorCode:'{e.HResult}', ErrorMessage:'{e.Message}'");
                 return ApiResponse<GetTransactionTypeResponse>.Failure(ApiResponseStatus.InternalError);
             }
         }
@@ -139,29 +134,25 @@ namespace Ledgerly.API.Services
                 // Build pagination info
                 var pageInfo = new PageInfo(req.Page, req.PageSize, totalRecords);
 
+                // Response
                 return ApiResponse<GetTransactionTypesResponse>.Success(new GetTransactionTypesResponse(data, pageInfo));
-
             }
             catch (Exception e)
             {
-                _logger.Info($"TransactionTypeService/GetTransactionTypes, Request:{JsonSerializer.Serialize(req)}, ErrorCode:'{e.HResult}', ErrorMessage:'{e.Message}'");
+                _logger.Error($"TransactionTypeService/GetTransactionTypes, Param:{JsonSerializer.Serialize(req)}, ErrorCode:'{e.HResult}', ErrorMessage:'{e.Message}'");
                 return ApiResponse<GetTransactionTypesResponse>.Failure(ApiResponseStatus.InternalError);
             }
         }
 
         public async Task<ApiResponse<UpdateTransactionTypeResponse>> UpdateTransactionType(UpdateTransactionTypeRequest req)
         {
-            // Log Request
-            var traceId = Guid.NewGuid();
-            _logger.Info($"TransactionTypeService/UpdateTransactionType, Trace:'{traceId}', Request:{JsonSerializer.Serialize(req)}");
-
             try
             {
                 //get user id
                 var userId = _currentUserService.GetUserId();
                 if (userId == null)
                 {
-                    _logger.Error($"TransactionTypeService/UpdateTransactionType, Request:{JsonSerializer.Serialize(req)}, ErrorCode:'{ApiResponseStatus.Unauthorized.Value()}', ErrorMessage:'{ApiResponseStatus.Unauthorized.Description()}'");
+                    _logger.Error($"TransactionTypeService/UpdateTransactionType, Param:{JsonSerializer.Serialize(req)}, ErrorCode:'{ApiResponseStatus.Unauthorized.Value()}', ErrorMessage:'{ApiResponseStatus.Unauthorized.Description()}'");
                     return ApiResponse<UpdateTransactionTypeResponse>.Failure(ApiResponseStatus.Unauthorized);
                 }
 
@@ -173,31 +164,33 @@ namespace Ledgerly.API.Services
                 var transactionTypeRes = _mapper.Map<UpdateTransactionTypeResponse>(currentTransactionType);
 
                 // Add audit log
-                await GlobalFunction.RecordAuditLog(userId, "TransactionType", "UpdateTransactionType", currentTransactionType.Id, currentTransactionType.Name, await GetAuditDescription(_db, currentTransactionType.Id), _db);
+                var transactionTypeAuditLog = new RecordAuditLog
+                {
+                    ControllerName = "TransactionType",
+                    MethodName = "CreateTransactionType",
+                    TransactionId = currentTransactionType.Id,
+                    TransactionKeyValue = currentTransactionType.Name,
+                    Description = await GetAuditDescription(currentTransactionType.Id),
+                    CreatedBy = userId,
+                    CreatedDate = GlobalFunction.GetCurrentDateTime(),
+                };
+                await _auditLogService.RecordAuditLog(transactionTypeAuditLog);
 
                 // Response
-                var res = ApiResponse<UpdateTransactionTypeResponse>.Success(transactionTypeRes);
-
-                // Log Response
-                _logger.Info($"TransactionTypeService/UpdateTransactionType, Trace:'{traceId}', Response:{JsonSerializer.Serialize(res)}");
-
-                return res;
+                return ApiResponse<UpdateTransactionTypeResponse>.Success(transactionTypeRes);
             }
             catch (Exception e)
             {
-                _logger.Error($"TransactionTypeService/UpdateTransactionType, Trace:'{traceId}', Request:{JsonSerializer.Serialize(req)}, ErrorCode:'{e.HResult}', ErrorMessage:'{e.Message}'");
+                _logger.Error($"TransactionTypeService/UpdateTransactionType, Param:{JsonSerializer.Serialize(req)}, ErrorCode:'{e.HResult}', ErrorMessage:'{e.Message}'");
                 return ApiResponse<UpdateTransactionTypeResponse>.Failure(ApiResponseStatus.InternalError);
             }
         }
 
-        public async Task<string> GetAuditDescription(LedgerlyDbContext context, int id)
+        public async Task<string> GetAuditDescription(int id)
         {
-            var brand = await context.TransactionType.Where(x => x.Id == id).Select(x => new
-            {
-                x.Id,
-                x.Name
-            }).FirstOrDefaultAsync();
-            return JsonSerializer.Serialize(brand);        
+            var transactionType = await _transactionTypeRepository.GetTransactionType(id);
+            var recordAuditLogTransactionType = _mapper.Map<RecordAuditLogTransactionType>(transactionType);
+            return JsonSerializer.Serialize(recordAuditLogTransactionType);        
         }
     
     }

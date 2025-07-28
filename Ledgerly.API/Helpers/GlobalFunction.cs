@@ -26,30 +26,30 @@ namespace Ledgerly.Helpers
             };
         }
 
-        public static async Task<bool> RecordAuditLog(string userId, string controllerName, string methodName, int transactionId, string transactionKeyValue, string description, LedgerlyDbContext db)
-        {
-            try
-            {
-                var log = new AuditLog
-                {
-                    ControllerName = controllerName,
-                    MethodName = methodName,
-                    TransactionId = transactionId,
-                    TransactionKeyValue = transactionKeyValue,
-                    Description = description,
-                    //CreatedBy = GetCurrentUserId(),
-                    CreatedBy = userId,
-                    CreatedDate = GetCurrentDateTime()
-                };
-                await db.AuditLog.AddAsync(log);
-                await db.SaveChangesAsync();
-                return true;
-            }
-            catch (Exception ex)
-            {
-                return false;
-            }
-        }
+        //public static async Task<bool> RecordAuditLog(string userId, string controllerName, string methodName, int transactionId, string transactionKeyValue, string description, LedgerlyDbContext db)
+        //{
+        //    try
+        //    {
+        //        var log = new AuditLog
+        //        {
+        //            ControllerName = controllerName,
+        //            MethodName = methodName,
+        //            TransactionId = transactionId,
+        //            TransactionKeyValue = transactionKeyValue,
+        //            Description = description,
+        //            //CreatedBy = GetCurrentUserId(),
+        //            CreatedBy = userId,
+        //            CreatedDate = GetCurrentDateTime()
+        //        };
+        //        await db.AuditLog.AddAsync(log);
+        //        await db.SaveChangesAsync();
+        //        return true;
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        return false;
+        //    }
+        //}
 
         //public static bool CheckInvalidEod(DateTime transactionDate, LedgerlyDbContext db)
         //{
