@@ -15,14 +15,17 @@ namespace Ledgerly.Models
         [Required]
         public string MethodName { get; set; } = null!;
 
-        public int? TransactionId { get; set; }
+        [Required]
+        public int TransactionId { get; set; }
 
+        [Required]
         [StringLength(100)]
         [Column(TypeName = "nvarchar")]
-        public string? TransactionKeyValue { get; set; }
+        public string TransactionNo { get; set; } = null!;
 
+        [Required]
         [Column(TypeName = "nvarchar(max)")]
-        public string? Description { get; set; }
+        public string Description { get; set; } = null!;
 
         [Required]
         [StringLength(450)]
