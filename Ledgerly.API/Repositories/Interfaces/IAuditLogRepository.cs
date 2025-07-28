@@ -9,7 +9,5 @@ namespace Ledgerly.API.Repositories.Interfaces
         Task<AuditLog> GetAuditLog(int id);
 
         Task<AuditLog> CreateAuditLog(AuditLog req);
-
-        Task<AuditLog> UpdateAuditLog(AuditLog req);
     }
 }

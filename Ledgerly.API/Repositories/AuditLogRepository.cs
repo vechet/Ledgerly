@@ -56,29 +56,5 @@ namespace Ledgerly.API.Repositories
                 throw;
             }
         }
-
-        public async Task<AuditLog> UpdateAuditLog(AuditLog req)
-        {
-            await using var transaction = await _db.Database.BeginTransactionAsync();
-            try
-            {
-                var currentAuditLog = await _db.AuditLog.FindAsync(req.Id);
-                currentAuditLog.ControllerName = req.ControllerName;
-                currentAuditLog.MethodName = req.MethodName;
-                currentAuditLog.TransactionId = req.TransactionId;
-                currentAuditLog.TransactionKeyValue = req.TransactionKeyValue;
-                currentAuditLog.Description = req.Description;
-                currentAuditLog.CreatedBy = req.CreatedBy;
-                currentAuditLog.CreatedDate = req.CreatedDate;
-                await _db.SaveChangesAsync();
-                await transaction.CommitAsync();
-                return currentAuditLog;
-            }
-            catch (Exception e)
-            {
-                await transaction.RollbackAsync();
-                throw;
-            }
-        }
     }
 }
