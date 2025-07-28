@@ -6,25 +6,25 @@
         {
             var accessTokenExpirationType = config["Jwt:AccessTokenExpirationType"];
             var accessTokenExpiration = config["Jwt:AccessTokenExpiration"];
-            var expiration = DateTime.UtcNow;
+            var expiration = DateTime.Now;
             if (accessTokenExpirationType.Contains("s"))
             {
-                expiration.AddSeconds(Convert.ToInt32(accessTokenExpiration));
+                expiration = expiration.AddSeconds(Convert.ToInt32(accessTokenExpiration));
             }
 
             if (accessTokenExpirationType.Contains("m"))
             {
-                expiration.AddMinutes(Convert.ToInt32(accessTokenExpiration));
+                expiration = expiration.AddMinutes(Convert.ToInt32(accessTokenExpiration));
             }
 
             if (accessTokenExpirationType.Contains("h"))
             {
-                expiration.AddHours(Convert.ToInt32(accessTokenExpiration));
+                expiration = expiration.AddHours(Convert.ToInt32(accessTokenExpiration));
             }
 
             if (accessTokenExpirationType.Contains("d"))
             {
-                expiration.AddDays(Convert.ToInt32(accessTokenExpiration));
+                expiration = expiration.AddDays(Convert.ToInt32(accessTokenExpiration));
             }
             return expiration;
         }

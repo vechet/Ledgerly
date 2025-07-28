@@ -41,7 +41,7 @@ namespace Ledgerly.Services
                 signingCredentials: credentials);
 
             var accessToken = new JwtSecurityTokenHandler().WriteToken(jwtAccessToken);
-            var accessExpiresIn = (int)(accessExpiration - DateTime.UtcNow).TotalSeconds;
+            var accessExpiresIn = (int)(accessExpiration - DateTime.Now).TotalSeconds;
 
             return new AccessTokenResponse
             {
