@@ -59,6 +59,11 @@ builder.Services.AddDbContext<LedgerlyAuthDbContext>(options =>
 //repositories
 builder.Services.AddScoped<ITransactionTypeRepository, TransactionTypeRepository>();
 builder.Services.AddScoped<IAuditLogRepository, AuditLogRepository>();
+builder.Services.AddScoped<ICategoryRepository, CategoryRepository>();
+builder.Services.AddScoped<ICategoryTypeRepository, CategoryTypeRepository>();
+builder.Services.AddScoped<ITransactionRepository, TransactionRepository>();
+builder.Services.AddScoped<IStatusRepository, StatusRepository>();
+builder.Services.AddScoped<IAccountRepository, AccountRepository>();
 
 //services
 builder.Services.AddScoped<ITokenService, TokenService>();
