@@ -67,6 +67,7 @@ namespace Ledgerly.API.Repositories
             try
             {
                 var currentTransaction = await _db.Transaction.FindAsync(req.Id);
+                currentTransaction.TransactionNo = req.TransactionNo;
                 currentTransaction.UserId = req.UserId;
                 currentTransaction.Amount = req.Amount;
                 currentTransaction.TransactionTypeId = req.TransactionTypeId;
