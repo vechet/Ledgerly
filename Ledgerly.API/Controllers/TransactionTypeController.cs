@@ -20,7 +20,7 @@ namespace Ledgerly.API.Controllers
         }
 
         [HttpPost("v1/transaction-type/create-transaction-type")]
-        public async Task<ApiResponse<CreateTransactionTypeResponse>> CreateBrand([FromForm] CreateTransactionTypeRequest req)
+        public async Task<ApiResponse<CreateTransactionTypeResponse>> CreateBrand([FromBody] CreateTransactionTypeRequest req)
         {
             return await _transactionTypeService.CreateTransactionType(req);
         }
@@ -32,7 +32,7 @@ namespace Ledgerly.API.Controllers
         }
 
         [HttpPost("v1/transaction-type/update-transaction-type")]
-        public async Task<ApiResponse<UpdateTransactionTypeResponse>> UpdateBrand([FromForm] UpdateTransactionTypeRequest req)
+        public async Task<ApiResponse<UpdateTransactionTypeResponse>> UpdateBrand([FromBody] UpdateTransactionTypeRequest req)
         {
             return await _transactionTypeService.UpdateTransactionType(req);
         }

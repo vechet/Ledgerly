@@ -15,13 +15,13 @@ namespace Ledgerly.API.Controllers
         private readonly IAuthService _authService = authService;
 
         [HttpPost("v1/auth/register")]
-        public async Task<ApiResponse<RegisterResponse>> Register([FromForm] RegisterRequest req)
+        public async Task<ApiResponse<RegisterResponse>> Register([FromBody] RegisterRequest req)
         {
             return await _authService.Register(req);
         }
 
         [HttpPost("v1/auth/login")]
-        public async Task<ApiResponse<LoginResponse>> Login([FromForm] LoginRequest req)
+        public async Task<ApiResponse<LoginResponse>> Login([FromBody] LoginRequest req)
         {
             return await _authService.Login(req);
         }
