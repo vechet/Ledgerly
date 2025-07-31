@@ -76,7 +76,11 @@ builder.Services.AddScoped<IAuditLogService, AuditLogService>();
 builder.Services.AddHttpContextAccessor(); // required for IHttpContextAccessor
 
 //mapping
-builder.Services.AddAutoMapper(typeof(AutoMapperProfiles));
+builder.Services.AddAutoMapper(
+    typeof(TransactionProfile),
+    typeof(TransactionTypeProfile),
+    typeof(AuthProfile),
+    typeof(AuditLogProfile));
 
 //identity
 var identityBuilder = builder.Services.AddIdentityCore<IdentityUser>()
