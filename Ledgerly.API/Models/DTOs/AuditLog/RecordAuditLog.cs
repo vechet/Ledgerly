@@ -14,7 +14,7 @@ namespace Ledgerly.API.Models.DTOs.AuditLog
         public int TransactionId { get; set; }
 
         [Required]
-        public string TransactionKeyValue { get; set; } = null!;
+        public string TransactionNo { get; set; } = null!;
 
         [Required]
         public string Description { get; set; } = null!;
