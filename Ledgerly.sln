@@ -3,11 +3,9 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.8.34511.84
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Ledgerly.API", "Ledgerly.API\Ledgerly.API.csproj", "{BE0FD058-8424-4EA5-B643-6CB6052D0BE4}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Ledgerly.API", "Ledgerly.API\Ledgerly.API.csproj", "{BE0FD058-8424-4EA5-B643-6CB6052D0BE4}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Ledgerly.UI", "Ledgerly.UI\Ledgerly.UI.csproj", "{5ABD8FD6-C187-433F-892D-5EBB4A719ECD}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Ledgerly.Test", "Ledgerly.Test\Ledgerly.Test.csproj", "{EA3960A0-96D6-4A67-A142-01370659EF9E}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Ledgerly.Test", "Ledgerly.Test\Ledgerly.Test.csproj", "{EA3960A0-96D6-4A67-A142-01370659EF9E}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -19,10 +17,6 @@ Global
 		{BE0FD058-8424-4EA5-B643-6CB6052D0BE4}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{BE0FD058-8424-4EA5-B643-6CB6052D0BE4}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{BE0FD058-8424-4EA5-B643-6CB6052D0BE4}.Release|Any CPU.Build.0 = Release|Any CPU
-		{5ABD8FD6-C187-433F-892D-5EBB4A719ECD}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{5ABD8FD6-C187-433F-892D-5EBB4A719ECD}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{5ABD8FD6-C187-433F-892D-5EBB4A719ECD}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{5ABD8FD6-C187-433F-892D-5EBB4A719ECD}.Release|Any CPU.Build.0 = Release|Any CPU
 		{EA3960A0-96D6-4A67-A142-01370659EF9E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{EA3960A0-96D6-4A67-A142-01370659EF9E}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{EA3960A0-96D6-4A67-A142-01370659EF9E}.Release|Any CPU.ActiveCfg = Release|Any CPU
