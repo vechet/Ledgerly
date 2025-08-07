@@ -36,6 +36,8 @@ namespace Ledgerly.API.Repositories
             try
             {
                 var categories = await _db.Category
+                    .Include(x => x.Parent)
+                    .Include(x => x.CategoryType)
                     .Include(x => x.Status)
                     .ToListAsync();
                 return categories;
@@ -51,6 +53,8 @@ namespace Ledgerly.API.Repositories
             try
             {
                 var category = await _db.Category
+                    .Include(x => x.Parent)
+                    .Include(x => x.CategoryType)
                     .Include(x => x.Status)
                     .FirstOrDefaultAsync(t => t.Id == id);
                 return category;

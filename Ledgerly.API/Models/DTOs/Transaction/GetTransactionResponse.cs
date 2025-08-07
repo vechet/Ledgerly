@@ -35,5 +35,11 @@ namespace Ledgerly.API.Models.DTOs.Transaction
         public string AccountName { get; set; } = null!;
 
         public string? Notes { get; set; }
+
+        [Required]
+        public short StatusId { get; set; }
+
+        [Required]
+        public string StatusName { get; set; } = null!;
     }
 }

@@ -19,25 +19,25 @@ namespace Ledgerly.API.Controllers
         }
 
         [HttpPost("v1/transaction/create-transaction")]
-        public async Task<ApiResponse<CreateTransactionResponse>> CreateBrand([FromBody] CreateTransactionRequest req)
+        public async Task<ApiResponse<CreateTransactionResponse>> CreateTransaction([FromBody] CreateTransactionRequest req)
         {
             return await _transactionService.CreateTransaction(req);
         }
 
         [HttpPost("v1/transaction/get-transactions")]
-        public async Task<ApiResponse<GetTransactionsResponse>> GetBrands([FromBody] PaginationRequest req)
+        public async Task<ApiResponse<GetTransactionsResponse>> GetTransactions([FromBody] PaginationRequest req)
         {
             return await _transactionService.GetTransactions(req);
         }
 
         [HttpPost("v1/transaction/update-transaction")]
-        public async Task<ApiResponse<UpdateTransactionResponse>> UpdateBrand([FromBody] UpdateTransactionRequest req)
+        public async Task<ApiResponse<UpdateTransactionResponse>> UpdateTransaction([FromBody] UpdateTransactionRequest req)
         {
             return await _transactionService.UpdateTransaction(req);
         }
 
         [HttpPost("v1/transaction/get-transaction")]
-        public async Task<ApiResponse<GetTransactionResponse>> GetBrand([FromBody] GetTransactionRequest req)
+        public async Task<ApiResponse<GetTransactionResponse>> GetTransaction([FromBody] GetTransactionRequest req)
         {
             return await _transactionService.GetTransaction(req);
         }

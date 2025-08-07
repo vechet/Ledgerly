@@ -1,19 +1,21 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace Ledgerly.API.Models.DTOs.TransactionType
+namespace Ledgerly.API.Models.DTOs.Category
 {
-    public class GetTransactionTypeResponse
+    public class UpdateCategoryResponse
     {
         [Required]
         public int Id { get; set; }
+
+        public int? ParentId { get; set; }
 
         [Required]
         public string Name { get; set; } = null!;
 
         [Required]
-        public short StatusId { get; set; }
+        public int CategoryTypeId { get; set; }
 
         [Required]
-        public string StatusName { get; set; } = null!;
+        public short StatusId { get; set; }
     }
 }

@@ -1,4 +1,5 @@
-﻿using Ledgerly.API.Helpers;
+﻿using System.ComponentModel.DataAnnotations;
+using Ledgerly.API.Helpers;
 
 namespace Ledgerly.API.Models.DTOs.TransactionType
 {
@@ -22,5 +23,11 @@ namespace Ledgerly.API.Models.DTOs.TransactionType
         public int Id { get; set; }
 
         public string Name { get; set; } = null!;
+
+        [Required]
+        public short StatusId { get; set; }
+
+        [Required]
+        public string StatusName { get; set; } = null!;
     }
 }
