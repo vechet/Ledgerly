@@ -20,7 +20,7 @@
 | Layer       | Technology               |
 | ----------- | ------------------------ |
 | Backend API | ASP.NET Core Web API     |
-| Database    | SQL Server / PostgreSQL  |
+| Database    | SQL Server               |
 | Frontend    | Next.js (planned)        |
 | Mobile App  | React Native (planned)   |
 | Auth        | JWT-based authentication |
@@ -29,6 +29,7 @@
 
 ## 📦 API Endpoints
 
+<!--
 ### 🔐 Authentication
 
 - `POST /api/auth/register` – Create a new user
@@ -47,14 +48,14 @@
 ### 🗂️ Category
 
 - `POST /api/categories` – Create category
-- `GET /api/categories` – List categories
+- `GET /api/categories` – List categories -->
 
 ### 💸 Transaction
 
-- `POST /api/transactions` – Record income/expense
-- `GET /api/transactions` – List transactions
-- `PUT /api/transactions/{id}` – Update transaction
-- `DELETE /api/transactions/{id}` – Delete transaction
+- `POST /api/v1/transaction/create-transactions` – Record income/expense
+- `POST /api/v1/transaction/transactions` – List transactions
+- `POST /api/v1/transaction/transaction` – get transaction
+- `POST /api/v1/transaction/update-transactions` – Update transaction
 
 ---
 
@@ -62,6 +63,6 @@
 
 1. Clone the repo:
    ```bash
-   git clone https://github.com/yourusername/ledgerly.git
-   cd ledgerly
+   git clone https://github.com/vechet/Ledgerly.git
+   cd Ledgerly
    ```
