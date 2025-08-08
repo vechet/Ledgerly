@@ -29,33 +29,12 @@
 
 ## 📦 API Endpoints
 
-<!--
-### 🔐 Authentication
-
-- `POST /api/auth/register` – Create a new user
-- `POST /api/auth/login` – Authenticate and receive JWT
-
-### 👤 User
-
-- `GET /api/users/{id}` – Get user profile
-- `PUT /api/users/{id}` – Update user info
-
-### 💼 Account
-
-- `POST /api/accounts` – Create account
-- `GET /api/accounts` – List accounts
-
-### 🗂️ Category
-
-- `POST /api/categories` – Create category
-- `GET /api/categories` – List categories -->
-
 ### 💸 Transaction
 
-- `POST /api/v1/transaction/create-transactions` – Record income/expense
-- `POST /api/v1/transaction/transactions` – List transactions
-- `POST /api/v1/transaction/transaction` – get transaction
-- `POST /api/v1/transaction/update-transactions` – Update transaction
+- `POST /api/v1/transaction/create-transaction` – Record income/expense
+- `POST /api/v1/transaction/get-transactions` – List transactions
+- `POST /api/v1/transaction/get-transaction` – get transaction
+- `POST /api/v1/transaction/update-transaction` – Update transaction
 
 ---
 
@@ -65,4 +44,9 @@
    ```bash
    git clone https://github.com/vechet/Ledgerly.git
    cd Ledgerly
+   ```
+2. Configure your database connection in appsettings.json.
+3. Run the backend:
+   ```bash
+   dotnet run
    ```
