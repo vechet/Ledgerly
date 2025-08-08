@@ -17,6 +17,10 @@ namespace Ledgerly.API.Services
         //?? throw new UnauthorizedAccessException("User not authenticated.");
         public string? GetUserName()
             => _contextAccessor.HttpContext?.User.Identity?.Name;
-    }
 
+        public string GetRole()
+        {
+            return _contextAccessor.HttpContext.User.FindFirst(ClaimTypes.Role).Value;
+        }
+    }
 }
