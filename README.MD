@@ -50,3 +50,11 @@
    ```bash
    dotnet run
    ```
+
+## 🧮 Database Migration Steps
+
+1. Ledgerly uses Entity Framework Core for database access.
+2. Apply Existing Migrations:
+   ```bash
+   dotnet ef database update
+   ```
