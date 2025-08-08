@@ -9,22 +9,10 @@ namespace Ledgerly.API.Models.DTOs.Transaction
         public int Id { get; set; }
 
         [Required]
-        public string TransactionNo { get; set; } = null!;
-
-        [Required]
-        public string UserId { get; set; } = null!; // FK to AspNetUsers
-
-        //[Required]
-        //public string UserName { get; set; } = null!;
+        public string UserId { get; set; } = null!;
 
         [Required]
         public decimal Amount { get; set; }
-
-        [Required]
-        public int TransactionTypeId { get; set; }
-
-        [Required]
-        public string TransactionTypeName { get; set; } = null!;
 
         [Required]
         public DateTime TransactionDate { get; set; }
@@ -41,7 +29,10 @@ namespace Ledgerly.API.Models.DTOs.Transaction
         [Required]
         public string AccountName { get; set; } = null!;
 
-        public string? Notes { get; set; }
+        public string? Memo { get; set; }
+
+        [Required]
+        public string Type { get; set; } = null!;
 
         [Required]
         public short StatusId { get; set; }

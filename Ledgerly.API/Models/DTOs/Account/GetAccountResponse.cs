@@ -1,17 +1,16 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace Ledgerly.API.Models.DTOs.Category
+namespace Ledgerly.API.Models.DTOs.Account
 {
-    public class GetCategoryResponse
+    public class GetAccountResponse
     {
         public int Id { get; set; }
 
-        public int? ParentId { get; set; }
-
-        public string? ParentName { get; set; } = null!;
-
         [Required]
         public string Name { get; set; } = null!;
+
+        [Required]
+        public string Currency { get; set; } = null!;
 
         public string? Memo { get; set; }
 

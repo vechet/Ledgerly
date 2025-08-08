@@ -1,22 +1,24 @@
 ﻿using AutoMapper;
 using Ledgerly.API.Models.Domains;
-using Ledgerly.API.Models.DTOs.TransactionType;
+using Ledgerly.API.Models.DTOs.Account;
 
 namespace Ledgerly.API.Mappings
 {
-    public class TransactionTypeProfile : Profile
+    public class AccountProfile : Profile
     {
-        public TransactionTypeProfile() 
+        public AccountProfile() 
         {
-            CreateMap<CreateTransactionTypeRequest, TransactionType>();
-            CreateMap<TransactionType, CreateTransactionTypeResponse>();
-            CreateMap<TransactionType, GetTransactionTypeResponse>();
-            CreateMap<UpdateTransactionTypeRequest, TransactionType>();
-            CreateMap<TransactionType, UpdateTransactionTypeResponse>();
-            CreateMap<TransactionType, TransactionTypesResponse>();
-            CreateMap<TransactionType, RecordAuditLogTransactionType>()
+            CreateMap<CreateAccountRequest, Account>();
+            CreateMap<Account, CreateAccountResponse>();
+            CreateMap<Account, GetAccountResponse>();
+            CreateMap<UpdateAccountRequest, Account>();
+            CreateMap<Account, UpdateAccountResponse>();
+            CreateMap<Account, AccountsResponse>();
+            CreateMap<Account, RecordAuditLogAccount>()
                 .ForMember(dest => dest.Id, opt => opt.MapFrom(src => src.Id))
                 .ForMember(dest => dest.Name, opt => opt.MapFrom(src => src.Name))
+                .ForMember(dest => dest.Currency, opt => opt.MapFrom(src => src.Currency))
+                .ForMember(dest => dest.Memo, opt => opt.MapFrom(src => src.Memo))
                 .ForMember(dest => dest.StatusId, opt => opt.MapFrom(src => src.StatusId))
                 .ForMember(dest => dest.StatusName, opt => opt.MapFrom(src => src.Status.Name))
                 .ForMember(dest => dest.CreatedBy, opt => opt.MapFrom(src => src.CreatedBy))

@@ -57,12 +57,9 @@ builder.Services.AddDbContext<LedgerlyAuthDbContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("LedgerlyAuthConnectionString")));
 
 //repositories
-builder.Services.AddScoped<ITransactionTypeRepository, TransactionTypeRepository>();
 builder.Services.AddScoped<ITransactionRepository, TransactionRepository>();
 builder.Services.AddScoped<IAuditLogRepository, AuditLogRepository>();
-
 builder.Services.AddScoped<ICategoryRepository, CategoryRepository>();
-builder.Services.AddScoped<ICategoryTypeRepository, CategoryTypeRepository>();
 builder.Services.AddScoped<ITransactionRepository, TransactionRepository>();
 builder.Services.AddScoped<IStatusRepository, StatusRepository>();
 builder.Services.AddScoped<IAccountRepository, AccountRepository>();
@@ -70,20 +67,20 @@ builder.Services.AddScoped<IAccountRepository, AccountRepository>();
 //services
 builder.Services.AddScoped<ICategoryService, CategoryService>();
 builder.Services.AddScoped<ITokenService, TokenService>();
-builder.Services.AddScoped<ITransactionTypeService, TransactionTypeService>();
 builder.Services.AddScoped<ITransactionService, TransactionService>();
 builder.Services.AddScoped<IAuthService, AuthService>();
 builder.Services.AddScoped<ICurrentUserService, CurrentUserService>();
 builder.Services.AddScoped<IAuditLogService, AuditLogService>();
+builder.Services.AddScoped<IAccountService, AccountService>();
 builder.Services.AddHttpContextAccessor(); // required for IHttpContextAccessor
 
 //mapping
 builder.Services.AddAutoMapper(
     typeof(TransactionProfile),
-    typeof(TransactionTypeProfile),
     typeof(AuthProfile),
     typeof(AuditLogProfile),
-    typeof(CategoryProfile));
+    typeof(CategoryProfile),
+    typeof(AccountProfile));
 
 //identity
 var identityBuilder = builder.Services.AddIdentityCore<IdentityUser>()

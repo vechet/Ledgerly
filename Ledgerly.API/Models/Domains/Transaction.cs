@@ -11,32 +11,29 @@ namespace Ledgerly.API.Models.Domains
         public int Id { get; set; }
 
         [Required]
-        [StringLength(100)]
-        [Column(TypeName = "nvarchar")]
-        public string TransactionNo { get; set; } = null!;
+        public int AccountId { get; set; }
 
         [Required]
-        public string UserId { get; set; } = null!; // FK to AspNetUsers
+        public int CategoryId { get; set; }
 
         [Required]
         [Column(TypeName = "decimal(18,4)")]
         public decimal Amount { get; set; }
 
         [Required]
-        public int TransactionTypeId { get; set; }
-
-        [Required]
         public DateTime TransactionDate { get; set; }
-
-        [Required]
-        public int CategoryId { get; set; }
-
-        [Required]
-        public int AccountId { get; set; }
 
         [StringLength(500)]
         [Column(TypeName = "nvarchar")]
-        public string? Notes { get; set; }
+        public string? Memo { get; set; }
+
+        [Required]
+        [StringLength(100)]
+        [Column(TypeName = "nvarchar")]
+        public string Type { get; set; } = null!;
+
+        [Required]
+        public string UserId { get; set; } = null!;
 
         [Required]
         public short StatusId { get; set; }
@@ -55,11 +52,8 @@ namespace Ledgerly.API.Models.Domains
 
         public DateTime? ModifiedDate { get; set; }
 
-
         public Category Category { get; set; } = null!;
         public Account Account { get; set; } = null!;
-        public TransactionType TransactionType { get; set; } = null!;
-
         public Status Status { get; set; } = null!;
     }
 

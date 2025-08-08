@@ -1,8 +1,8 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace Ledgerly.API.Models.DTOs.TransactionType
+namespace Ledgerly.API.Models.DTOs.Account
 {
-    public class GetTransactionTypeResponse
+    public class CreateAccountResponse
     {
         [Required]
         public int Id { get; set; }
@@ -11,9 +11,11 @@ namespace Ledgerly.API.Models.DTOs.TransactionType
         public string Name { get; set; } = null!;
 
         [Required]
-        public short StatusId { get; set; }
+        public string Currency { get; set; } = null!;
+
+        public string? Memo { get; set; }
 
         [Required]
-        public string StatusName { get; set; } = null!;
+        public short StatusId { get; set; }
     }
 }

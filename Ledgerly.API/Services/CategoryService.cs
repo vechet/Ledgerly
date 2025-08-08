@@ -42,6 +42,7 @@ namespace Ledgerly.API.Services
 
                 // add new transaction type
                 var Category = _mapper.Map<Category>(req);
+                Category.UserId = userId;
                 Category.CreatedBy = userId;
                 Category.CreatedDate = GlobalFunction.GetCurrentDateTime();
                 var newCategory = await _CategoryRepository.CreateCategory(Category);
@@ -158,6 +159,7 @@ namespace Ledgerly.API.Services
 
                 // update transaction type
                 var Category = _mapper.Map<Category>(req);
+                Category.UserId = userId;
                 Category.ModifiedBy = userId;
                 Category.ModifiedDate = GlobalFunction.GetCurrentDateTime();
                 var currentCategory = await _CategoryRepository.UpdateCategory(Category);

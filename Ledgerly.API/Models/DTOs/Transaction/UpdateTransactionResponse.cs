@@ -8,13 +8,7 @@ namespace Ledgerly.API.Models.DTOs.Transaction
         public int Id { get; set; }
 
         [Required]
-        public string TransactionNo { get; set; } = null!;
-
-        [Required]
-        public short Amount { get; set; }
-
-        [Required]
-        public int TransactionTypeId { get; set; }
+        public decimal Amount { get; set; }
 
         [Required]
         public DateTime TransactionDate { get; set; }
@@ -25,7 +19,10 @@ namespace Ledgerly.API.Models.DTOs.Transaction
         [Required]
         public int AccountId { get; set; }
 
-        public string? Notes { get; set; }
+        public string? Memo { get; set; }
+
+        [Required]
+        public string Type { get; set; } = null!;
 
         [Required]
         public short StatusId { get; set; }

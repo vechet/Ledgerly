@@ -14,10 +14,6 @@ namespace Udemy.Data
 
         public DbSet<Account> Account { get; set; }
 
-        public DbSet<TransactionType> TransactionType { get; set; }
-
-        public DbSet<CategoryType> CategoryType { get; set; }
-
         public DbSet<AuditLog> AuditLog { get; set; }
 
         public DbSet<Status> Status { get; set; }
@@ -34,11 +30,6 @@ namespace Udemy.Data
                     .HasForeignKey(e => e.StatusId)
                     .OnDelete(DeleteBehavior.ClientSetNull)
                     .HasConstraintName("FK_Category_Status_StatusId");
-
-                entity.HasOne(e => e.CategoryType).WithMany(p => p.Categories)
-                    .HasForeignKey(e => e.CategoryTypeId)
-                    .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("FK_Category_CategoryType_CategoryTypeId");
 
                 entity.HasOne(e => e.Parent).WithMany(p => p.Children)
                     .HasForeignKey(e => e.ParentId)
@@ -70,25 +61,10 @@ namespace Udemy.Data
                     .OnDelete(DeleteBehavior.ClientSetNull)
                     .HasConstraintName("FK_Transaction_Category_CategoryId");
 
-                entity.HasOne(e => e.TransactionType).WithMany(p => p.Transactions)
-                    .HasForeignKey(e => e.TransactionTypeId)
-                    .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("FK_Transaction_TransactionType_TransactionTypeId");
-
                 entity.HasOne(e => e.Account).WithMany(p => p.Transactions)
                     .HasForeignKey(e => e.AccountId)
                     .OnDelete(DeleteBehavior.ClientSetNull)
                     .HasConstraintName("FK_Transaction_Account_AccountId");
-            });
-
-            modelBuilder.Entity<CategoryType>(entity =>
-            {
-                entity.ToTable("CategoryType");
-
-                entity.HasOne(e => e.Status).WithMany(p => p.CategoryTypes)
-                    .HasForeignKey(e => e.StatusId)
-                    .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("FK_CategoryType_Status_StatusId");
             });
 
             modelBuilder.Entity<Account>(entity =>
@@ -99,16 +75,6 @@ namespace Udemy.Data
                     .HasForeignKey(e => e.StatusId)
                     .OnDelete(DeleteBehavior.ClientSetNull)
                     .HasConstraintName("FK_Account_Status_StatusId");
-            });
-
-            modelBuilder.Entity<TransactionType>(entity =>
-            {
-                entity.ToTable("TransactionType");
-
-                entity.HasOne(e => e.Status).WithMany(p => p.TransactionTypes)
-                    .HasForeignKey(e => e.StatusId)
-                    .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("FK_TransactionType_Status_StatusId");
             });
 
             modelBuilder.Entity<Status>(entity =>

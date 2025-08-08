@@ -68,6 +68,9 @@ namespace Ledgerly.API.Repositories
             {
                 var currentAccount = await _db.Account.FindAsync(req.Id);
                 currentAccount.Name = req.Name;
+                currentAccount.Currency = req.Currency;
+                currentAccount.Memo = req.Memo;
+                currentAccount.UserId = req.UserId;
                 currentAccount.StatusId = req.StatusId;
                 currentAccount.ModifiedBy = req.ModifiedBy;
                 currentAccount.ModifiedDate = req.ModifiedDate;

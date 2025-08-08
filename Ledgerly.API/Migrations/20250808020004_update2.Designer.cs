@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Udemy.Data;
 
@@ -11,9 +12,11 @@ using Udemy.Data;
 namespace Ledgerly.API.Migrations
 {
     [DbContext(typeof(LedgerlyDbContext))]
-    partial class LedgerlyDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250808020004_update2")]
+    partial class update2
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -38,11 +41,6 @@ namespace Ledgerly.API.Migrations
 
                     b.Property<DateTime>("CreatedDate")
                         .HasColumnType("datetime2");
-
-                    b.Property<string>("Currency")
-                        .IsRequired()
-                        .HasMaxLength(100)
-                        .HasColumnType("nvarchar");
 
                     b.Property<string>("Memo")
                         .HasMaxLength(500)
@@ -167,10 +165,8 @@ namespace Ledgerly.API.Migrations
                     b.Property<DateTime>("TransactionDate")
                         .HasColumnType("datetime2");
 
-                    b.Property<string>("Type")
-                        .IsRequired()
-                        .HasMaxLength(100)
-                        .HasColumnType("nvarchar");
+                    b.Property<int>("Type")
+                        .HasColumnType("int");
 
                     b.Property<string>("UserId")
                         .IsRequired()

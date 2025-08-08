@@ -37,7 +37,6 @@ namespace Ledgerly.API.Repositories
             {
                 var transaction = await _db.Transaction
                     .Include(x => x.Status)
-                    .Include(x => x.TransactionType)
                     .Include(x => x.Category)
                     .Include(x => x.Account)
                     .FirstOrDefaultAsync(t => t.Id == id);
@@ -55,7 +54,6 @@ namespace Ledgerly.API.Repositories
             {
                 var transactions = await _db.Transaction
                     .Include(x => x.Status)
-                    .Include(x => x.TransactionType)
                     .Include(x => x.Category)
                     .Include(x => x.Account)
                     .ToListAsync();
@@ -73,14 +71,13 @@ namespace Ledgerly.API.Repositories
             try
             {
                 var currentTransaction = await _db.Transaction.FindAsync(req.Id);
-                currentTransaction.TransactionNo = req.TransactionNo;
-                currentTransaction.UserId = req.UserId;
-                currentTransaction.Amount = req.Amount;
-                currentTransaction.TransactionTypeId = req.TransactionTypeId;
-                currentTransaction.TransactionDate = req.TransactionDate;
-                currentTransaction.CategoryId = req.CategoryId;
                 currentTransaction.AccountId = req.AccountId;
-                currentTransaction.Notes = req.Notes;
+                currentTransaction.CategoryId = req.CategoryId;
+                currentTransaction.Amount = req.Amount;
+                currentTransaction.TransactionDate = req.TransactionDate;
+                currentTransaction.Memo = req.Memo;
+                currentTransaction.Type = req.Type;
+                currentTransaction.UserId = req.UserId;
                 currentTransaction.StatusId = req.StatusId;
                 currentTransaction.ModifiedBy = req.ModifiedBy;
                 currentTransaction.ModifiedDate = req.ModifiedDate;

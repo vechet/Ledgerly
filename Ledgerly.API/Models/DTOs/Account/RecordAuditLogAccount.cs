@@ -1,15 +1,20 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
-namespace Ledgerly.API.Models.DTOs.TransactionType
+namespace Ledgerly.API.Models.DTOs.Account
 {
-    public class RecordAuditLogTransactionType
+    public class RecordAuditLogAccount
     {
         [Required]
         public int Id { get; set; }
 
         [Required]
         public string Name { get; set; } = null!;
+
+        [Required]
+        public string Currency { get; set; } = null!;
+
+        public string? Memo { get; set; }
 
         [Required]
         public short StatusId { get; set; }

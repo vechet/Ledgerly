@@ -17,8 +17,12 @@ namespace Ledgerly.API.Models.Domains
         [Column(TypeName = "nvarchar")]
         public string Name { get; set; } = null!;
 
+        [StringLength(500)]
+        [Column(TypeName = "nvarchar")]
+        public string? Memo { get; set; }
+
         [Required]
-        public int CategoryTypeId { get; set; }
+        public string UserId { get; set; } = null!;
 
         [Required]
         public short StatusId { get; set; }
@@ -43,8 +47,6 @@ namespace Ledgerly.API.Models.Domains
         public ICollection<Category> Children { get; set; } = new List<Category>();
 
         public ICollection<Transaction> Transactions { get; set; } = new List<Transaction>();
-
-        public CategoryType CategoryType { get; set; } = null!;
 
         public Status Status { get; set; } = null!;
 

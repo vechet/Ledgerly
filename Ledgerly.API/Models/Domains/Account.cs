@@ -16,6 +16,18 @@ namespace Ledgerly.API.Models.Domains
         public string Name { get; set; } = null!;
 
         [Required]
+        [StringLength(100)]
+        [Column(TypeName = "nvarchar")]
+        public string Currency { get; set; } = null!;
+
+        [StringLength(500)]
+        [Column(TypeName = "nvarchar")]
+        public string? Memo { get; set; }
+
+        [Required]
+        public string UserId { get; set; } = null!;
+
+        [Required]
         public short StatusId { get; set; }
 
         [Required]

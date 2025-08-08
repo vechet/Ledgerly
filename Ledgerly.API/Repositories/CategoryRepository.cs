@@ -37,7 +37,6 @@ namespace Ledgerly.API.Repositories
             {
                 var categories = await _db.Category
                     .Include(x => x.Parent)
-                    .Include(x => x.CategoryType)
                     .Include(x => x.Status)
                     .ToListAsync();
                 return categories;
@@ -54,7 +53,6 @@ namespace Ledgerly.API.Repositories
             {
                 var category = await _db.Category
                     .Include(x => x.Parent)
-                    .Include(x => x.CategoryType)
                     .Include(x => x.Status)
                     .FirstOrDefaultAsync(t => t.Id == id);
                 return category;
@@ -73,7 +71,8 @@ namespace Ledgerly.API.Repositories
                 var currentCategory = await _db.Category.FindAsync(req.Id);
                 currentCategory.ParentId = req.ParentId;
                 currentCategory.Name = req.Name;
-                currentCategory.CategoryTypeId = req.CategoryTypeId;
+                currentCategory.Memo = req.Memo;
+                currentCategory.UserId = req.UserId;
                 currentCategory.StatusId = req.StatusId;
                 currentCategory.ModifiedBy = req.ModifiedBy;
                 currentCategory.ModifiedDate = req.ModifiedDate;

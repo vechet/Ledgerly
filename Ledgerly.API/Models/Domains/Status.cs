@@ -31,9 +31,7 @@ namespace Ledgerly.Models
         public DateTime? ModifiedDate { get; set; }
 
         public ICollection<Category> Categories { get; set; } = new List<Category>();
-        public ICollection<CategoryType> CategoryTypes { get; set; } = new List<CategoryType>();
         public ICollection<Transaction> Transactions { get; set; } = new List<Transaction>();
-        public ICollection<TransactionType> TransactionTypes { get; set; } = new List<TransactionType>();
         public ICollection<Account> Accounts { get; set; } = new List<Account>();
 
 

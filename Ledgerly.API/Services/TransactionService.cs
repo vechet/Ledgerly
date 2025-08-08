@@ -54,7 +54,7 @@ namespace Ledgerly.API.Services
                     ControllerName = "Transaction",
                     MethodName = "CreateTransaction",
                     TransactionId = newTransaction.Id,
-                    TransactionNo = newTransaction.TransactionNo,
+                    TransactionNo = "",
                     Description = await GetAuditDescription(newTransaction.Id),
                     CreatedBy = userId,
                     CreatedDate = GlobalFunction.GetCurrentDateTime(),
@@ -104,8 +104,8 @@ namespace Ledgerly.API.Services
                 if (!string.IsNullOrWhiteSpace(filter.Search))
                 {
                     var keyword = filter.Search.ToLower();
-                    query = query.Where(u =>
-                        u.TransactionNo.ToLower().Contains(keyword));
+                    //query = query.Where(u =>
+                    //    u.Name.ToLower().Contains(keyword));
                     //|| u.Memo.ToLower().Contains(keyword));
                 }
 
@@ -171,7 +171,7 @@ namespace Ledgerly.API.Services
                     ControllerName = "Transaction",
                     MethodName = "CreateTransaction",
                     TransactionId = currentTransaction.Id,
-                    TransactionNo = currentTransaction.TransactionNo,
+                    TransactionNo = "",
                     Description = await GetAuditDescription(currentTransaction.Id),
                     CreatedBy = userId,
                     CreatedDate = GlobalFunction.GetCurrentDateTime(),

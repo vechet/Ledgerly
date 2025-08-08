@@ -1,33 +1,32 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using Ledgerly.API.Helpers;
 
-namespace Ledgerly.API.Models.DTOs.Category
+namespace Ledgerly.API.Models.DTOs.Account
 {
-    public class GetCategoriesResponse
+    public class GetAccountsResponse
     {
-        public List<CategoriesResponse> Categories { get; set; }
+        public List<AccountsResponse> Accounts { get; set; }
         public PageInfo PageInfo { get; set; }
 
-        public GetCategoriesResponse()
+        public GetAccountsResponse()
         { }
 
-        public GetCategoriesResponse(List<CategoriesResponse> categories, PageInfo pageInfo)
+        public GetAccountsResponse(List<AccountsResponse> accounts, PageInfo pageInfo)
         {
-            Categories = categories;
+            Accounts = accounts;
             PageInfo = pageInfo;
         }
     }
 
-    public class CategoriesResponse
+    public class AccountsResponse
     {
         public int Id { get; set; }
 
-        public int? ParentId { get; set; }
-
-        public string? ParentName { get; set; } = null!;
-
         [Required]
         public string Name { get; set; } = null!;
+
+        [Required]
+        public string Currency { get; set; } = null!;
 
         public string? Memo { get; set; }
 
