@@ -11,5 +11,7 @@ namespace Ledgerly.API.Repositories.Interfaces
         Task<Transaction> CreateTransaction(Transaction req);
 
         Task<Transaction> UpdateTransaction(Transaction req);
+
+        Task<Transaction> DeleteTransaction(Transaction id);
     }
 }

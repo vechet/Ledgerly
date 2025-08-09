@@ -22,9 +22,6 @@ namespace Ledgerly.API.Models.DTOs.Transaction
         public string? Memo { get; set; }
 
         [Required]
-        public int Type { get; set; }
-
-        [Required]
-        public short StatusId { get; set; }
+        public string Type { get; set; } = null!;
     }
 }

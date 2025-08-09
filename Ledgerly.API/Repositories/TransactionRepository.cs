@@ -31,12 +31,33 @@ namespace Ledgerly.API.Repositories
             }
         }
 
+        public async Task<Transaction> DeleteTransaction(Transaction req)
+        {
+            await using var transaction = await _db.Database.BeginTransactionAsync();
+            try
+            {
+                var currentTransaction = await _db.Transaction.FindAsync(req.Id);
+                currentTransaction.UserId = req.UserId;
+                currentTransaction.TransactionFlag = req.TransactionFlag;
+                currentTransaction.ModifiedBy = req.ModifiedBy;
+                currentTransaction.ModifiedDate = req.ModifiedDate;
+                await _db.SaveChangesAsync();
+                await transaction.CommitAsync();
+                return currentTransaction;
+            }
+            catch (Exception e)
+            {
+                await transaction.RollbackAsync();
+                throw;
+            }
+        }
+
         public async Task<Transaction> GetTransaction(int id)
         {
             try
             {
                 var transaction = await _db.Transaction
-                    .Include(x => x.Status)
+                    .Include(x => x.GlobalParam)
                     .Include(x => x.Category)
                     .Include(x => x.Account)
                     .FirstOrDefaultAsync(t => t.Id == id);
@@ -53,7 +74,7 @@ namespace Ledgerly.API.Repositories
             try
             {
                 var transactions = await _db.Transaction
-                    .Include(x => x.Status)
+                    .Include(x => x.GlobalParam)
                     .Include(x => x.Category)
                     .Include(x => x.Account)
                     .ToListAsync();
@@ -78,7 +99,6 @@ namespace Ledgerly.API.Repositories
                 currentTransaction.Memo = req.Memo;
                 currentTransaction.Type = req.Type;
                 currentTransaction.UserId = req.UserId;
-                currentTransaction.StatusId = req.StatusId;
                 currentTransaction.ModifiedBy = req.ModifiedBy;
                 currentTransaction.ModifiedDate = req.ModifiedDate;
                 await _db.SaveChangesAsync();

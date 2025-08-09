@@ -63,6 +63,7 @@ builder.Services.AddScoped<ICategoryRepository, CategoryRepository>();
 builder.Services.AddScoped<ITransactionRepository, TransactionRepository>();
 builder.Services.AddScoped<IStatusRepository, StatusRepository>();
 builder.Services.AddScoped<IAccountRepository, AccountRepository>();
+builder.Services.AddScoped<IGlobalParamRepository, GlobalParamRepository>();
 
 //services
 builder.Services.AddScoped<ICategoryService, CategoryService>();

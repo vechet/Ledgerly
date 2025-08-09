@@ -36,7 +36,7 @@ namespace Ledgerly.API.Models.Domains
         public string UserId { get; set; } = null!;
 
         [Required]
-        public short StatusId { get; set; }
+        public int TransactionFlag { get; set; }
 
         [Required]
         [StringLength(450)]
@@ -54,7 +54,8 @@ namespace Ledgerly.API.Models.Domains
 
         public Category Category { get; set; } = null!;
         public Account Account { get; set; } = null!;
-        public Status Status { get; set; } = null!;
+
+        public GlobalParam GlobalParam { get; set; } = null!;
     }
 
 }

@@ -19,7 +19,8 @@ namespace Ledgerly.API.Services
         IMapper mapper,
         LedgerlyDbContext db,
         ICurrentUserService currentUserService,
-        IAuditLogService auditLogService) : ITransactionService
+        IAuditLogService auditLogService,
+        IGlobalParamRepository globalParamRepository) : ITransactionService
     {
         private readonly ITransactionRepository _transactionRepository = transactionRepository;
         private readonly IMapper _mapper = mapper;
@@ -27,6 +28,7 @@ namespace Ledgerly.API.Services
         private Logger _logger = LogManager.GetCurrentClassLogger();
         private readonly ICurrentUserService _currentUserService = currentUserService;
         private readonly IAuditLogService _auditLogService = auditLogService;
+        private readonly IGlobalParamRepository _globalParamRepository = globalParamRepository;
 
         public async Task<ApiResponse<CreateTransactionResponse>> CreateTransaction(CreateTransactionRequest req)
         {
@@ -42,6 +44,7 @@ namespace Ledgerly.API.Services
 
                 // add new transaction 
                 var transaction = _mapper.Map<Transaction>(req);
+                transaction.TransactionFlag =  await _globalParamRepository.GetGlobalParamIdByKeyName("Normal", "TransactionxxxTransactionFlag");
                 transaction.UserId = userId;
                 transaction.CreatedBy = userId;
                 transaction.CreatedDate = GlobalFunction.GetCurrentDateTime();
@@ -92,7 +95,8 @@ namespace Ledgerly.API.Services
         {
             try
             {
-                var query = _db.Transaction.AsQueryable();
+                var transactionFlag = await _globalParamRepository.GetGlobalParamIdByKeyName("Normal", "TransactionxxxTransactionFlag");
+                var query = _db.Transaction.Where(x => x.TransactionFlag == transactionFlag).AsQueryable();
 
                 var filter = req.Filter;
 
@@ -195,5 +199,48 @@ namespace Ledgerly.API.Services
             return JsonSerializer.Serialize(recordAuditLogTransaction);
         }
 
+        public async Task<ApiResponse<DeleteTransactionResponse>> DeleteTransaction(DeleteTransactionRequest req)
+        {
+            try
+            {
+                //get user id
+                var userId = _currentUserService.GetUserId();
+                if (userId == null)
+                {
+                    _logger.Error($"TransactionService/DeleteTransaction, Param:{JsonSerializer.Serialize(req)}, ErrorCode:'{ApiResponseStatus.Unauthorized.Value()}', ErrorMessage:'{ApiResponseStatus.Unauthorized.Description()}'");
+                    return ApiResponse<DeleteTransactionResponse>.Failure(ApiResponseStatus.Unauthorized);
+                }
+
+                // update transaction 
+                var transaction = _mapper.Map<Transaction>(req);
+                transaction.TransactionFlag = await _globalParamRepository.GetGlobalParamIdByKeyName("Deleted", "TransactionxxxTransactionFlag");
+                transaction.UserId = userId;
+                transaction.ModifiedBy = userId;
+                transaction.ModifiedDate = GlobalFunction.GetCurrentDateTime();
+                var currentTransaction = await _transactionRepository.DeleteTransaction(transaction);
+                var transactionRes = _mapper.Map<DeleteTransactionResponse>(currentTransaction);
+
+                // Add audit log
+                var transactionAuditLog = new RecordAuditLog
+                {
+                    ControllerName = "Transaction",
+                    MethodName = "DeleteTransaction",
+                    TransactionId = currentTransaction.Id,
+                    TransactionNo = "",
+                    Description = await GetAuditDescription(currentTransaction.Id),
+                    CreatedBy = userId,
+                    CreatedDate = GlobalFunction.GetCurrentDateTime(),
+                };
+                await _auditLogService.RecordAuditLog(transactionAuditLog);
+
+                // Response
+                return ApiResponse<DeleteTransactionResponse>.Success(transactionRes);
+            }
+            catch (Exception e)
+            {
+                _logger.Error($"TransactionService/DeleteTransaction, Param:{JsonSerializer.Serialize(req)}, ErrorCode:'{e.HResult}', ErrorMessage:'{e.Message}'");
+                return ApiResponse<DeleteTransactionResponse>.Failure(ApiResponseStatus.InternalError);
+            }
+        }
     }
 }

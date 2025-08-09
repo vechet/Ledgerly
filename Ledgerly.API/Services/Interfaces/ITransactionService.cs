@@ -13,5 +13,8 @@ namespace Ledgerly.API.Services.Interfaces
         Task<ApiResponse<CreateTransactionResponse>> CreateTransaction(CreateTransactionRequest req);
 
         Task<ApiResponse<UpdateTransactionResponse>> UpdateTransaction(UpdateTransactionRequest req);
+
+        Task<ApiResponse<DeleteTransactionResponse>> DeleteTransaction(DeleteTransactionRequest req);
+
     }
 }

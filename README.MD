@@ -35,6 +35,7 @@
 - `POST /api/v1/transaction/get-transactions` – List transactions
 - `POST /api/v1/transaction/get-transaction` – get transaction
 - `POST /api/v1/transaction/update-transaction` – Update transaction
+- `POST /api/v1/transaction/delete-transaction` – Delete transaction
 
 ---
 

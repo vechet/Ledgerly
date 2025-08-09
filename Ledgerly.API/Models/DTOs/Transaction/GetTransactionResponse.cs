@@ -1,4 +1,6 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using AutoMapper.Configuration.Annotations;
+using System.ComponentModel.DataAnnotations;
+using System.Text.Json.Serialization;
 
 namespace Ledgerly.API.Models.DTOs.Transaction
 {
@@ -12,6 +14,9 @@ namespace Ledgerly.API.Models.DTOs.Transaction
 
         [Required]
         public DateTime TransactionDate { get; set; }
+
+        [Required]
+        public string Date => TransactionDate.ToString("yyyy-MM-dd HH:mm:ss");
 
         [Required]
         public int CategoryId { get; set; }
@@ -30,10 +35,10 @@ namespace Ledgerly.API.Models.DTOs.Transaction
         [Required]
         public string Type { get; set; } = null!;
 
-        [Required]
-        public short StatusId { get; set; }
+        //[Required]
+        //public int TransactionFlag { get; set; }
 
-        [Required]
-        public string StatusName { get; set; } = null!;
+        //[Required]
+        //public string TransactionFlagName { get; set; } = null!;
     }
 }

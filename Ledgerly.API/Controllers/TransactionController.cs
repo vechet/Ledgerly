@@ -41,5 +41,11 @@ namespace Ledgerly.API.Controllers
         {
             return await _transactionService.GetTransaction(req);
         }
+
+        [HttpPost("v1/transaction/delete-transaction")]
+        public async Task<ApiResponse<DeleteTransactionResponse>> DeleteTransaction([FromBody] DeleteTransactionRequest req)
+        {
+            return await _transactionService.DeleteTransaction(req);
+        }
     }
 }

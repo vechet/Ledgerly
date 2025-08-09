@@ -17,6 +17,9 @@ namespace Udemy.Data
         public DbSet<AuditLog> AuditLog { get; set; }
 
         public DbSet<Status> Status { get; set; }
+
+        public DbSet<GlobalParam> GlobalParam { get; set; }
+
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             // Set the collation for the entire database
@@ -51,10 +54,10 @@ namespace Udemy.Data
             {
                 entity.ToTable("Transaction");
 
-                entity.HasOne(e => e.Status).WithMany(p => p.Transactions)
-                    .HasForeignKey(e => e.StatusId)
+                entity.HasOne(e => e.GlobalParam).WithMany(p => p.Transactions)
+                    .HasForeignKey(e => e.TransactionFlag)
                     .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("FK_Transaction_Status_StatusId");
+                    .HasConstraintName("FK_Transaction_GlobalParam_TransactionFlag");
 
                 entity.HasOne(e => e.Category).WithMany(p => p.Transactions)
                     .HasForeignKey(e => e.CategoryId)
