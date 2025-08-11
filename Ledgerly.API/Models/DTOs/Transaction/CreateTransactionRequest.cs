@@ -12,7 +12,7 @@ namespace Ledgerly.API.Models.DTOs.Transaction
         public int CategoryId { get; set; }
 
         [Required]
-        public short Amount { get; set; }
+        public decimal Amount { get; set; }
 
         [Required]
         public DateTime TransactionDate { get; set; }

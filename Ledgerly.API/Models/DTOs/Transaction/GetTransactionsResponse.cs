@@ -1,5 +1,6 @@
 ﻿using Ledgerly.API.Helpers;
 using System.ComponentModel.DataAnnotations;
+using System.Text.Json.Serialization;
 
 namespace Ledgerly.API.Models.DTOs.Transaction
 {
@@ -27,7 +28,11 @@ namespace Ledgerly.API.Models.DTOs.Transaction
         public decimal Amount { get; set; }
 
         [Required]
-        public DateTime TransactionDate { get; set; }
+        [JsonIgnore]
+        public DateTime Date { get; set; }
+
+        [Required]
+        public string TransactionDate => Date.ToString("yyyy-MM-dd HH:mm:ss");
 
         [Required]
         public int CategoryId { get; set; }

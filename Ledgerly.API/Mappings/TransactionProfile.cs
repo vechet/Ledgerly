@@ -18,7 +18,8 @@ namespace Ledgerly.API.Mappings
             CreateMap<Transaction, UpdateTransactionResponse>();
             CreateMap<Transaction, TransactionsResponse>()
                 .ForMember(dest => dest.CategoryName, opt => opt.MapFrom(src => src.Category.Name))
-                .ForMember(dest => dest.AccountName, opt => opt.MapFrom(src => src.Account.Name));
+                .ForMember(dest => dest.AccountName, opt => opt.MapFrom(src => src.Account.Name))
+                .ForMember(dest => dest.Date, opt => opt.MapFrom(src => src.TransactionDate));
             CreateMap<DeleteTransactionRequest, Transaction>();
             CreateMap<Transaction, DeleteTransactionResponse>();
             CreateMap<Transaction, RecordAuditLogTransaction>()
