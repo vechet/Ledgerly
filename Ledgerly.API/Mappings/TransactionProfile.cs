@@ -6,7 +6,7 @@ namespace Ledgerly.API.Mappings
 {
     public class TransactionProfile : Profile
     {
-        public TransactionProfile() 
+        public TransactionProfile()
         {
             CreateMap<CreateTransactionRequest, Transaction>();
             CreateMap<Transaction, CreateTransactionResponse>();
@@ -14,13 +14,11 @@ namespace Ledgerly.API.Mappings
                 .ForMember(dest => dest.CategoryName, opt => opt.MapFrom(src => src.Category.Name))
                 .ForMember(dest => dest.AccountName, opt => opt.MapFrom(src => src.Account.Name))
                 .ForMember(dest => dest.Date, opt => opt.MapFrom(src => src.TransactionDate));
-            //.ForMember(dest => dest.TransactionFlagName, opt => opt.MapFrom(src => src.GlobalParam.Name));
             CreateMap<UpdateTransactionRequest, Transaction>();
             CreateMap<Transaction, UpdateTransactionResponse>();
             CreateMap<Transaction, TransactionsResponse>()
                 .ForMember(dest => dest.CategoryName, opt => opt.MapFrom(src => src.Category.Name))
                 .ForMember(dest => dest.AccountName, opt => opt.MapFrom(src => src.Account.Name));
-                //.ForMember(dest => dest.TransactionFlagName, opt => opt.MapFrom(src => src.GlobalParam.Name));
             CreateMap<DeleteTransactionRequest, Transaction>();
             CreateMap<Transaction, DeleteTransactionResponse>();
             CreateMap<Transaction, RecordAuditLogTransaction>()
@@ -34,8 +32,8 @@ namespace Ledgerly.API.Mappings
                 .ForMember(dest => dest.AccountName, opt => opt.MapFrom(src => src.Account.Name))
                 .ForMember(dest => dest.Memo, opt => opt.MapFrom(src => src.Memo))
                 .ForMember(dest => dest.Type, opt => opt.MapFrom(src => src.Type))
-                .ForMember(dest => dest.TransactionFlag, opt => opt.MapFrom(src => src.TransactionFlag))
-                .ForMember(dest => dest.TransactionFlagName, opt => opt.MapFrom(src => src.GlobalParam.Name))
+                .ForMember(dest => dest.StatusId, opt => opt.MapFrom(src => src.StatusId))
+                .ForMember(dest => dest.StatusName, opt => opt.MapFrom(src => src.GlobalParam.Name))
                 .ForMember(dest => dest.CreatedBy, opt => opt.MapFrom(src => src.CreatedBy))
                 .ForMember(dest => dest.CreatedDate, opt => opt.MapFrom(src => src.CreatedDate))
                 .ForMember(dest => dest.ModifiedBy, opt => opt.MapFrom(src => src.ModifiedBy))

@@ -16,7 +16,7 @@ namespace Udemy.Data
 
         public DbSet<AuditLog> AuditLog { get; set; }
 
-        public DbSet<Status> Status { get; set; }
+        //public DbSet<Status> Status { get; set; }
 
         public DbSet<GlobalParam> GlobalParam { get; set; }
 
@@ -29,10 +29,10 @@ namespace Udemy.Data
             {
                 entity.ToTable("Category");
 
-                entity.HasOne(e => e.Status).WithMany(p => p.Categories)
+                entity.HasOne(e => e.GlobalParam).WithMany(p => p.Categories)
                     .HasForeignKey(e => e.StatusId)
                     .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("FK_Category_Status_StatusId");
+                    .HasConstraintName("FK_Category_GlobalParam_StatusId");
 
                 entity.HasOne(e => e.Parent).WithMany(p => p.Children)
                     .HasForeignKey(e => e.ParentId)
@@ -55,9 +55,9 @@ namespace Udemy.Data
                 entity.ToTable("Transaction");
 
                 entity.HasOne(e => e.GlobalParam).WithMany(p => p.Transactions)
-                    .HasForeignKey(e => e.TransactionFlag)
+                    .HasForeignKey(e => e.StatusId)
                     .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("FK_Transaction_GlobalParam_TransactionFlag");
+                    .HasConstraintName("FK_Transaction_GlobalParam_StatusId");
 
                 entity.HasOne(e => e.Category).WithMany(p => p.Transactions)
                     .HasForeignKey(e => e.CategoryId)
@@ -74,34 +74,34 @@ namespace Udemy.Data
             {
                 entity.ToTable("Account");
 
-                entity.HasOne(e => e.Status).WithMany(p => p.Accounts)
+                entity.HasOne(e => e.GlobalParam).WithMany(p => p.Accounts)
                     .HasForeignKey(e => e.StatusId)
                     .OnDelete(DeleteBehavior.ClientSetNull)
                     .HasConstraintName("FK_Account_Status_StatusId");
             });
 
-            modelBuilder.Entity<Status>(entity =>
-            {
-                entity.ToTable("Status");
+            //modelBuilder.Entity<Status>(entity =>
+            //{
+            //    entity.ToTable("Status");
 
-                // Seed a default record for Status
-                entity.HasData(new Status
-                {
-                    Id = 1,
-                    Name = "Active",
-                    KeyName = "Active",
-                    CreatedBy = "1",
-                    CreatedDate = new DateTime(2025, 07, 22),
-                });
-                entity.HasData(new Status
-                {
-                    Id = 2,
-                    Name = "Inactive",
-                    KeyName = "Inactive",
-                    CreatedBy = "1",
-                    CreatedDate = new DateTime(2025, 07, 22),
-                });
-            });
+            //    // Seed a default record for Status
+            //    entity.HasData(new Status
+            //    {
+            //        Id = 1,
+            //        Name = "Active",
+            //        KeyName = "Active",
+            //        CreatedBy = "1",
+            //        CreatedDate = new DateTime(2025, 07, 22),
+            //    });
+            //    entity.HasData(new Status
+            //    {
+            //        Id = 2,
+            //        Name = "Inactive",
+            //        KeyName = "Inactive",
+            //        CreatedBy = "1",
+            //        CreatedDate = new DateTime(2025, 07, 22),
+            //    });
+            //});
 
             base.OnModelCreating(modelBuilder);
         }

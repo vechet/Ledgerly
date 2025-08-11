@@ -44,7 +44,7 @@ namespace Ledgerly.API.Services
 
                 // add new transaction 
                 var transaction = _mapper.Map<Transaction>(req);
-                transaction.TransactionFlag =  await _globalParamRepository.GetGlobalParamIdByKeyName("Normal", "TransactionxxxTransactionFlag");
+                transaction.StatusId =  await _globalParamRepository.GetGlobalParamIdByKeyName("Normal", "TransactionxxxStatus");
                 transaction.UserId = userId;
                 transaction.CreatedBy = userId;
                 transaction.CreatedDate = GlobalFunction.GetCurrentDateTime();
@@ -95,8 +95,8 @@ namespace Ledgerly.API.Services
         {
             try
             {
-                var transactionFlag = await _globalParamRepository.GetGlobalParamIdByKeyName("Normal", "TransactionxxxTransactionFlag");
-                var query = _db.Transaction.Where(x => x.TransactionFlag == transactionFlag).AsQueryable();
+                var status = await _globalParamRepository.GetGlobalParamIdByKeyName("Normal", "TransactionxxxStatus");
+                var query = _db.Transaction.Where(x => x.StatusId == status).AsQueryable();
 
                 var filter = req.Filter;
 
@@ -173,7 +173,7 @@ namespace Ledgerly.API.Services
                 var transactionAuditLog = new RecordAuditLog
                 {
                     ControllerName = "Transaction",
-                    MethodName = "CreateTransaction",
+                    MethodName = "UpdateTransaction",
                     TransactionId = currentTransaction.Id,
                     TransactionNo = "",
                     Description = await GetAuditDescription(currentTransaction.Id),
@@ -213,7 +213,7 @@ namespace Ledgerly.API.Services
 
                 // update transaction 
                 var transaction = _mapper.Map<Transaction>(req);
-                transaction.TransactionFlag = await _globalParamRepository.GetGlobalParamIdByKeyName("Deleted", "TransactionxxxTransactionFlag");
+                transaction.StatusId = await _globalParamRepository.GetGlobalParamIdByKeyName("Deleted", "TransactionxxxStatus");
                 transaction.UserId = userId;
                 transaction.ModifiedBy = userId;
                 transaction.ModifiedDate = GlobalFunction.GetCurrentDateTime();

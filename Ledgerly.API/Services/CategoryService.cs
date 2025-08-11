@@ -4,6 +4,7 @@ using Ledgerly.API.Helpers;
 using Ledgerly.API.Models.Domains;
 using Ledgerly.API.Models.DTOs.AuditLog;
 using Ledgerly.API.Models.DTOs.Category;
+using Ledgerly.API.Repositories;
 using Ledgerly.API.Repositories.Interfaces;
 using Ledgerly.API.Services.Interfaces;
 using Ledgerly.Helpers;
@@ -19,7 +20,8 @@ namespace Ledgerly.API.Services
         IMapper mapper, 
         LedgerlyDbContext db,
         ICurrentUserService currentUserService,
-        IAuditLogService auditLogService) : ICategoryService
+        IAuditLogService auditLogService,
+        IGlobalParamRepository globalParamRepository) : ICategoryService
     {
         private readonly ICategoryRepository _CategoryRepository = CategoryRepository;
         private readonly IMapper _mapper  = mapper;
@@ -27,6 +29,7 @@ namespace Ledgerly.API.Services
         private Logger _logger = LogManager.GetCurrentClassLogger();
         private readonly ICurrentUserService _currentUserService = currentUserService;
         private readonly IAuditLogService _auditLogService = auditLogService;
+        private readonly IGlobalParamRepository _globalParamRepository = globalParamRepository;
 
         public async Task<ApiResponse<CreateCategoryResponse>> CreateCategory(CreateCategoryRequest req)
         {
@@ -41,15 +44,16 @@ namespace Ledgerly.API.Services
                 }
 
                 // add new transaction type
-                var Category = _mapper.Map<Category>(req);
-                Category.UserId = userId;
-                Category.CreatedBy = userId;
-                Category.CreatedDate = GlobalFunction.GetCurrentDateTime();
-                var newCategory = await _CategoryRepository.CreateCategory(Category);
-                var CategoryRes = _mapper.Map<CreateCategoryResponse>(newCategory);
+                var category = _mapper.Map<Category>(req);
+                category.StatusId = await _globalParamRepository.GetGlobalParamIdByKeyName("Normal", "CategoryxxxStatus");
+                category.UserId = userId;
+                category.CreatedBy = userId;
+                category.CreatedDate = GlobalFunction.GetCurrentDateTime();
+                var newCategory = await _CategoryRepository.CreateCategory(category);
+                var categoryRes = _mapper.Map<CreateCategoryResponse>(newCategory);
 
                 // Add audit log
-                var CategoryAuditLog = new RecordAuditLog
+                var categoryAuditLog = new RecordAuditLog
                 {
                     ControllerName = "Category",
                     MethodName = "CreateCategory",
@@ -59,10 +63,10 @@ namespace Ledgerly.API.Services
                     CreatedBy = userId,
                     CreatedDate = GlobalFunction.GetCurrentDateTime(),
                 };
-                await _auditLogService.RecordAuditLog(CategoryAuditLog);
+                await _auditLogService.RecordAuditLog(categoryAuditLog);
 
                 // Response
-                return ApiResponse<CreateCategoryResponse>.Success(CategoryRes);
+                return ApiResponse<CreateCategoryResponse>.Success(categoryRes);
             }
             catch(Exception e)
             {
@@ -75,11 +79,11 @@ namespace Ledgerly.API.Services
         {
             try
             {
-                var Category = await _CategoryRepository.GetCategory(req.id);
-                var CategoryRes = _mapper.Map<GetCategoryResponse>(Category);
+                var category = await _CategoryRepository.GetCategory(req.id);
+                var categoryRes = _mapper.Map<GetCategoryResponse>(category);
 
                 // Response
-                return ApiResponse<GetCategoryResponse>.Success(CategoryRes);
+                return ApiResponse<GetCategoryResponse>.Success(categoryRes);
             }
             catch (Exception e)
             {
@@ -92,7 +96,8 @@ namespace Ledgerly.API.Services
         {
             try
             {
-                var query = _db.Category.AsQueryable();
+                var status = await _globalParamRepository.GetGlobalParamIdByKeyName("Normal", "CategoryxxxStatus");
+                var query = _db.Category.Where(x => x.StatusId == status).AsQueryable();
 
                 var filter = req.Filter;
 
@@ -158,28 +163,28 @@ namespace Ledgerly.API.Services
                 }
 
                 // update transaction type
-                var Category = _mapper.Map<Category>(req);
-                Category.UserId = userId;
-                Category.ModifiedBy = userId;
-                Category.ModifiedDate = GlobalFunction.GetCurrentDateTime();
-                var currentCategory = await _CategoryRepository.UpdateCategory(Category);
-                var CategoryRes = _mapper.Map<UpdateCategoryResponse>(currentCategory);
+                var category = _mapper.Map<Category>(req);
+                category.UserId = userId;
+                category.ModifiedBy = userId;
+                category.ModifiedDate = GlobalFunction.GetCurrentDateTime();
+                var currentCategory = await _CategoryRepository.UpdateCategory(category);
+                var categoryRes = _mapper.Map<UpdateCategoryResponse>(currentCategory);
 
                 // Add audit log
-                var CategoryAuditLog = new RecordAuditLog
+                var categoryAuditLog = new RecordAuditLog
                 {
                     ControllerName = "Category",
-                    MethodName = "CreateCategory",
+                    MethodName = "UpdateCategory",
                     TransactionId = currentCategory.Id,
                     TransactionNo = currentCategory.Name,
                     Description = await GetAuditDescription(currentCategory.Id),
                     CreatedBy = userId,
                     CreatedDate = GlobalFunction.GetCurrentDateTime(),
                 };
-                await _auditLogService.RecordAuditLog(CategoryAuditLog);
+                await _auditLogService.RecordAuditLog(categoryAuditLog);
 
                 // Response
-                return ApiResponse<UpdateCategoryResponse>.Success(CategoryRes);
+                return ApiResponse<UpdateCategoryResponse>.Success(categoryRes);
             }
             catch (Exception e)
             {
@@ -194,6 +199,49 @@ namespace Ledgerly.API.Services
             var recordAuditLogCategory = _mapper.Map<RecordAuditLogCategory>(Category);
             return JsonSerializer.Serialize(recordAuditLogCategory);        
         }
-    
+
+        public async Task<ApiResponse<DeleteCategoryResponse>> DeleteCategory(DeleteCategoryRequest req)
+        {
+            try
+            {
+                //get user id
+                var userId = _currentUserService.GetUserId();
+                if (userId == null)
+                {
+                    _logger.Error($"Categorieservice/DeleteCategory, Param:{JsonSerializer.Serialize(req)}, ErrorCode:'{ApiResponseStatus.Unauthorized.Value()}', ErrorMessage:'{ApiResponseStatus.Unauthorized.Description()}'");
+                    return ApiResponse<DeleteCategoryResponse>.Failure(ApiResponseStatus.Unauthorized);
+                }
+
+                // update category type
+                var category = _mapper.Map<Category>(req);
+                category.StatusId = await _globalParamRepository.GetGlobalParamIdByKeyName("Deleted", "CategoryxxxStatus");
+                category.UserId = userId;
+                category.ModifiedBy = userId;
+                category.ModifiedDate = GlobalFunction.GetCurrentDateTime();
+                var currentCategory = await _CategoryRepository.DeleteCategory(category);
+                var categoryRes = _mapper.Map<DeleteCategoryResponse>(currentCategory);
+
+                // Add audit log
+                var categoryAuditLog = new RecordAuditLog
+                {
+                    ControllerName = "Category",
+                    MethodName = "DeleteCategory",
+                    TransactionId = currentCategory.Id,
+                    TransactionNo = currentCategory.Name,
+                    Description = await GetAuditDescription(currentCategory.Id),
+                    CreatedBy = userId,
+                    CreatedDate = GlobalFunction.GetCurrentDateTime(),
+                };
+                await _auditLogService.RecordAuditLog(categoryAuditLog);
+
+                // Response
+                return ApiResponse<DeleteCategoryResponse>.Success(categoryRes);
+            }
+            catch (Exception e)
+            {
+                _logger.Error($"Categorieservice/DeleteCategory, Param:{JsonSerializer.Serialize(req)}, ErrorCode:'{e.HResult}', ErrorMessage:'{e.Message}'");
+                return ApiResponse<DeleteCategoryResponse>.Failure(ApiResponseStatus.InternalError);
+            }
+        }
     }
 }

@@ -1,5 +1,7 @@
 ﻿using Ledgerly.API.Helpers;
 using Ledgerly.API.Models.DTOs.Account;
+using Ledgerly.API.Models.DTOs.Transaction;
+using Ledgerly.API.Services;
 using Ledgerly.API.Services.Interfaces;
 using Ledgerly.Helpers;
 using Microsoft.AspNetCore.Authorization;
@@ -12,35 +14,41 @@ namespace Ledgerly.API.Controllers
     //[Authorize]
     public class AccountController : ControllerBase
     {
-        private readonly IAccountService _AccountService;
+        private readonly IAccountService _accountService;
 
-        public AccountController(IAccountService AccountService)
+        public AccountController(IAccountService accountService)
         {
-            _AccountService = AccountService;
+            _accountService = accountService;
         }
 
         [HttpPost("v1/account/create-account")]
         public async Task<ApiResponse<CreateAccountResponse>> CreateAccount([FromBody] CreateAccountRequest req)
         {
-            return await _AccountService.CreateAccount(req);
+            return await _accountService.CreateAccount(req);
         }
 
         [HttpPost("v1/account/get-accounts")]
         public async Task<ApiResponse<GetAccountsResponse>> GetAccounts([FromBody] PaginationRequest req)
         {
-            return await _AccountService.GetAccounts(req);
+            return await _accountService.GetAccounts(req);
         }
 
         [HttpPost("v1/account/update-account")]
         public async Task<ApiResponse<UpdateAccountResponse>> UpdateAccount([FromBody] UpdateAccountRequest req)
         {
-            return await _AccountService.UpdateAccount(req);
+            return await _accountService.UpdateAccount(req);
         }
 
         [HttpPost("v1/account/get-account")]
         public async Task<ApiResponse<GetAccountResponse>> GetAccount([FromBody] GetAccountRequest req)
         {
-            return await _AccountService.GetAccount(req);
+            return await _accountService.GetAccount(req);
+        }
+
+        [HttpPost("v1/account/delete-account")]
+        public async Task<ApiResponse<DeleteAccountResponse>> DeleteAccount([FromBody] DeleteAccountRequest req)
+        {
+            return await _accountService.DeleteAccount(req);
         }
     }
 }

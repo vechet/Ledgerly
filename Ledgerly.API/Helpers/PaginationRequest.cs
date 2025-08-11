@@ -12,7 +12,7 @@
     public class PropertyFilter
     {
         public string? Search { get; set; }
-        public int? Status { get; set; }
+        //public int? Status { get; set; }
         public List<SortOption> Sort { get; set; } = [];
     }
 

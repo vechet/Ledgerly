@@ -11,5 +11,7 @@ namespace Ledgerly.API.Repositories.Interfaces
         Task<Account> CreateAccount(Account req);
 
         Task<Account> UpdateAccount(Account req);
+
+        Task<Account> DeleteAccount(Account req);
     }
 }

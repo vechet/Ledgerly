@@ -36,7 +36,7 @@ namespace Ledgerly.API.Models.Domains
         public string UserId { get; set; } = null!;
 
         [Required]
-        public int TransactionFlag { get; set; }
+        public int StatusId { get; set; }
 
         [Required]
         [StringLength(450)]

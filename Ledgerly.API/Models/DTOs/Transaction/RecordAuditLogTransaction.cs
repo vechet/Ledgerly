@@ -35,10 +35,10 @@ namespace Ledgerly.API.Models.DTOs.Transaction
         public string Type { get; set; } = null!;
 
         [Required]
-        public int TransactionFlag { get; set; }
+        public int StatusId { get; set; }
 
         [Required]
-        public string TransactionFlagName { get; set; } = null!;
+        public string StatusName { get; set; } = null!;
 
         [Required]
         public string CreatedBy { get; set; } = null!;

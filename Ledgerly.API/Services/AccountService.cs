@@ -12,6 +12,7 @@ using NLog;
 using System.Diagnostics;
 using System.Text.Json;
 using Udemy.Data;
+using Ledgerly.API.Repositories;
 
 namespace Ledgerly.API.Services
 {
@@ -19,7 +20,8 @@ namespace Ledgerly.API.Services
         IMapper mapper,
         LedgerlyDbContext db,
         ICurrentUserService currentUserService,
-        IAuditLogService auditLogService) : IAccountService
+        IAuditLogService auditLogService,
+        IGlobalParamRepository globalParamRepository) : IAccountService
     {
         private readonly IAccountRepository _AccountRepository = AccountRepository;
         private readonly IMapper _mapper = mapper;
@@ -27,6 +29,7 @@ namespace Ledgerly.API.Services
         private Logger _logger = LogManager.GetCurrentClassLogger();
         private readonly ICurrentUserService _currentUserService = currentUserService;
         private readonly IAuditLogService _auditLogService = auditLogService;
+        private readonly IGlobalParamRepository _globalParamRepository = globalParamRepository;
 
         public async Task<ApiResponse<CreateAccountResponse>> CreateAccount(CreateAccountRequest req)
         {
@@ -41,15 +44,16 @@ namespace Ledgerly.API.Services
                 }
 
                 // add new transaction type
-                var Account = _mapper.Map<Account>(req);
-                Account.UserId = userId;
-                Account.CreatedBy = userId;
-                Account.CreatedDate = GlobalFunction.GetCurrentDateTime();
-                var newAccount = await _AccountRepository.CreateAccount(Account);
-                var AccountRes = _mapper.Map<CreateAccountResponse>(newAccount);
+                var account = _mapper.Map<Account>(req);
+                account.StatusId = await _globalParamRepository.GetGlobalParamIdByKeyName("Normal", "AccountxxxStatus");
+                account.UserId = userId;
+                account.CreatedBy = userId;
+                account.CreatedDate = GlobalFunction.GetCurrentDateTime();
+                var newAccount = await _AccountRepository.CreateAccount(account);
+                var accountRes = _mapper.Map<CreateAccountResponse>(newAccount);
 
                 // Add audit log
-                var AccountAuditLog = new RecordAuditLog
+                var accountAuditLog = new RecordAuditLog
                 {
                     ControllerName = "Account",
                     MethodName = "CreateAccount",
@@ -59,10 +63,10 @@ namespace Ledgerly.API.Services
                     CreatedBy = userId,
                     CreatedDate = GlobalFunction.GetCurrentDateTime(),
                 };
-                await _auditLogService.RecordAuditLog(AccountAuditLog);
+                await _auditLogService.RecordAuditLog(accountAuditLog);
 
                 // Response
-                return ApiResponse<CreateAccountResponse>.Success(AccountRes);
+                return ApiResponse<CreateAccountResponse>.Success(accountRes);
             }
             catch (Exception e)
             {
@@ -92,7 +96,8 @@ namespace Ledgerly.API.Services
         {
             try
             {
-                var query = _db.Account.AsQueryable();
+                var status = await _globalParamRepository.GetGlobalParamIdByKeyName("Normal", "AccountxxxStatus");
+                var query = _db.Account.Where(x => x.StatusId == status).AsQueryable();
 
                 var filter = req.Filter;
 
@@ -158,28 +163,28 @@ namespace Ledgerly.API.Services
                 }
 
                 // update transaction type
-                var Account = _mapper.Map<Account>(req);
-                Account.UserId = userId;
-                Account.ModifiedBy = userId;
-                Account.ModifiedDate = GlobalFunction.GetCurrentDateTime();
-                var currentAccount = await _AccountRepository.UpdateAccount(Account);
-                var AccountRes = _mapper.Map<UpdateAccountResponse>(currentAccount);
+                var account = _mapper.Map<Account>(req);
+                account.UserId = userId;
+                account.ModifiedBy = userId;
+                account.ModifiedDate = GlobalFunction.GetCurrentDateTime();
+                var currentAccount = await _AccountRepository.UpdateAccount(account);
+                var accountRes = _mapper.Map<UpdateAccountResponse>(currentAccount);
 
                 // Add audit log
-                var AccountAuditLog = new RecordAuditLog
+                var accountAuditLog = new RecordAuditLog
                 {
                     ControllerName = "Account",
-                    MethodName = "CreateAccount",
+                    MethodName = "UpdateAccount",
                     TransactionId = currentAccount.Id,
                     TransactionNo = currentAccount.Name,
                     Description = await GetAuditDescription(currentAccount.Id),
                     CreatedBy = userId,
                     CreatedDate = GlobalFunction.GetCurrentDateTime(),
                 };
-                await _auditLogService.RecordAuditLog(AccountAuditLog);
+                await _auditLogService.RecordAuditLog(accountAuditLog);
 
                 // Response
-                return ApiResponse<UpdateAccountResponse>.Success(AccountRes);
+                return ApiResponse<UpdateAccountResponse>.Success(accountRes);
             }
             catch (Exception e)
             {
@@ -195,5 +200,48 @@ namespace Ledgerly.API.Services
             return JsonSerializer.Serialize(recordAuditLogAccount);
         }
 
+        public async Task<ApiResponse<DeleteAccountResponse>> DeleteAccount(DeleteAccountRequest req)
+        {
+            try
+            {
+                //get user id
+                var userId = _currentUserService.GetUserId();
+                if (userId == null)
+                {
+                    _logger.Error($"Accountservice/DeleteAccount, Param:{JsonSerializer.Serialize(req)}, ErrorCode:'{ApiResponseStatus.Unauthorized.Value()}', ErrorMessage:'{ApiResponseStatus.Unauthorized.Description()}'");
+                    return ApiResponse<DeleteAccountResponse>.Failure(ApiResponseStatus.Unauthorized);
+                }
+
+                // update transaction type
+                var account = _mapper.Map<Account>(req);
+                account.StatusId = await _globalParamRepository.GetGlobalParamIdByKeyName("Deleted", "AccountxxxStatus");
+                account.UserId = userId;
+                account.ModifiedBy = userId;
+                account.ModifiedDate = GlobalFunction.GetCurrentDateTime();
+                var currentAccount = await _AccountRepository.DeleteAccount(account);
+                var accountRes = _mapper.Map<DeleteAccountResponse>(currentAccount);
+
+                // Add audit log
+                var accountAuditLog = new RecordAuditLog
+                {
+                    ControllerName = "Account",
+                    MethodName = "DeleteAccount",
+                    TransactionId = currentAccount.Id,
+                    TransactionNo = currentAccount.Name,
+                    Description = await GetAuditDescription(currentAccount.Id),
+                    CreatedBy = userId,
+                    CreatedDate = GlobalFunction.GetCurrentDateTime(),
+                };
+                await _auditLogService.RecordAuditLog(accountAuditLog);
+
+                // Response
+                return ApiResponse<DeleteAccountResponse>.Success(accountRes);
+            }
+            catch (Exception e)
+            {
+                _logger.Error($"Accountservice/DeleteAccount, Param:{JsonSerializer.Serialize(req)}, ErrorCode:'{e.HResult}', ErrorMessage:'{e.Message}'");
+                return ApiResponse<DeleteAccountResponse>.Failure(ApiResponseStatus.InternalError);
+            }
+        }
     }
 }

@@ -28,7 +28,7 @@ namespace Ledgerly.API.Models.Domains
         public string UserId { get; set; } = null!;
 
         [Required]
-        public short StatusId { get; set; }
+        public int StatusId { get; set; }
 
         [Required]
         [StringLength(450)]
@@ -46,7 +46,7 @@ namespace Ledgerly.API.Models.Domains
 
         public ICollection<Transaction> Transactions { get; set; } = new List<Transaction>();
 
-        public Status Status { get; set; } = null!;
+        public GlobalParam GlobalParam { get; set; } = null!;
     }
 
 }

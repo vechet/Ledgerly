@@ -31,13 +31,34 @@ namespace Ledgerly.API.Repositories
             }
         }
 
+        public async Task<Category> DeleteCategory(Category req)
+        {
+            await using var transaction = await _db.Database.BeginTransactionAsync();
+            try
+            {
+                var currentCategory = await _db.Category.FindAsync(req.Id);
+                currentCategory.UserId = req.UserId;
+                currentCategory.StatusId = req.StatusId;
+                currentCategory.ModifiedBy = req.ModifiedBy;
+                currentCategory.ModifiedDate = req.ModifiedDate;
+                await _db.SaveChangesAsync();
+                await transaction.CommitAsync();
+                return currentCategory;
+            }
+            catch (Exception e)
+            {
+                await transaction.RollbackAsync();
+                throw;
+            }
+        }
+
         public async Task<List<Category>> GetCategories()
         {
             try
             {
                 var categories = await _db.Category
                     .Include(x => x.Parent)
-                    .Include(x => x.Status)
+                    .Include(x => x.GlobalParam)
                     .ToListAsync();
                 return categories;
             }
@@ -53,7 +74,7 @@ namespace Ledgerly.API.Repositories
             {
                 var category = await _db.Category
                     .Include(x => x.Parent)
-                    .Include(x => x.Status)
+                    .Include(x => x.GlobalParam)
                     .FirstOrDefaultAsync(t => t.Id == id);
                 return category;
             }
@@ -73,7 +94,6 @@ namespace Ledgerly.API.Repositories
                 currentCategory.Name = req.Name;
                 currentCategory.Memo = req.Memo;
                 currentCategory.UserId = req.UserId;
-                currentCategory.StatusId = req.StatusId;
                 currentCategory.ModifiedBy = req.ModifiedBy;
                 currentCategory.ModifiedDate = req.ModifiedDate;
                 await _db.SaveChangesAsync();

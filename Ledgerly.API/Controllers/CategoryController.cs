@@ -12,35 +12,41 @@ namespace Ledgerly.API.Controllers
     //[Authorize]
     public class CategoryController : ControllerBase
     {
-        private readonly ICategoryService _CategoryService;
+        private readonly ICategoryService _categoryService;
 
-        public CategoryController(ICategoryService CategoryService)
+        public CategoryController(ICategoryService categoryService)
         {
-            _CategoryService = CategoryService;
+            _categoryService = categoryService;
         }
 
         [HttpPost("v1/category/create-category")]
         public async Task<ApiResponse<CreateCategoryResponse>> CreateCategory([FromBody] CreateCategoryRequest req)
         {
-            return await _CategoryService.CreateCategory(req);
+            return await _categoryService.CreateCategory(req);
         }
 
         [HttpPost("v1/category/get-categories")]
         public async Task<ApiResponse<GetCategoriesResponse>> GetCategories([FromBody] PaginationRequest req)
         {
-            return await _CategoryService.GetCategories(req);
+            return await _categoryService.GetCategories(req);
         }
 
         [HttpPost("v1/category/update-category")]
         public async Task<ApiResponse<UpdateCategoryResponse>> UpdateCategory([FromBody] UpdateCategoryRequest req)
         {
-            return await _CategoryService.UpdateCategory(req);
+            return await _categoryService.UpdateCategory(req);
         }
 
         [HttpPost("v1/category/get-category")]
         public async Task<ApiResponse<GetCategoryResponse>> GetCategory([FromBody] GetCategoryRequest req)
         {
-            return await _CategoryService.GetCategory(req);
+            return await _categoryService.GetCategory(req);
+        }
+
+        [HttpPost("v1/category/delete-category")]
+        public async Task<ApiResponse<DeleteCategoryResponse>> DeleteCategory([FromBody] DeleteCategoryRequest req)
+        {
+            return await _categoryService.DeleteCategory(req);
         }
     }
 }

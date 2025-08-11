@@ -11,5 +11,7 @@ namespace Ledgerly.API.Repositories.Interfaces
         Task<Category> CreateCategory(Category req);
 
         Task<Category> UpdateCategory(Category req);
+
+        Task<Category> DeleteCategory(Category req);
     }
 }

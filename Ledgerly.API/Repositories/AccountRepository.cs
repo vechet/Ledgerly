@@ -31,12 +31,33 @@ namespace Ledgerly.API.Repositories
             }
         }
 
+        public async Task<Account> DeleteAccount(Account req)
+        {
+            await using var transaction = await _db.Database.BeginTransactionAsync();
+            try
+            {
+                var currentAccount = await _db.Account.FindAsync(req.Id);
+                currentAccount.UserId = req.UserId;
+                currentAccount.StatusId = req.StatusId;
+                currentAccount.ModifiedBy = req.ModifiedBy;
+                currentAccount.ModifiedDate = req.ModifiedDate;
+                await _db.SaveChangesAsync();
+                await transaction.CommitAsync();
+                return currentAccount;
+            }
+            catch (Exception e)
+            {
+                await transaction.RollbackAsync();
+                throw;
+            }
+        }
+
         public async Task<Account> GetAccount(int id)
         {
             try
             {
                 var account = await _db.Account
-                    .Include(x => x.Status)
+                    .Include(x => x.GlobalParam)
                     .FirstOrDefaultAsync(t => t.Id == id);
                 return account;
             }
@@ -51,7 +72,7 @@ namespace Ledgerly.API.Repositories
             try
             {
                 var accounts = await _db.Account
-                    .Include(x => x.Status)
+                    .Include(x => x.GlobalParam)
                     .ToListAsync();
                 return accounts;
             }
@@ -71,7 +92,6 @@ namespace Ledgerly.API.Repositories
                 currentAccount.Currency = req.Currency;
                 currentAccount.Memo = req.Memo;
                 currentAccount.UserId = req.UserId;
-                currentAccount.StatusId = req.StatusId;
                 currentAccount.ModifiedBy = req.ModifiedBy;
                 currentAccount.ModifiedDate = req.ModifiedDate;
                 await _db.SaveChangesAsync();

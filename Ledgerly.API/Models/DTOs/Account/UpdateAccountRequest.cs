@@ -14,8 +14,5 @@ namespace Ledgerly.API.Models.DTOs.Account
         public string Currency { get; set; } = null!;
 
         public string? Memo { get; set; }
-
-        [Required]
-        public short StatusId { get; set; }
     }
 }

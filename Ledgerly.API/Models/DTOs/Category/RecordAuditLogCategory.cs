@@ -18,7 +18,7 @@ namespace Ledgerly.API.Models.DTOs.Category
         public string? Memo { get; set; }
 
         [Required]
-        public short StatusId { get; set; }
+        public int StatusId { get; set; }
 
         [Required]
         public string StatusName { get; set; } = null!;
