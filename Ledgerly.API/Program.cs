@@ -49,6 +49,23 @@ builder.Services.AddSwaggerGen(options =>
         }
     });
 });
+// Enable CORS
+var allowedOrigins = builder.Configuration
+    .GetSection("Cors:AllowedOrigins")
+    .Get<string[]>();
+var MyAllowSpecificOrigins = "_myAllowSpecificOrigins";
+
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy(name: MyAllowSpecificOrigins,
+        policy =>
+        {
+            policy.WithOrigins(allowedOrigins)
+                  .AllowAnyHeader()
+                  .AllowAnyMethod();
+        });
+});
+
 //db connection string
 builder.Services.AddDbContext<LedgerlyDbContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("LedgerlyConnectionString")));
@@ -131,6 +148,9 @@ app.UseStaticFiles();
 app.UseMiddleware<HandleApiExceptionMiddleware>();
 app.UseMiddleware<SqlExceptionMiddleware>();
 
+app.UseCors(MyAllowSpecificOrigins);
+
+app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllers();
