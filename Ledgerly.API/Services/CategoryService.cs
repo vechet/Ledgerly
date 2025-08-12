@@ -17,14 +17,14 @@ using Udemy.Data;
 namespace Ledgerly.API.Services
 {
     public class CategoryService(ICategoryRepository CategoryRepository,
-        IMapper mapper, 
+        IMapper mapper,
         LedgerlyDbContext db,
         ICurrentUserService currentUserService,
         IAuditLogService auditLogService,
         IGlobalParamRepository globalParamRepository) : ICategoryService
     {
         private readonly ICategoryRepository _CategoryRepository = CategoryRepository;
-        private readonly IMapper _mapper  = mapper;
+        private readonly IMapper _mapper = mapper;
         private readonly LedgerlyDbContext _db = db;
         private Logger _logger = LogManager.GetCurrentClassLogger();
         private readonly ICurrentUserService _currentUserService = currentUserService;
@@ -39,13 +39,13 @@ namespace Ledgerly.API.Services
                 var userId = _currentUserService.GetUserId();
                 if (userId == null)
                 {
-                    _logger.Error($"Categorieservice/CreateCategory, Param:{JsonSerializer.Serialize(req)}, ErrorCode:'{ApiResponseStatus.Unauthorized.Value()}', ErrorMessage:'{ApiResponseStatus.Unauthorized.Description()}'");
+                    _logger.Error($"CategoryService/CreateCategory, Param:{JsonSerializer.Serialize(req)}, ErrorCode:'{ApiResponseStatus.Unauthorized.Value()}', ErrorMessage:'{ApiResponseStatus.Unauthorized.Description()}'");
                     return ApiResponse<CreateCategoryResponse>.Failure(ApiResponseStatus.Unauthorized);
                 }
 
                 // add new transaction type
                 var category = _mapper.Map<Category>(req);
-                category.StatusId = await _globalParamRepository.GetGlobalParamIdByKeyName("Normal", "CategoryxxxStatus");
+                category.StatusId = await _globalParamRepository.GetGlobalParamIdByKeyName("Active", "CategoryxxxStatus");
                 category.UserId = userId;
                 category.CreatedBy = userId;
                 category.CreatedDate = GlobalFunction.GetCurrentDateTime();
@@ -68,9 +68,9 @@ namespace Ledgerly.API.Services
                 // Response
                 return ApiResponse<CreateCategoryResponse>.Success(categoryRes);
             }
-            catch(Exception e)
+            catch (Exception e)
             {
-                _logger.Info($"Categorieservice/CreateCategory, Param:{JsonSerializer.Serialize(req)}, ErrorCode:'{e.HResult}', ErrorMessage:'{e.Message}'");
+                _logger.Info($"CategoryService/CreateCategory, Param:{JsonSerializer.Serialize(req)}, ErrorCode:'{e.HResult}', ErrorMessage:'{e.Message}'");
                 return ApiResponse<CreateCategoryResponse>.Failure(ApiResponseStatus.InternalError);
             }
         }
@@ -87,7 +87,7 @@ namespace Ledgerly.API.Services
             }
             catch (Exception e)
             {
-                _logger.Info($"Categorieservice/GetCategory, Param:{JsonSerializer.Serialize(req)}, ErrorCode:'{e.HResult}', ErrorMessage:'{e.Message}'");
+                _logger.Info($"CategoryService/GetCategory, Param:{JsonSerializer.Serialize(req)}, ErrorCode:'{e.HResult}', ErrorMessage:'{e.Message}'");
                 return ApiResponse<GetCategoryResponse>.Failure(ApiResponseStatus.InternalError);
             }
         }
@@ -96,8 +96,9 @@ namespace Ledgerly.API.Services
         {
             try
             {
-                var status = await _globalParamRepository.GetGlobalParamIdByKeyName("Normal", "CategoryxxxStatus");
-                var query = _db.Category.Where(x => x.StatusId == status).AsQueryable();
+                var statusActive = await _globalParamRepository.GetGlobalParamIdByKeyName("Active", "CategoryxxxStatus");
+                var statusInactive = await _globalParamRepository.GetGlobalParamIdByKeyName("Inactive", "CategoryxxxStatus");
+                var query = _db.Category.Where(x => x.StatusId == statusActive || x.StatusId == statusInactive).AsQueryable();
 
                 var filter = req.Filter;
 
@@ -145,7 +146,7 @@ namespace Ledgerly.API.Services
             }
             catch (Exception e)
             {
-                _logger.Error($"Categorieservice/GetCategories, Param:{JsonSerializer.Serialize(req)}, ErrorCode:'{e.HResult}', ErrorMessage:'{e.Message}'");
+                _logger.Error($"CategoryService/GetCategories, Param:{JsonSerializer.Serialize(req)}, ErrorCode:'{e.HResult}', ErrorMessage:'{e.Message}'");
                 return ApiResponse<GetCategoriesResponse>.Failure(ApiResponseStatus.InternalError);
             }
         }
@@ -158,7 +159,7 @@ namespace Ledgerly.API.Services
                 var userId = _currentUserService.GetUserId();
                 if (userId == null)
                 {
-                    _logger.Error($"Categorieservice/UpdateCategory, Param:{JsonSerializer.Serialize(req)}, ErrorCode:'{ApiResponseStatus.Unauthorized.Value()}', ErrorMessage:'{ApiResponseStatus.Unauthorized.Description()}'");
+                    _logger.Error($"CategoryService/UpdateCategory, Param:{JsonSerializer.Serialize(req)}, ErrorCode:'{ApiResponseStatus.Unauthorized.Value()}', ErrorMessage:'{ApiResponseStatus.Unauthorized.Description()}'");
                     return ApiResponse<UpdateCategoryResponse>.Failure(ApiResponseStatus.Unauthorized);
                 }
 
@@ -188,7 +189,7 @@ namespace Ledgerly.API.Services
             }
             catch (Exception e)
             {
-                _logger.Error($"Categorieservice/UpdateCategory, Param:{JsonSerializer.Serialize(req)}, ErrorCode:'{e.HResult}', ErrorMessage:'{e.Message}'");
+                _logger.Error($"CategoryService/UpdateCategory, Param:{JsonSerializer.Serialize(req)}, ErrorCode:'{e.HResult}', ErrorMessage:'{e.Message}'");
                 return ApiResponse<UpdateCategoryResponse>.Failure(ApiResponseStatus.InternalError);
             }
         }
@@ -197,7 +198,7 @@ namespace Ledgerly.API.Services
         {
             var Category = await _CategoryRepository.GetCategory(id);
             var recordAuditLogCategory = _mapper.Map<RecordAuditLogCategory>(Category);
-            return JsonSerializer.Serialize(recordAuditLogCategory);        
+            return JsonSerializer.Serialize(recordAuditLogCategory);
         }
 
         public async Task<ApiResponse<DeleteCategoryResponse>> DeleteCategory(DeleteCategoryRequest req)
@@ -208,7 +209,7 @@ namespace Ledgerly.API.Services
                 var userId = _currentUserService.GetUserId();
                 if (userId == null)
                 {
-                    _logger.Error($"Categorieservice/DeleteCategory, Param:{JsonSerializer.Serialize(req)}, ErrorCode:'{ApiResponseStatus.Unauthorized.Value()}', ErrorMessage:'{ApiResponseStatus.Unauthorized.Description()}'");
+                    _logger.Error($"CategoryService/DeleteCategory, Param:{JsonSerializer.Serialize(req)}, ErrorCode:'{ApiResponseStatus.Unauthorized.Value()}', ErrorMessage:'{ApiResponseStatus.Unauthorized.Description()}'");
                     return ApiResponse<DeleteCategoryResponse>.Failure(ApiResponseStatus.Unauthorized);
                 }
 
@@ -239,7 +240,7 @@ namespace Ledgerly.API.Services
             }
             catch (Exception e)
             {
-                _logger.Error($"Categorieservice/DeleteCategory, Param:{JsonSerializer.Serialize(req)}, ErrorCode:'{e.HResult}', ErrorMessage:'{e.Message}'");
+                _logger.Error($"CategoryService/DeleteCategory, Param:{JsonSerializer.Serialize(req)}, ErrorCode:'{e.HResult}', ErrorMessage:'{e.Message}'");
                 return ApiResponse<DeleteCategoryResponse>.Failure(ApiResponseStatus.InternalError);
             }
         }
