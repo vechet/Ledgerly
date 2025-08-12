@@ -40,7 +40,7 @@ namespace Ledgerly.Helpers
         [Description("Role does not exist.")]
         RoleDoesNotExist = 415,
 
-        [Description("Already Deleted")]
+        [Description("Cannot update or delete record that already deleted.")]
         AlreadyDeleted = 422,
 
         [Description("General Error")]

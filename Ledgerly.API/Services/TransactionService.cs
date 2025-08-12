@@ -2,8 +2,11 @@
 using AutoMapper.QueryableExtensions;
 using Ledgerly.API.Helpers;
 using Ledgerly.API.Models.Domains;
+using Ledgerly.API.Models.DTOs.Account;
 using Ledgerly.API.Models.DTOs.AuditLog;
+using Ledgerly.API.Models.DTOs.Category;
 using Ledgerly.API.Models.DTOs.Transaction;
+using Ledgerly.API.Repositories;
 using Ledgerly.API.Repositories.Interfaces;
 using Ledgerly.API.Services.Interfaces;
 using Ledgerly.Helpers;
@@ -78,8 +81,15 @@ namespace Ledgerly.API.Services
         {
             try
             {
-                var transaction = await _transactionRepository.GetTransaction(req.id);
-                var transactionRes = _mapper.Map<GetTransactionResponse>(transaction);
+                // Check if account exists
+                var getTransaction = await _transactionRepository.GetTransaction(req.Id);
+                if (getTransaction == null)
+                {
+                    _logger.Error($"TransactionService/GetTransaction, Param:{JsonSerializer.Serialize(req)}, ErrorCode:'{ApiResponseStatus.NotFound.Value()}', ErrorMessage:'{ApiResponseStatus.NotFound.Description()}'");
+                    return ApiResponse<GetTransactionResponse>.Failure(ApiResponseStatus.NotFound);
+                }
+
+                var transactionRes = _mapper.Map<GetTransactionResponse>(getTransaction);
 
                 // Response
                 return ApiResponse<GetTransactionResponse>.Success(transactionRes);
@@ -153,6 +163,22 @@ namespace Ledgerly.API.Services
         {
             try
             {
+                // Check if account exists
+                var getTransaction = await _transactionRepository.GetTransaction(req.Id);
+                if (getTransaction == null)
+                {
+                    _logger.Error($"TransactionService/UpdateTransaction, Param:{JsonSerializer.Serialize(req)}, ErrorCode:'{ApiResponseStatus.NotFound.Value()}', ErrorMessage:'{ApiResponseStatus.NotFound.Description()}'");
+                    return ApiResponse<UpdateTransactionResponse>.Failure(ApiResponseStatus.NotFound);
+                }
+
+                // Check if the account record is already deleted
+                var status = await _globalParamRepository.GetGlobalParamIdByKeyName("Deleted", "TransactionxxxStatus");
+                if (getTransaction == null)
+                {
+                    _logger.Error($"TransactionService/UpdateTransaction, Param:{JsonSerializer.Serialize(req)}, ErrorCode:'{ApiResponseStatus.AlreadyDeleted.Value()}', ErrorMessage:'{ApiResponseStatus.AlreadyDeleted.Description()}'");
+                    return ApiResponse<UpdateTransactionResponse>.Failure(ApiResponseStatus.AlreadyDeleted);
+                }
+
                 //get user id
                 var userId = _currentUserService.GetUserId();
                 if (userId == null)
@@ -203,6 +229,22 @@ namespace Ledgerly.API.Services
         {
             try
             {
+                // Check if account exists
+                var getTransaction = await _transactionRepository.GetTransaction(req.Id);
+                if (getTransaction == null)
+                {
+                    _logger.Error($"TransactionService/DeleteTransaction, Param:{JsonSerializer.Serialize(req)}, ErrorCode:'{ApiResponseStatus.NotFound.Value()}', ErrorMessage:'{ApiResponseStatus.NotFound.Description()}'");
+                    return ApiResponse<DeleteTransactionResponse>.Failure(ApiResponseStatus.NotFound);
+                }
+
+                // Check if the account record is already deleted
+                var status = await _globalParamRepository.GetGlobalParamIdByKeyName("Deleted", "TransactionxxxStatus");
+                if (getTransaction == null)
+                {
+                    _logger.Error($"TransactionService/DeleteTransaction, Param:{JsonSerializer.Serialize(req)}, ErrorCode:'{ApiResponseStatus.AlreadyDeleted.Value()}', ErrorMessage:'{ApiResponseStatus.AlreadyDeleted.Description()}'");
+                    return ApiResponse<DeleteTransactionResponse>.Failure(ApiResponseStatus.AlreadyDeleted);
+                }
+
                 //get user id
                 var userId = _currentUserService.GetUserId();
                 if (userId == null)

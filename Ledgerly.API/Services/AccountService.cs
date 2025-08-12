@@ -13,6 +13,7 @@ using System.Diagnostics;
 using System.Text.Json;
 using Udemy.Data;
 using Ledgerly.API.Repositories;
+using Ledgerly.API.Models.DTOs.Category;
 
 namespace Ledgerly.API.Services
 {
@@ -79,8 +80,15 @@ namespace Ledgerly.API.Services
         {
             try
             {
-                var Account = await _AccountRepository.GetAccount(req.id);
-                var AccountRes = _mapper.Map<GetAccountResponse>(Account);
+                // Check if account exists
+                var getAccount = await _AccountRepository.GetAccount(req.Id);
+                if (getAccount == null)
+                {
+                    _logger.Error($"AccountService/GetAccount, Param:{JsonSerializer.Serialize(req)}, ErrorCode:'{ApiResponseStatus.NotFound.Value()}', ErrorMessage:'{ApiResponseStatus.NotFound.Description()}'");
+                    return ApiResponse<GetAccountResponse>.Failure(ApiResponseStatus.NotFound);
+                }
+
+                var AccountRes = _mapper.Map<GetAccountResponse>(getAccount);
 
                 // Response
                 return ApiResponse<GetAccountResponse>.Success(AccountRes);
@@ -154,6 +162,22 @@ namespace Ledgerly.API.Services
         {
             try
             {
+                // Check if account exists
+                var getAccount = await _AccountRepository.GetAccount(req.Id);
+                if (getAccount == null)
+                {
+                    _logger.Error($"AccountService/UpdateAccount, Param:{JsonSerializer.Serialize(req)}, ErrorCode:'{ApiResponseStatus.NotFound.Value()}', ErrorMessage:'{ApiResponseStatus.NotFound.Description()}'");
+                    return ApiResponse<UpdateAccountResponse>.Failure(ApiResponseStatus.NotFound);
+                }
+
+                // Check if the account record is already deleted
+                var status = await _globalParamRepository.GetGlobalParamIdByKeyName("Deleted", "AccountxxxStatus");
+                if (getAccount.StatusId == status)
+                {
+                    _logger.Error($"AccountService/UpdateAccount, Param:{JsonSerializer.Serialize(req)}, ErrorCode:'{ApiResponseStatus.AlreadyDeleted.Value()}', ErrorMessage:'{ApiResponseStatus.AlreadyDeleted.Description()}'");
+                    return ApiResponse<UpdateAccountResponse>.Failure(ApiResponseStatus.AlreadyDeleted);
+                }
+
                 //get user id
                 var userId = _currentUserService.GetUserId();
                 if (userId == null)
@@ -204,6 +228,22 @@ namespace Ledgerly.API.Services
         {
             try
             {
+                // Check if account exists
+                var getAccount = await _AccountRepository.GetAccount(req.Id);
+                if (getAccount == null)
+                {
+                    _logger.Error($"AccountService/DeleteAccount, Param:{JsonSerializer.Serialize(req)}, ErrorCode:'{ApiResponseStatus.NotFound.Value()}', ErrorMessage:'{ApiResponseStatus.NotFound.Description()}'");
+                    return ApiResponse<DeleteAccountResponse>.Failure(ApiResponseStatus.NotFound);
+                }
+
+                // Check if the account record is already deleted
+                var status = await _globalParamRepository.GetGlobalParamIdByKeyName("Deleted", "AccountxxxStatus");
+                if (getAccount.StatusId == status)
+                {
+                    _logger.Error($"AccountService/DeleteAccount, Param:{JsonSerializer.Serialize(req)}, ErrorCode:'{ApiResponseStatus.AlreadyDeleted.Value()}', ErrorMessage:'{ApiResponseStatus.AlreadyDeleted.Description()}'");
+                    return ApiResponse<DeleteAccountResponse>.Failure(ApiResponseStatus.AlreadyDeleted);
+                }
+
                 //get user id
                 var userId = _currentUserService.GetUserId();
                 if (userId == null)

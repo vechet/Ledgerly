@@ -2,6 +2,7 @@
 using AutoMapper.QueryableExtensions;
 using Ledgerly.API.Helpers;
 using Ledgerly.API.Models.Domains;
+using Ledgerly.API.Models.DTOs.Account;
 using Ledgerly.API.Models.DTOs.AuditLog;
 using Ledgerly.API.Models.DTOs.Category;
 using Ledgerly.API.Repositories;
@@ -11,6 +12,7 @@ using Ledgerly.Helpers;
 using Microsoft.EntityFrameworkCore;
 using NLog;
 using System.Diagnostics;
+using System.Security.Principal;
 using System.Text.Json;
 using Udemy.Data;
 
@@ -79,8 +81,15 @@ namespace Ledgerly.API.Services
         {
             try
             {
-                var category = await _CategoryRepository.GetCategory(req.id);
-                var categoryRes = _mapper.Map<GetCategoryResponse>(category);
+                // Check if category exists
+                var getCategory = await _CategoryRepository.GetCategory(req.Id);
+                if (getCategory == null) 
+                {
+                    _logger.Error($"CategoryService/GetCategory, Param:{JsonSerializer.Serialize(req)}, ErrorCode:'{ApiResponseStatus.NotFound.Value()}', ErrorMessage:'{ApiResponseStatus.NotFound.Description()}'");
+                    return ApiResponse<GetCategoryResponse>.Failure(ApiResponseStatus.NotFound);
+                }
+
+                var categoryRes = _mapper.Map<GetCategoryResponse>(getCategory);
 
                 // Response
                 return ApiResponse<GetCategoryResponse>.Success(categoryRes);
@@ -154,6 +163,22 @@ namespace Ledgerly.API.Services
         {
             try
             {
+                // Check if category exists
+                var getCategory = await _CategoryRepository.GetCategory(req.Id);
+                if (getCategory == null)
+                {
+                    _logger.Error($"CategoryService/UpdateCategory, Param:{JsonSerializer.Serialize(req)}, ErrorCode:'{ApiResponseStatus.NotFound.Value()}', ErrorMessage:'{ApiResponseStatus.NotFound.Description()}'");
+                    return ApiResponse<UpdateCategoryResponse>.Failure(ApiResponseStatus.NotFound);
+                }
+
+                // Check if the account record is already deleted
+                var status = await _globalParamRepository.GetGlobalParamIdByKeyName("Deleted", "CategoryxxxStatus");
+                if (getCategory == null)
+                {
+                    _logger.Error($"CategoryService/UpdateCategory, Param:{JsonSerializer.Serialize(req)}, ErrorCode:'{ApiResponseStatus.AlreadyDeleted.Value()}', ErrorMessage:'{ApiResponseStatus.AlreadyDeleted.Description()}'");
+                    return ApiResponse<UpdateCategoryResponse>.Failure(ApiResponseStatus.AlreadyDeleted);
+                }
+
                 //get user id
                 var userId = _currentUserService.GetUserId();
                 if (userId == null)
@@ -204,6 +229,22 @@ namespace Ledgerly.API.Services
         {
             try
             {
+                // Check if category exists
+                var getCategory = await _CategoryRepository.GetCategory(req.Id);
+                if (getCategory == null)
+                {
+                    _logger.Error($"CategoryService/DeleteCategory, Param:{JsonSerializer.Serialize(req)}, ErrorCode:'{ApiResponseStatus.NotFound.Value()}', ErrorMessage:'{ApiResponseStatus.NotFound.Description()}'");
+                    return ApiResponse<DeleteCategoryResponse>.Failure(ApiResponseStatus.NotFound);
+                }
+
+                // Check if the account record is already deleted
+                var status = await _globalParamRepository.GetGlobalParamIdByKeyName("Deleted", "CategoryxxxStatus");
+                if (getCategory == null)
+                {
+                    _logger.Error($"CategoryService/DeleteCategory, Param:{JsonSerializer.Serialize(req)}, ErrorCode:'{ApiResponseStatus.AlreadyDeleted.Value()}', ErrorMessage:'{ApiResponseStatus.AlreadyDeleted.Description()}'");
+                    return ApiResponse<DeleteCategoryResponse>.Failure(ApiResponseStatus.AlreadyDeleted);
+                }
+
                 //get user id
                 var userId = _currentUserService.GetUserId();
                 if (userId == null)
