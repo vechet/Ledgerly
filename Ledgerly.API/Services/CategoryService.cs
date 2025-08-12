@@ -45,7 +45,7 @@ namespace Ledgerly.API.Services
 
                 // add new transaction type
                 var category = _mapper.Map<Category>(req);
-                category.StatusId = await _globalParamRepository.GetGlobalParamIdByKeyName("Active", "CategoryxxxStatus");
+                category.StatusId = await _globalParamRepository.GetGlobalParamIdByKeyName("Normal", "CategoryxxxStatus");
                 category.UserId = userId;
                 category.CreatedBy = userId;
                 category.CreatedDate = GlobalFunction.GetCurrentDateTime();
@@ -96,9 +96,8 @@ namespace Ledgerly.API.Services
         {
             try
             {
-                var statusActive = await _globalParamRepository.GetGlobalParamIdByKeyName("Active", "CategoryxxxStatus");
-                var statusInactive = await _globalParamRepository.GetGlobalParamIdByKeyName("Inactive", "CategoryxxxStatus");
-                var query = _db.Category.Where(x => x.StatusId == statusActive || x.StatusId == statusInactive).AsQueryable();
+                var status = await _globalParamRepository.GetGlobalParamIdByKeyName("Normal", "CategoryxxxStatus");
+                var query = _db.Category.Where(x => x.StatusId == status).AsQueryable();
 
                 var filter = req.Filter;
 
