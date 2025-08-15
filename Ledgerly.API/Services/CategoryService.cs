@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using AutoMapper.QueryableExtensions;
+using Ledgerly.API.Enums;
 using Ledgerly.API.Helpers;
 using Ledgerly.API.Models.Domains;
 using Ledgerly.API.Models.DTOs.Account;
@@ -21,7 +22,7 @@ namespace Ledgerly.API.Services
     public class CategoryService(ICategoryRepository CategoryRepository,
         IMapper mapper,
         LedgerlyDbContext db,
-        ICurrentUserService currentUserService,
+        IUserService currentUserService,
         IAuditLogService auditLogService,
         IGlobalParamRepository globalParamRepository) : ICategoryService
     {
@@ -29,7 +30,7 @@ namespace Ledgerly.API.Services
         private readonly IMapper _mapper = mapper;
         private readonly LedgerlyDbContext _db = db;
         private Logger _logger = LogManager.GetCurrentClassLogger();
-        private readonly ICurrentUserService _currentUserService = currentUserService;
+        private readonly IUserService _currentUserService = currentUserService;
         private readonly IAuditLogService _auditLogService = auditLogService;
         private readonly IGlobalParamRepository _globalParamRepository = globalParamRepository;
 
@@ -47,7 +48,7 @@ namespace Ledgerly.API.Services
 
                 // add new transaction type
                 var category = _mapper.Map<Category>(req);
-                category.StatusId = await _globalParamRepository.GetGlobalParamIdByKeyName("Normal", "CategoryxxxStatus");
+                category.StatusId = await _globalParamRepository.GetGlobalParamIdByKeyName(EnumGlobalParam.Normal.ToString(), EnumGlobalParamType.CategoryxxxStatus.ToString());
                 category.UserId = userId;
                 category.CreatedBy = userId;
                 category.CreatedDate = GlobalFunction.GetCurrentDateTime();
@@ -255,7 +256,7 @@ namespace Ledgerly.API.Services
 
                 // update category type
                 var category = _mapper.Map<Category>(req);
-                category.StatusId = await _globalParamRepository.GetGlobalParamIdByKeyName("Deleted", "CategoryxxxStatus");
+                category.StatusId = await _globalParamRepository.GetGlobalParamIdByKeyName(EnumGlobalParam.Deleted.ToString(), EnumGlobalParamType.CategoryxxxStatus.ToString());
                 category.UserId = userId;
                 category.ModifiedBy = userId;
                 category.ModifiedDate = GlobalFunction.GetCurrentDateTime();

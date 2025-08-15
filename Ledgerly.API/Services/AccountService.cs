@@ -14,13 +14,14 @@ using System.Text.Json;
 using Udemy.Data;
 using Ledgerly.API.Repositories;
 using Ledgerly.API.Models.DTOs.Category;
+using Ledgerly.API.Enums;
 
 namespace Ledgerly.API.Services
 {
     public class AccountService(IAccountRepository AccountRepository,
         IMapper mapper,
         LedgerlyDbContext db,
-        ICurrentUserService currentUserService,
+        IUserService currentUserService,
         IAuditLogService auditLogService,
         IGlobalParamRepository globalParamRepository) : IAccountService
     {
@@ -28,7 +29,7 @@ namespace Ledgerly.API.Services
         private readonly IMapper _mapper = mapper;
         private readonly LedgerlyDbContext _db = db;
         private Logger _logger = LogManager.GetCurrentClassLogger();
-        private readonly ICurrentUserService _currentUserService = currentUserService;
+        private readonly IUserService _currentUserService = currentUserService;
         private readonly IAuditLogService _auditLogService = auditLogService;
         private readonly IGlobalParamRepository _globalParamRepository = globalParamRepository;
 
@@ -46,7 +47,7 @@ namespace Ledgerly.API.Services
 
                 // add new transaction type
                 var account = _mapper.Map<Account>(req);
-                account.StatusId = await _globalParamRepository.GetGlobalParamIdByKeyName("Normal", "AccountxxxStatus");
+                account.StatusId = await _globalParamRepository.GetGlobalParamIdByKeyName(EnumGlobalParam.Normal.ToString(), EnumGlobalParamType.AccountxxxStatus.ToString());
                 account.UserId = userId;
                 account.CreatedBy = userId;
                 account.CreatedDate = GlobalFunction.GetCurrentDateTime();
@@ -254,7 +255,7 @@ namespace Ledgerly.API.Services
 
                 // update transaction type
                 var account = _mapper.Map<Account>(req);
-                account.StatusId = await _globalParamRepository.GetGlobalParamIdByKeyName("Deleted", "AccountxxxStatus");
+                account.StatusId = await _globalParamRepository.GetGlobalParamIdByKeyName(EnumGlobalParam.Deleted.ToString(), EnumGlobalParamType.AccountxxxStatus.ToString());
                 account.UserId = userId;
                 account.ModifiedBy = userId;
                 account.ModifiedDate = GlobalFunction.GetCurrentDateTime();

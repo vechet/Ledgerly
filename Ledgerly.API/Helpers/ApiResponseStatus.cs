@@ -4,6 +4,9 @@ namespace Ledgerly.Helpers
 {
     public enum ApiResponseStatus
     {
+        [Description("Username 'string' is already taken.")]
+        DuplicateUserName = 215,
+
         [Description("Internal Error")]
         InternalError = 500,
 

@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using AutoMapper.QueryableExtensions;
+using Ledgerly.API.Enums;
 using Ledgerly.API.Helpers;
 using Ledgerly.API.Models.Domains;
 using Ledgerly.API.Models.DTOs.Account;
@@ -21,7 +22,7 @@ namespace Ledgerly.API.Services
     public class TransactionService(ITransactionRepository transactionRepository,
         IMapper mapper,
         LedgerlyDbContext db,
-        ICurrentUserService currentUserService,
+        IUserService currentUserService,
         IAuditLogService auditLogService,
         IGlobalParamRepository globalParamRepository) : ITransactionService
     {
@@ -29,7 +30,7 @@ namespace Ledgerly.API.Services
         private readonly IMapper _mapper = mapper;
         private readonly LedgerlyDbContext _db = db;
         private Logger _logger = LogManager.GetCurrentClassLogger();
-        private readonly ICurrentUserService _currentUserService = currentUserService;
+        private readonly IUserService _currentUserService = currentUserService;
         private readonly IAuditLogService _auditLogService = auditLogService;
         private readonly IGlobalParamRepository _globalParamRepository = globalParamRepository;
 
@@ -47,7 +48,7 @@ namespace Ledgerly.API.Services
 
                 // add new transaction 
                 var transaction = _mapper.Map<Transaction>(req);
-                transaction.StatusId =  await _globalParamRepository.GetGlobalParamIdByKeyName("Normal", "TransactionxxxStatus");
+                transaction.StatusId =  await _globalParamRepository.GetGlobalParamIdByKeyName(EnumGlobalParam.Normal.ToString(), EnumGlobalParamType.TransactionxxxStatus.ToString());
                 transaction.UserId = userId;
                 transaction.CreatedBy = userId;
                 transaction.CreatedDate = GlobalFunction.GetCurrentDateTime();
@@ -238,7 +239,7 @@ namespace Ledgerly.API.Services
                 }
 
                 // Check if the account record is already deleted
-                var status = await _globalParamRepository.GetGlobalParamIdByKeyName("Deleted", "TransactionxxxStatus");
+                var status = await _globalParamRepository.GetGlobalParamIdByKeyName(EnumGlobalParam.Deleted.ToString(), EnumGlobalParamType.TransactionxxxStatus.ToString());
                 if (getTransaction == null)
                 {
                     _logger.Error($"TransactionService/DeleteTransaction, Param:{JsonSerializer.Serialize(req)}, ErrorCode:'{ApiResponseStatus.AlreadyDeleted.Value()}', ErrorMessage:'{ApiResponseStatus.AlreadyDeleted.Description()}'");

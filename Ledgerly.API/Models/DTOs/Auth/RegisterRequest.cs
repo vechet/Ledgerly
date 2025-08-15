@@ -5,14 +5,13 @@ namespace Ledgerly.API.Models.DTOs.User
     public class RegisterRequest
     {
         [Required]
-        [DataType(DataType.EmailAddress)]
         public string Username { get; set; } = null!;
 
         [Required]
-        [DataType(DataType.Password)]
         public string Password { get; set; } = null!;
 
         [Required]
+        [EmailAddress]
         public string Email { get; set; } = null!;
 
         public string? Phone { get; set; }

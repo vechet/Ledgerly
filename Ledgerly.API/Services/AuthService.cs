@@ -15,7 +15,7 @@ namespace Ledgerly.API.Services
     public class AuthService(UserManager<IdentityUser> userManager,
         RoleManager<IdentityRole> roleManager,
         SignInManager<IdentityUser> signInManager,
-        ITokenService tokenService,
+        IJwtService tokenService,
         LedgerlyAuthDbContext db,
         IConfiguration configuration,
         IMapper mapper) : IAuthService
@@ -23,7 +23,7 @@ namespace Ledgerly.API.Services
         private readonly UserManager<IdentityUser> _userManager = userManager;
         private readonly RoleManager<IdentityRole> _roleManager = roleManager;
         private readonly SignInManager<IdentityUser> _signInManager = signInManager;
-        private readonly ITokenService _tokenService = tokenService;
+        private readonly IJwtService _tokenService = tokenService;
         private Logger _logger = LogManager.GetCurrentClassLogger();
         private readonly LedgerlyAuthDbContext _db = db;
         private readonly IConfiguration _configuration = configuration;
@@ -40,7 +40,7 @@ namespace Ledgerly.API.Services
                 var identityResult = await _userManager.CreateAsync(identityUser, req.Password);
                 if (!identityResult.Succeeded)
                 {
-                    return ApiResponse<RegisterResponse>.Failure(ApiResponseStatus.InternalError);
+                    return ApiResponse<RegisterResponse>.Failure(ApiResponseStatus.DuplicateUserName);
                 }
 
                 // Add roles to new user
@@ -60,7 +60,7 @@ namespace Ledgerly.API.Services
 
                 // Log Info
                 _logger.Info($"AuthService/Register, Param:{JsonSerializer.Serialize(req)}, ErrorCode:'{e.HResult}', ErrorMessage:'{e.Message}'");
-                return ApiResponse<RegisterResponse>.Failure(ApiResponseStatus.InternalError);
+                return ApiResponse<RegisterResponse>.Failure(e.HResult, e.Message);
             }
         }
 
@@ -84,7 +84,7 @@ namespace Ledgerly.API.Services
 
                 // Generate Access Token
                 var roles = await _userManager.GetRolesAsync(user);
-                var jwtToken = _tokenService.CreateAccessToken(user, roles.ToList());
+                var jwtToken = _tokenService.GenerateToken(user, roles.ToList());
 
                 var res = new LoginResponse
                 {

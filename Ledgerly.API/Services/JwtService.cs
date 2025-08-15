@@ -9,10 +9,11 @@ using System.Text;
 
 namespace Ledgerly.Services
 {
-    public class TokenService(IConfiguration configuration) : ITokenService
+    public class JwtService(IConfiguration configuration) : IJwtService
     {
         private readonly IConfiguration _configuration = configuration;
-        public AccessTokenResponse CreateAccessToken(IdentityUser user, List<string> roles)
+
+        public AccessTokenResponse GenerateToken(IdentityUser user, List<string> roles)
         {
             // Create claims
             var claims = new List<Claim>
@@ -20,8 +21,7 @@ namespace Ledgerly.Services
                 new Claim(ClaimTypes.NameIdentifier, user.Id),
                 new Claim(ClaimTypes.Name, user.UserName),
                 new Claim(ClaimTypes.Email, user.Email),
-                new Claim("TokenType", "AccessToken")
-
+                new Claim(ClaimTypes.MobilePhone, user.PhoneNumber)
             };
 
             foreach (var role in roles)
