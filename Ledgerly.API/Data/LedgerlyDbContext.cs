@@ -16,12 +16,15 @@ namespace Udemy.Data
 
         public DbSet<AuditLog> AuditLog { get; set; }
 
-        //public DbSet<Status> Status { get; set; }
-
         public DbSet<GlobalParam> GlobalParam { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
+            base.OnModelCreating(modelBuilder);
+
+            var globalParamCategoryStatusId = 1;
+            var userId = "user-id";
+
             // Set the collation for the entire database
             modelBuilder.UseCollation("SQL_Latin1_General_CP850_BIN");
 
@@ -39,15 +42,17 @@ namespace Udemy.Data
                     .OnDelete(DeleteBehavior.ClientSetNull)
                     .HasConstraintName("FK_Category_Parent_ParentId");
 
-                // Seed a default record for Category
-                //entity.HasData(new Category
-                //{
-                //    Id = 1,
-                //    Name = "Main",
-                //    StatusId = 1,
-                //    CreatedBy = "1",
-                //    CreatedDate = new DateTime(2025, 07, 22),
-                //});
+                //Seed a default record for Category
+                entity.HasData(new Category
+                {
+                    Id = 1,
+                    Name = "Main",
+                    StatusId = globalParamCategoryStatusId,
+                    UserId = userId,
+                    CreatedBy = "1",
+                    CreatedDate = new DateTime(2025, 07, 22),
+                    IsSystemValue = true,
+                });
             });
 
             modelBuilder.Entity<Transaction>(entity =>
@@ -80,30 +85,55 @@ namespace Udemy.Data
                     .HasConstraintName("FK_Account_Status_StatusId");
             });
 
-            //modelBuilder.Entity<Status>(entity =>
-            //{
-            //    entity.ToTable("Status");
+            modelBuilder.Entity<GlobalParam>(entity =>
+            {
+                entity.ToTable("GlobalParam");
 
-            //    // Seed a default record for Status
-            //    entity.HasData(new Status
-            //    {
-            //        Id = 1,
-            //        Name = "Active",
-            //        KeyName = "Active",
-            //        CreatedBy = "1",
-            //        CreatedDate = new DateTime(2025, 07, 22),
-            //    });
-            //    entity.HasData(new Status
-            //    {
-            //        Id = 2,
-            //        Name = "Inactive",
-            //        KeyName = "Inactive",
-            //        CreatedBy = "1",
-            //        CreatedDate = new DateTime(2025, 07, 22),
-            //    });
-            //});
+                // Seed a default record for GlobalParam
+                entity.HasData(new GlobalParam
+                {
+                    Id = globalParamCategoryStatusId,
+                    Name = "Normal",
+                    KeyName = "Normal",
+                    Type = "CategoryxxxStatus",
+                });
+                entity.HasData(new GlobalParam
+                {
+                    Id = 2,
+                    Name = "Deleted",
+                    KeyName = "Deleted",
+                    Type = "CategoryxxxStatus",
+                });
+                entity.HasData(new GlobalParam
+                {
+                    Id = 3,
+                    Name = "Normal",
+                    KeyName = "Normal",
+                    Type = "TransactionxxxStatus",
+                });
+                entity.HasData(new GlobalParam
+                {
+                    Id = 4,
+                    Name = "Deleted",
+                    KeyName = "Deleted",
+                    Type = "TransactionxxxStatus",
+                });
+                entity.HasData(new GlobalParam
+                {
+                    Id = 5,
+                    Name = "Normal",
+                    KeyName = "Normal",
+                    Type = "AccountxxxStatus",
+                });
+                entity.HasData(new GlobalParam
+                {
+                    Id = 6,
+                    Name = "Deleted",
+                    KeyName = "Deleted",
+                    Type = "AccountxxxStatus",
+                });
+            });
 
-            base.OnModelCreating(modelBuilder);
         }
 
     }

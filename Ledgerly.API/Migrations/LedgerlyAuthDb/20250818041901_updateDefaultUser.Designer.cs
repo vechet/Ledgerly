@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Udemy.Data;
 
@@ -11,9 +12,11 @@ using Udemy.Data;
 namespace Ledgerly.API.Migrations.LedgerlyAuthDb
 {
     [DbContext(typeof(LedgerlyAuthDbContext))]
-    partial class LedgerlyAuthDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250818041901_updateDefaultUser")]
+    partial class updateDefaultUser
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -54,18 +57,6 @@ namespace Ledgerly.API.Migrations.LedgerlyAuthDb
                             Id = "role-admin-id",
                             Name = "ROLE_SYSTEM_ADMIN",
                             NormalizedName = "ROLE_SYSTEM_ADMIN"
-                        },
-                        new
-                        {
-                            Id = "4e221a68-5217-4ba1-9716-df7437fb0c70",
-                            Name = "ROLE_ADMIN",
-                            NormalizedName = "ROLE_ADMIN"
-                        },
-                        new
-                        {
-                            Id = "96ed14e4-fa2a-4986-9ee0-2d6c387674bd",
-                            Name = "ROLE_USER",
-                            NormalizedName = "ROLE_USER"
                         });
                 });
 
@@ -163,15 +154,15 @@ namespace Ledgerly.API.Migrations.LedgerlyAuthDb
                         {
                             Id = "user-id",
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "c9687137-f14f-469b-9d88-fbb56c128b92",
+                            ConcurrencyStamp = "9a5e2b77-1269-45f9-b12a-ab39427cc980",
                             Email = "systemadmin@gmail.com.com",
                             EmailConfirmed = false,
                             LockoutEnabled = true,
                             NormalizedEmail = "SYSTEMADMIN@GMAIL.COM",
                             NormalizedUserName = "SYSTEMADMIN",
-                            PasswordHash = "AQAAAAIAAYagAAAAEGKM5BMN7c+26tXHVAtf5oKWu35Dzakr9lkq+5DrTrzbusfYAinE2Yda3Mfm4xQcAw==",
+                            PasswordHash = "AQAAAAIAAYagAAAAEDTOSNMv6bFRZsShlLh+nwvBBfFCRoctHoZQdV7gkrEeJ8FSJwzp72p4CuLuRIKExQ==",
                             PhoneNumberConfirmed = false,
-                            SecurityStamp = "667f8ab0-5675-4317-8ec6-55d3b5e23dbe",
+                            SecurityStamp = "9b9d2a5b-85c3-4467-81ed-d0e9b823dfea",
                             TwoFactorEnabled = false,
                             UserName = "systemadmin"
                         });

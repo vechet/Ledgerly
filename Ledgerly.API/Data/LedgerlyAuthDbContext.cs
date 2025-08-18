@@ -13,10 +13,35 @@ namespace Udemy.Data
         {
             base.OnModelCreating(builder);
 
+            var adminRoleId = "role-admin-id";
+            var userId = "user-id";
+
             builder.Entity<IdentityRole>().HasData(
-                new IdentityRole { Name = "System Admin", NormalizedName = "ROLE_SYSTEM_ADMIN" },
-                new IdentityRole { Name = "Admin", NormalizedName = "ROLE_ADMIN" },
-                new IdentityRole { Name = "User", NormalizedName = "ROLE_USER" }
+                new IdentityRole { Id = adminRoleId, Name = "ROLE_SYSTEM_ADMIN", NormalizedName = "ROLE_SYSTEM_ADMIN" },
+                new IdentityRole { Name = "ROLE_ADMIN", NormalizedName = "ROLE_ADMIN" },
+                new IdentityRole { Name = "ROLE_USER", NormalizedName = "ROLE_USER" }
+                );
+
+            builder.Entity<IdentityUser>().HasData(
+                new IdentityUser
+                {
+                    Id = userId,
+                    UserName = "systemadmin",
+                    NormalizedUserName = "SYSTEMADMIN",
+                    Email = "systemadmin@gmail.com.com",
+                    NormalizedEmail = "SYSTEMADMIN@GMAIL.COM",
+                    EmailConfirmed = false,
+                    PasswordHash = new PasswordHasher<IdentityUser>().HashPassword(null, "chet@12345"),
+                    LockoutEnabled = true
+                }
+            );
+
+            builder.Entity<IdentityUserRole<string>>().HasData(
+                new IdentityUserRole<string>
+                {
+                    UserId = userId,
+                    RoleId = adminRoleId
+                }
             );
         }
 
