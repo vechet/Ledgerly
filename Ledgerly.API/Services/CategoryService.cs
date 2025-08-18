@@ -84,7 +84,7 @@ namespace Ledgerly.API.Services
             {
                 // Check if category exists
                 var getCategory = await _CategoryRepository.GetCategory(req.Id);
-                if (getCategory == null) 
+                if (getCategory == null)
                 {
                     _logger.Error($"CategoryService/GetCategory, Param:{JsonSerializer.Serialize(req)}, ErrorCode:'{ApiResponseStatus.NotFound.Value()}', ErrorMessage:'{ApiResponseStatus.NotFound.Description()}'");
                     return ApiResponse<GetCategoryResponse>.Failure(ApiResponseStatus.NotFound);
@@ -106,7 +106,7 @@ namespace Ledgerly.API.Services
         {
             try
             {
-                var status = await _globalParamRepository.GetGlobalParamIdByKeyName("Normal", "CategoryxxxStatus");
+                var status = await _globalParamRepository.GetGlobalParamIdByKeyName(EnumGlobalParam.Normal.ToString(), EnumGlobalParamType.CategoryxxxStatus.ToString());
                 var query = _db.Category.Where(x => x.StatusId == status).AsQueryable();
 
                 var filter = req.Filter;
@@ -173,7 +173,7 @@ namespace Ledgerly.API.Services
                 }
 
                 // Check if the account record is already deleted
-                var status = await _globalParamRepository.GetGlobalParamIdByKeyName("Deleted", "CategoryxxxStatus");
+                var status = await _globalParamRepository.GetGlobalParamIdByKeyName(EnumGlobalParam.Deleted.ToString(), EnumGlobalParamType.CategoryxxxStatus.ToString());
                 if (getCategory == null)
                 {
                     _logger.Error($"CategoryService/UpdateCategory, Param:{JsonSerializer.Serialize(req)}, ErrorCode:'{ApiResponseStatus.AlreadyDeleted.Value()}', ErrorMessage:'{ApiResponseStatus.AlreadyDeleted.Description()}'");
@@ -239,7 +239,7 @@ namespace Ledgerly.API.Services
                 }
 
                 // Check if the account record is already deleted
-                var status = await _globalParamRepository.GetGlobalParamIdByKeyName("Deleted", "CategoryxxxStatus");
+                var status = await _globalParamRepository.GetGlobalParamIdByKeyName(EnumGlobalParam.Deleted.ToString(), EnumGlobalParamType.CategoryxxxStatus.ToString());
                 if (getCategory == null)
                 {
                     _logger.Error($"CategoryService/DeleteCategory, Param:{JsonSerializer.Serialize(req)}, ErrorCode:'{ApiResponseStatus.AlreadyDeleted.Value()}', ErrorMessage:'{ApiResponseStatus.AlreadyDeleted.Description()}'");

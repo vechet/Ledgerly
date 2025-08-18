@@ -105,7 +105,7 @@ namespace Ledgerly.API.Services
         {
             try
             {
-                var status = await _globalParamRepository.GetGlobalParamIdByKeyName("Normal", "AccountxxxStatus");
+                var status = await _globalParamRepository.GetGlobalParamIdByKeyName(EnumGlobalParam.Normal.ToString(), EnumGlobalParamType.AccountxxxStatus.ToString());
                 var query = _db.Account.Where(x => x.StatusId == status).AsQueryable();
 
                 var filter = req.Filter;
@@ -172,7 +172,7 @@ namespace Ledgerly.API.Services
                 }
 
                 // Check if the account record is already deleted
-                var status = await _globalParamRepository.GetGlobalParamIdByKeyName("Deleted", "AccountxxxStatus");
+                var status = await _globalParamRepository.GetGlobalParamIdByKeyName(EnumGlobalParam.Deleted.ToString(), EnumGlobalParamType.AccountxxxStatus.ToString());
                 if (getAccount.StatusId == status)
                 {
                     _logger.Error($"AccountService/UpdateAccount, Param:{JsonSerializer.Serialize(req)}, ErrorCode:'{ApiResponseStatus.AlreadyDeleted.Value()}', ErrorMessage:'{ApiResponseStatus.AlreadyDeleted.Description()}'");
@@ -238,7 +238,7 @@ namespace Ledgerly.API.Services
                 }
 
                 // Check if the account record is already deleted
-                var status = await _globalParamRepository.GetGlobalParamIdByKeyName("Deleted", "AccountxxxStatus");
+                var status = await _globalParamRepository.GetGlobalParamIdByKeyName(EnumGlobalParam.Deleted.ToString(), EnumGlobalParamType.AccountxxxStatus.ToString());
                 if (getAccount.StatusId == status)
                 {
                     _logger.Error($"AccountService/DeleteAccount, Param:{JsonSerializer.Serialize(req)}, ErrorCode:'{ApiResponseStatus.AlreadyDeleted.Value()}', ErrorMessage:'{ApiResponseStatus.AlreadyDeleted.Description()}'");
