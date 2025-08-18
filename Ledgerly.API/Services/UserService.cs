@@ -22,6 +22,7 @@ namespace Ledgerly.API.Services
                 Username = getUserInfo.FindFirst(ClaimTypes.Name)?.Value,
                 Email = getUserInfo.FindFirst(ClaimTypes.Email)?.Value,
                 Phone = getUserInfo.FindFirst(ClaimTypes.MobilePhone)?.Value,
+                Roles = getUserInfo.FindAll(ClaimTypes.Role).Select(c => c.Value).ToList(),
             };
             return userInfo;
         }
