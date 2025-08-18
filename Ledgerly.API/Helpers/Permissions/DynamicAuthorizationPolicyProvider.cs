@@ -1,7 +1,8 @@
-﻿using Microsoft.AspNetCore.Authorization;
+﻿using Ledgerly.API.Enums;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.Extensions.Options;
 
-namespace Ledgerly.API.Helpers
+namespace Ledgerly.API.Helpers.Permissions
 {
     public class DynamicAuthorizationPolicyProvider : IAuthorizationPolicyProvider
     {
@@ -28,5 +29,4 @@ namespace Ledgerly.API.Helpers
             return Task.FromResult(policy);
         }
     }
-
 }

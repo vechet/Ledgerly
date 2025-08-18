@@ -1,4 +1,4 @@
-using Ledgerly.API.Helpers;
+using Ledgerly.API.Helpers.Permissions;
 using Ledgerly.API.Mappings;
 using Ledgerly.API.Middlewares;
 using Ledgerly.API.Repositories;

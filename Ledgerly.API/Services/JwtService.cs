@@ -1,4 +1,5 @@
-﻿using Ledgerly.API.Helpers;
+﻿using Ledgerly.API.Enums;
+using Ledgerly.API.Helpers;
 using Ledgerly.API.Models;
 using Ledgerly.API.Services.Interfaces;
 using Microsoft.AspNetCore.Identity;
@@ -38,9 +39,10 @@ namespace Ledgerly.Services
                 var role = _roleManager.FindByNameAsync(roleName).GetAwaiter().GetResult();
                 var roleClaims = _roleManager.GetClaimsAsync(role).GetAwaiter().GetResult();
 
+                var claimTypesPerm = EnumClaimTypes.PERMISSIONS.ToString();
                 var permissionClaims = roleClaims
-                    .Where(c => c.Type == "Permission")
-                    .Select(c => new Claim("Permission", c.Value));
+                    .Where(c => c.Type == claimTypesPerm)
+                    .Select(c => new Claim(claimTypesPerm, c.Value));
 
                 claims.AddRange(permissionClaims);
             }

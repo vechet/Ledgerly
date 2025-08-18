@@ -1,4 +1,5 @@
-﻿using Ledgerly.API.Helpers;
+﻿using Ledgerly.API.Enums;
+using Ledgerly.API.Helpers;
 using Ledgerly.API.Models.DTOs.Transaction;
 using Ledgerly.API.Services.Interfaces;
 using Ledgerly.Helpers;
@@ -10,8 +11,6 @@ namespace Ledgerly.API.Controllers
 {
     [Route("api")]
     [ApiController]
-    //[Authorize]
-    //[Authorize(Roles = "ROLE_SYSTEM_ADMIN")]
     public class TransactionController : ControllerBase
     {
         private readonly ITransactionService _transactionService;
@@ -21,35 +20,35 @@ namespace Ledgerly.API.Controllers
             _transactionService = transactionService;
         }
 
-        [Authorize(Policy = "Transaction.Create")]
+        [Authorize(Policy = nameof(EnumPermissions.TRANSACTION_CREATE))]
         [HttpPost("v1/transaction/create-transaction")]
         public async Task<ApiResponse<CreateTransactionResponse>> CreateTransaction([FromBody] CreateTransactionRequest req)
         {
             return await _transactionService.CreateTransaction(req);
         }
 
-        [Authorize(Policy = "Transaction.View")]
+        [Authorize(Policy = nameof(EnumPermissions.TRANSACTION_VIEW))]
         [HttpPost("v1/transaction/get-transactions")]
         public async Task<ApiResponse<GetTransactionsResponse>> GetTransactions([FromBody] PaginationRequest req)
         {
             return await _transactionService.GetTransactions(req);
         }
 
-        [Authorize(Policy = "Transaction.Edit")]
+        [Authorize(Policy = nameof(EnumPermissions.TRANSACTION_UPDATE))]
         [HttpPost("v1/transaction/update-transaction")]
         public async Task<ApiResponse<UpdateTransactionResponse>> UpdateTransaction([FromBody] UpdateTransactionRequest req)
         {
             return await _transactionService.UpdateTransaction(req);
         }
 
-        [Authorize(Policy = "Transaction.View")]
+        [Authorize(Policy = nameof(EnumPermissions.TRANSACTION_VIEW))]
         [HttpPost("v1/transaction/get-transaction")]
         public async Task<ApiResponse<GetTransactionResponse>> GetTransaction([FromBody] GetTransactionRequest req)
         {
             return await _transactionService.GetTransaction(req);
         }
 
-        [Authorize(Policy = "Transaction.Delete")]
+        [Authorize(Policy = nameof(EnumPermissions.TRANSACTION_DELETE))]
         [HttpPost("v1/transaction/delete-transaction")]
         public async Task<ApiResponse<DeleteTransactionResponse>> DeleteTransaction([FromBody] DeleteTransactionRequest req)
         {

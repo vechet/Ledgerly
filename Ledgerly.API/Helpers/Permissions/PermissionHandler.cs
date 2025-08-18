@@ -1,8 +1,9 @@
-﻿using Microsoft.AspNetCore.Authorization;
+﻿using Ledgerly.API.Enums;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using System.Security.Claims;
 
-namespace Ledgerly.API.Helpers
+namespace Ledgerly.API.Helpers.Permissions
 {
     public class PermissionHandler : AuthorizationHandler<PermissionRequirement>
     {
@@ -12,7 +13,7 @@ namespace Ledgerly.API.Helpers
         {
             // Check if the user has the exact permission claim
             var hasPermission = context.User.Claims
-                .Where(c => c.Type == "Permission")
+                .Where(c => c.Type == EnumClaimTypes.PERMISSIONS.ToString())
                 .Any(c => c.Value == requirement.PermissionName);
 
             if (hasPermission)
@@ -24,5 +25,4 @@ namespace Ledgerly.API.Helpers
         }
 
     }
-
 }
