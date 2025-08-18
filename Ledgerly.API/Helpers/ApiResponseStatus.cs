@@ -62,6 +62,9 @@ namespace Ledgerly.Helpers
         [Description("Not found")]
         NotFound = 404,
 
+        [Description("Unauthorized or No Permission")]
+        Forbidden = 403,
+
         [Description("This resource has been deleted")]
         Gone = 410,
 

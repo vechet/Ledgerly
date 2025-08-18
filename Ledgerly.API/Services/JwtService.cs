@@ -2,20 +2,27 @@
 using Ledgerly.API.Models;
 using Ledgerly.API.Services.Interfaces;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
+using Udemy.Data;
 
 namespace Ledgerly.Services
 {
-    public class JwtService(IConfiguration configuration) : IJwtService
+    public class JwtService(IConfiguration configuration,
+         LedgerlyAuthDbContext db,
+         UserManager<IdentityUser> userManager,
+         RoleManager<IdentityRole> roleManager) : IJwtService
     {
         private readonly IConfiguration _configuration = configuration;
+        private readonly UserManager<IdentityUser> _userManager = userManager;
+        private readonly RoleManager<IdentityRole> _roleManager = roleManager;
+        private readonly LedgerlyAuthDbContext _db = db;
 
-        public AccessTokenResponse GenerateToken(IdentityUser user, List<string> roles)
+        public List<Claim> GetAllClaims(IdentityUser user)
         {
-            // Create claims
             var claims = new List<Claim>
             {
                 new Claim(ClaimTypes.NameIdentifier, user.Id),
@@ -24,11 +31,28 @@ namespace Ledgerly.Services
                 new Claim(ClaimTypes.MobilePhone, user.PhoneNumber ?? "")
             };
 
-            foreach (var role in roles)
+            var roles = _userManager.GetRolesAsync(user).GetAwaiter().GetResult();
+
+            foreach (var roleName in roles)
             {
-                claims.Add(new Claim(ClaimTypes.Role, role));
+                var role = _roleManager.FindByNameAsync(roleName).GetAwaiter().GetResult();
+                var roleClaims = _roleManager.GetClaimsAsync(role).GetAwaiter().GetResult();
+
+                var permissionClaims = roleClaims
+                    .Where(c => c.Type == "Permission")
+                    .Select(c => new Claim("Permission", c.Value));
+
+                claims.AddRange(permissionClaims);
             }
 
+            return claims;
+        }
+
+        public AccessTokenResponse GenerateToken(IdentityUser user, List<string> roles)
+        {
+            // Create claims
+            var claims = GetAllClaims(user);
+            
             var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration["Jwt:Key"]));
             var credentials = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
 

@@ -18,46 +18,35 @@ namespace Ledgerly.API.Middlewares
 
             if (context.Response.StatusCode == ApiResponseStatus.Unauthorized.Value())
             {
-                context.Response.ContentType = "application/json";
-                context.Response.StatusCode = ApiResponseStatus.Unauthorized.Value();
-
-                var errorResponse = new
-                {
-                    code = ApiResponseStatus.Unauthorized.Value(),
-                    message = ApiResponseStatus.Unauthorized.Description()
-                };
-
-                var jsonErrorResponse = JsonSerializer.Serialize(errorResponse);
-                await context.Response.WriteAsync(jsonErrorResponse);
+                handleStatus(context, ApiResponseStatus.Unauthorized);
             }
             else if (context.Response.StatusCode == ApiResponseStatus.MethodNotAllow.Value())
             {
-                context.Response.ContentType = "application/json";
-                context.Response.StatusCode = ApiResponseStatus.MethodNotAllow.Value();
-
-                var errorResponse = new
-                {
-                    code = ApiResponseStatus.MethodNotAllow.Value(),
-                    message = ApiResponseStatus.MethodNotAllow.Description()
-                };
-
-                var jsonResponse = JsonSerializer.Serialize(errorResponse);
-                await context.Response.WriteAsync(jsonResponse);
+                handleStatus(context, ApiResponseStatus.MethodNotAllow);
             }
             else if (context.Response.StatusCode == ApiResponseStatus.NotFound.Value())
             {
-                context.Response.ContentType = "application/json";
-                context.Response.StatusCode = ApiResponseStatus.NotFound.Value();
-
-                var errorResponse = new
-                {
-                    code = ApiResponseStatus.NotFound.Value(),
-                    message = ApiResponseStatus.NotFound.Description()
-                };
-
-                var jsonResponse = JsonSerializer.Serialize(errorResponse);
-                await context.Response.WriteAsync(jsonResponse);
+                handleStatus(context, ApiResponseStatus.NotFound);
             }
+            else if (context.Response.StatusCode == ApiResponseStatus.Forbidden.Value())
+            {
+                handleStatus(context, ApiResponseStatus.Forbidden);
+            }
+        }
+
+        private async void handleStatus(HttpContext context, ApiResponseStatus statusCode)
+        {
+            context.Response.ContentType = "application/json";
+            context.Response.StatusCode = statusCode.Value();
+
+            var errorResponse = new
+            {
+                code = statusCode.Value(),
+                message = statusCode.Description()
+            };
+
+            var jsonResponse = JsonSerializer.Serialize(errorResponse);
+            await context.Response.WriteAsync(jsonResponse);
         }
     }
 }

@@ -1,3 +1,4 @@
+using Ledgerly.API.Helpers;
 using Ledgerly.API.Mappings;
 using Ledgerly.API.Middlewares;
 using Ledgerly.API.Repositories;
@@ -6,6 +7,7 @@ using Ledgerly.API.Services;
 using Ledgerly.API.Services.Interfaces;
 using Ledgerly.Services;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
@@ -90,6 +92,8 @@ builder.Services.AddScoped<IUserService, UserService>();
 builder.Services.AddScoped<IAuditLogService, AuditLogService>();
 builder.Services.AddScoped<IAccountService, AccountService>();
 builder.Services.AddHttpContextAccessor(); // required for IHttpContextAccessor
+builder.Services.AddSingleton<IAuthorizationPolicyProvider, DynamicAuthorizationPolicyProvider>();
+builder.Services.AddScoped<IAuthorizationHandler, PermissionHandler>(); // Your custom handler
 
 //mapping
 builder.Services.AddAutoMapper(
