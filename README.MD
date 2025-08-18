@@ -54,8 +54,12 @@
 
 ## 🧮 Database Migration Steps
 
-1. Ledgerly uses Entity Framework Core for database access.
-2. Apply Existing Migrations:
+1. Ledgerly uses Entity Framework Core for database access and schema management. To apply existing migrations to the appropriate databases, run the following commands:
+2. Apply Migrations to the Authentication Database:
    ```bash
-   dotnet ef database update
+   dotnet ef database update --context LedgerlyAuthDbContext
+   ```
+3. Apply Migrations to the Main Application Database:
+   ```bash
+   dotnet ef database update --context LedgerlyDbContext
    ```
