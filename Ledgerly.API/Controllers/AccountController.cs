@@ -11,7 +11,7 @@ namespace Ledgerly.API.Controllers
 {
     [Route("api")]
     [ApiController]
-    //[Authorize]
+    [Authorize]
     public class AccountController : ControllerBase
     {
         private readonly IAccountService _accountService;
