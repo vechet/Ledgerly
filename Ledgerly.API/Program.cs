@@ -139,7 +139,7 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
 
 var app = builder.Build();
 
-// Seed roles claims for default role system admin BEFORE app.Run()
+// Seed roles claims or default permission for all role BEFORE app.Run()
 using (var scope = app.Services.CreateScope())
 {
     var roleManager = scope.ServiceProvider.GetRequiredService<RoleManager<IdentityRole>>();
