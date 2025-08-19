@@ -1,10 +1,10 @@
 ﻿using System.ComponentModel;
 
-namespace Ledgerly.Helpers
+namespace Ledgerly.API.Helpers
 {
     public enum ApiResponseStatus
     {
-        [Description("Username 'string' is already taken.")]
+        [Description("Username is already taken.")]
         DuplicateUserName = 215,
 
         [Description("Internal Error")]

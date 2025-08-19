@@ -15,6 +15,7 @@ using Udemy.Data;
 using Ledgerly.API.Repositories;
 using Ledgerly.API.Models.DTOs.Category;
 using Ledgerly.API.Enums;
+using System.Security.Principal;
 
 namespace Ledgerly.API.Services
 {
@@ -28,7 +29,6 @@ namespace Ledgerly.API.Services
         private readonly IAccountRepository _AccountRepository = AccountRepository;
         private readonly IMapper _mapper = mapper;
         private readonly LedgerlyDbContext _db = db;
-        private Logger _logger = LogManager.GetCurrentClassLogger();
         private readonly IUserService _currentUserService = currentUserService;
         private readonly IAuditLogService _auditLogService = auditLogService;
         private readonly IGlobalParamRepository _globalParamRepository = globalParamRepository;
@@ -41,7 +41,7 @@ namespace Ledgerly.API.Services
                 var userId = _currentUserService.GetUserId();
                 if (userId == null)
                 {
-                    _logger.Error($"Accountservice/CreateAccount, Param:{JsonSerializer.Serialize(req)}, ErrorCode:'{ApiResponseStatus.Unauthorized.Value()}', ErrorMessage:'{ApiResponseStatus.Unauthorized.Description()}'");
+                    LogHelper.Info("Accountservice", "CreateAccount", req, ApiResponseStatus.Unauthorized);
                     return ApiResponse<CreateAccountResponse>.Failure(ApiResponseStatus.Unauthorized);
                 }
 
@@ -58,7 +58,7 @@ namespace Ledgerly.API.Services
                 var accountAuditLog = new RecordAuditLog
                 {
                     ControllerName = "Account",
-                    MethodName = "CreateAccount",
+                    MethodName = "Create",
                     TransactionId = newAccount.Id,
                     TransactionNo = newAccount.Name,
                     Description = await GetAuditDescription(newAccount.Id),
@@ -72,7 +72,7 @@ namespace Ledgerly.API.Services
             }
             catch (Exception e)
             {
-                _logger.Info($"Accountservice/CreateAccount, Param:{JsonSerializer.Serialize(req)}, ErrorCode:'{e.HResult}', ErrorMessage:'{e.Message}'");
+                LogHelper.Info("Accountservice", "CreateAccount", req, e.HResult, e.Message);
                 return ApiResponse<CreateAccountResponse>.Failure(ApiResponseStatus.InternalError);
             }
         }
@@ -85,7 +85,7 @@ namespace Ledgerly.API.Services
                 var getAccount = await _AccountRepository.GetAccount(req.Id);
                 if (getAccount == null)
                 {
-                    _logger.Error($"AccountService/GetAccount, Param:{JsonSerializer.Serialize(req)}, ErrorCode:'{ApiResponseStatus.NotFound.Value()}', ErrorMessage:'{ApiResponseStatus.NotFound.Description()}'");
+                    LogHelper.Info("Accountservice", "GetAccount", req, ApiResponseStatus.NotFound);
                     return ApiResponse<GetAccountResponse>.Failure(ApiResponseStatus.NotFound);
                 }
 
@@ -96,7 +96,7 @@ namespace Ledgerly.API.Services
             }
             catch (Exception e)
             {
-                _logger.Info($"Accountservice/GetAccount, Param:{JsonSerializer.Serialize(req)}, ErrorCode:'{e.HResult}', ErrorMessage:'{e.Message}'");
+                LogHelper.Info("Accountservice", "GetAccount", req, e.HResult, e.Message);
                 return ApiResponse<GetAccountResponse>.Failure(ApiResponseStatus.InternalError);
             }
         }
@@ -154,7 +154,7 @@ namespace Ledgerly.API.Services
             }
             catch (Exception e)
             {
-                _logger.Error($"Accountservice/GetAccounts, Param:{JsonSerializer.Serialize(req)}, ErrorCode:'{e.HResult}', ErrorMessage:'{e.Message}'");
+                LogHelper.Info("Accountservice", "GetAccounts", req, e.HResult, e.Message);
                 return ApiResponse<GetAccountsResponse>.Failure(ApiResponseStatus.InternalError);
             }
         }
@@ -167,7 +167,7 @@ namespace Ledgerly.API.Services
                 var getAccount = await _AccountRepository.GetAccount(req.Id);
                 if (getAccount == null)
                 {
-                    _logger.Error($"AccountService/UpdateAccount, Param:{JsonSerializer.Serialize(req)}, ErrorCode:'{ApiResponseStatus.NotFound.Value()}', ErrorMessage:'{ApiResponseStatus.NotFound.Description()}'");
+                    LogHelper.Info("Accountservice", "UpdateAccount", req, ApiResponseStatus.NotFound);
                     return ApiResponse<UpdateAccountResponse>.Failure(ApiResponseStatus.NotFound);
                 }
 
@@ -175,7 +175,7 @@ namespace Ledgerly.API.Services
                 var status = await _globalParamRepository.GetGlobalParamIdByKeyName(EnumGlobalParam.Deleted.ToString(), EnumGlobalParamType.AccountxxxStatus.ToString());
                 if (getAccount.StatusId == status)
                 {
-                    _logger.Error($"AccountService/UpdateAccount, Param:{JsonSerializer.Serialize(req)}, ErrorCode:'{ApiResponseStatus.AlreadyDeleted.Value()}', ErrorMessage:'{ApiResponseStatus.AlreadyDeleted.Description()}'");
+                    LogHelper.Info("Accountservice", "UpdateAccount", req, ApiResponseStatus.AlreadyDeleted);
                     return ApiResponse<UpdateAccountResponse>.Failure(ApiResponseStatus.AlreadyDeleted);
                 }
 
@@ -183,7 +183,7 @@ namespace Ledgerly.API.Services
                 var userId = _currentUserService.GetUserId();
                 if (userId == null)
                 {
-                    _logger.Error($"Accountservice/UpdateAccount, Param:{JsonSerializer.Serialize(req)}, ErrorCode:'{ApiResponseStatus.Unauthorized.Value()}', ErrorMessage:'{ApiResponseStatus.Unauthorized.Description()}'");
+                    LogHelper.Info("Accountservice", "UpdateAccount", req, ApiResponseStatus.Unauthorized);
                     return ApiResponse<UpdateAccountResponse>.Failure(ApiResponseStatus.Unauthorized);
                 }
 
@@ -199,7 +199,7 @@ namespace Ledgerly.API.Services
                 var accountAuditLog = new RecordAuditLog
                 {
                     ControllerName = "Account",
-                    MethodName = "UpdateAccount",
+                    MethodName = "Update",
                     TransactionId = currentAccount.Id,
                     TransactionNo = currentAccount.Name,
                     Description = await GetAuditDescription(currentAccount.Id),
@@ -213,7 +213,7 @@ namespace Ledgerly.API.Services
             }
             catch (Exception e)
             {
-                _logger.Error($"Accountservice/UpdateAccount, Param:{JsonSerializer.Serialize(req)}, ErrorCode:'{e.HResult}', ErrorMessage:'{e.Message}'");
+                LogHelper.Info("Accountservice", "UpdateAccount", req, e.HResult, e.Message);
                 return ApiResponse<UpdateAccountResponse>.Failure(ApiResponseStatus.InternalError);
             }
         }
@@ -233,7 +233,7 @@ namespace Ledgerly.API.Services
                 var getAccount = await _AccountRepository.GetAccount(req.Id);
                 if (getAccount == null)
                 {
-                    _logger.Error($"AccountService/DeleteAccount, Param:{JsonSerializer.Serialize(req)}, ErrorCode:'{ApiResponseStatus.NotFound.Value()}', ErrorMessage:'{ApiResponseStatus.NotFound.Description()}'");
+                    LogHelper.Info("Accountservice", "DeleteAccount", req, ApiResponseStatus.NotFound);
                     return ApiResponse<DeleteAccountResponse>.Failure(ApiResponseStatus.NotFound);
                 }
 
@@ -241,7 +241,7 @@ namespace Ledgerly.API.Services
                 var status = await _globalParamRepository.GetGlobalParamIdByKeyName(EnumGlobalParam.Deleted.ToString(), EnumGlobalParamType.AccountxxxStatus.ToString());
                 if (getAccount.StatusId == status)
                 {
-                    _logger.Error($"AccountService/DeleteAccount, Param:{JsonSerializer.Serialize(req)}, ErrorCode:'{ApiResponseStatus.AlreadyDeleted.Value()}', ErrorMessage:'{ApiResponseStatus.AlreadyDeleted.Description()}'");
+                    LogHelper.Info("Accountservice", "DeleteAccount", req, ApiResponseStatus.AlreadyDeleted);
                     return ApiResponse<DeleteAccountResponse>.Failure(ApiResponseStatus.AlreadyDeleted);
                 }
 
@@ -249,7 +249,7 @@ namespace Ledgerly.API.Services
                 var userId = _currentUserService.GetUserId();
                 if (userId == null)
                 {
-                    _logger.Error($"Accountservice/DeleteAccount, Param:{JsonSerializer.Serialize(req)}, ErrorCode:'{ApiResponseStatus.Unauthorized.Value()}', ErrorMessage:'{ApiResponseStatus.Unauthorized.Description()}'");
+                    LogHelper.Info("Accountservice", "DeleteAccount", req, ApiResponseStatus.Unauthorized);
                     return ApiResponse<DeleteAccountResponse>.Failure(ApiResponseStatus.Unauthorized);
                 }
 
@@ -266,7 +266,7 @@ namespace Ledgerly.API.Services
                 var accountAuditLog = new RecordAuditLog
                 {
                     ControllerName = "Account",
-                    MethodName = "DeleteAccount",
+                    MethodName = "Delete",
                     TransactionId = currentAccount.Id,
                     TransactionNo = currentAccount.Name,
                     Description = await GetAuditDescription(currentAccount.Id),
@@ -280,7 +280,7 @@ namespace Ledgerly.API.Services
             }
             catch (Exception e)
             {
-                _logger.Error($"Accountservice/DeleteAccount, Param:{JsonSerializer.Serialize(req)}, ErrorCode:'{e.HResult}', ErrorMessage:'{e.Message}'");
+                LogHelper.Info("Accountservice", "DeleteAccount", req, e.HResult, e.Message);
                 return ApiResponse<DeleteAccountResponse>.Failure(ApiResponseStatus.InternalError);
             }
         }

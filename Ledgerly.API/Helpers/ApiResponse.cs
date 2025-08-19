@@ -1,4 +1,6 @@
-﻿namespace Ledgerly.Helpers
+﻿using Ledgerly.API.Helpers;
+
+namespace Ledgerly.Helpers
 {
     public class ApiResponse<T> where T : class
     {

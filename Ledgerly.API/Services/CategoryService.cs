@@ -29,7 +29,6 @@ namespace Ledgerly.API.Services
         private readonly ICategoryRepository _CategoryRepository = CategoryRepository;
         private readonly IMapper _mapper = mapper;
         private readonly LedgerlyDbContext _db = db;
-        private Logger _logger = LogManager.GetCurrentClassLogger();
         private readonly IUserService _currentUserService = currentUserService;
         private readonly IAuditLogService _auditLogService = auditLogService;
         private readonly IGlobalParamRepository _globalParamRepository = globalParamRepository;
@@ -42,7 +41,7 @@ namespace Ledgerly.API.Services
                 var userId = _currentUserService.GetUserId();
                 if (userId == null)
                 {
-                    _logger.Error($"CategoryService/CreateCategory, Param:{JsonSerializer.Serialize(req)}, ErrorCode:'{ApiResponseStatus.Unauthorized.Value()}', ErrorMessage:'{ApiResponseStatus.Unauthorized.Description()}'");
+                    LogHelper.Info("CategoryService", "CreateCategory", req, ApiResponseStatus.Unauthorized);
                     return ApiResponse<CreateCategoryResponse>.Failure(ApiResponseStatus.Unauthorized);
                 }
 
@@ -59,7 +58,7 @@ namespace Ledgerly.API.Services
                 var categoryAuditLog = new RecordAuditLog
                 {
                     ControllerName = "Category",
-                    MethodName = "CreateCategory",
+                    MethodName = "Create",
                     TransactionId = newCategory.Id,
                     TransactionNo = newCategory.Name,
                     Description = await GetAuditDescription(newCategory.Id),
@@ -73,7 +72,7 @@ namespace Ledgerly.API.Services
             }
             catch (Exception e)
             {
-                _logger.Info($"CategoryService/CreateCategory, Param:{JsonSerializer.Serialize(req)}, ErrorCode:'{e.HResult}', ErrorMessage:'{e.Message}'");
+                LogHelper.Info("CategoryService", "CreateCategory", req, e.HResult, e.Message);
                 return ApiResponse<CreateCategoryResponse>.Failure(ApiResponseStatus.InternalError);
             }
         }
@@ -86,7 +85,7 @@ namespace Ledgerly.API.Services
                 var getCategory = await _CategoryRepository.GetCategory(req.Id);
                 if (getCategory == null)
                 {
-                    _logger.Error($"CategoryService/GetCategory, Param:{JsonSerializer.Serialize(req)}, ErrorCode:'{ApiResponseStatus.NotFound.Value()}', ErrorMessage:'{ApiResponseStatus.NotFound.Description()}'");
+                    LogHelper.Info("CategoryService", "GetCategory", req, ApiResponseStatus.NotFound);
                     return ApiResponse<GetCategoryResponse>.Failure(ApiResponseStatus.NotFound);
                 }
 
@@ -97,7 +96,7 @@ namespace Ledgerly.API.Services
             }
             catch (Exception e)
             {
-                _logger.Info($"CategoryService/GetCategory, Param:{JsonSerializer.Serialize(req)}, ErrorCode:'{e.HResult}', ErrorMessage:'{e.Message}'");
+                LogHelper.Info("CategoryService", "GetCategory", req, e.HResult, e.Message);
                 return ApiResponse<GetCategoryResponse>.Failure(ApiResponseStatus.InternalError);
             }
         }
@@ -155,7 +154,7 @@ namespace Ledgerly.API.Services
             }
             catch (Exception e)
             {
-                _logger.Error($"CategoryService/GetCategories, Param:{JsonSerializer.Serialize(req)}, ErrorCode:'{e.HResult}', ErrorMessage:'{e.Message}'");
+                LogHelper.Info("CategoryService", "GetCategories", req, e.HResult, e.Message);
                 return ApiResponse<GetCategoriesResponse>.Failure(ApiResponseStatus.InternalError);
             }
         }
@@ -168,7 +167,7 @@ namespace Ledgerly.API.Services
                 var getCategory = await _CategoryRepository.GetCategory(req.Id);
                 if (getCategory == null)
                 {
-                    _logger.Error($"CategoryService/UpdateCategory, Param:{JsonSerializer.Serialize(req)}, ErrorCode:'{ApiResponseStatus.NotFound.Value()}', ErrorMessage:'{ApiResponseStatus.NotFound.Description()}'");
+                    LogHelper.Info("CategoryService", "UpdateCategory", req, ApiResponseStatus.NotFound);
                     return ApiResponse<UpdateCategoryResponse>.Failure(ApiResponseStatus.NotFound);
                 }
 
@@ -176,7 +175,7 @@ namespace Ledgerly.API.Services
                 var status = await _globalParamRepository.GetGlobalParamIdByKeyName(EnumGlobalParam.Deleted.ToString(), EnumGlobalParamType.CategoryxxxStatus.ToString());
                 if (getCategory == null)
                 {
-                    _logger.Error($"CategoryService/UpdateCategory, Param:{JsonSerializer.Serialize(req)}, ErrorCode:'{ApiResponseStatus.AlreadyDeleted.Value()}', ErrorMessage:'{ApiResponseStatus.AlreadyDeleted.Description()}'");
+                    LogHelper.Info("CategoryService", "UpdateCategory", req, ApiResponseStatus.AlreadyDeleted);
                     return ApiResponse<UpdateCategoryResponse>.Failure(ApiResponseStatus.AlreadyDeleted);
                 }
 
@@ -184,7 +183,7 @@ namespace Ledgerly.API.Services
                 var userId = _currentUserService.GetUserId();
                 if (userId == null)
                 {
-                    _logger.Error($"CategoryService/UpdateCategory, Param:{JsonSerializer.Serialize(req)}, ErrorCode:'{ApiResponseStatus.Unauthorized.Value()}', ErrorMessage:'{ApiResponseStatus.Unauthorized.Description()}'");
+                    LogHelper.Info("CategoryService", "UpdateCategory", req, ApiResponseStatus.Unauthorized);
                     return ApiResponse<UpdateCategoryResponse>.Failure(ApiResponseStatus.Unauthorized);
                 }
 
@@ -200,7 +199,7 @@ namespace Ledgerly.API.Services
                 var categoryAuditLog = new RecordAuditLog
                 {
                     ControllerName = "Category",
-                    MethodName = "UpdateCategory",
+                    MethodName = "Update",
                     TransactionId = currentCategory.Id,
                     TransactionNo = currentCategory.Name,
                     Description = await GetAuditDescription(currentCategory.Id),
@@ -214,7 +213,7 @@ namespace Ledgerly.API.Services
             }
             catch (Exception e)
             {
-                _logger.Error($"CategoryService/UpdateCategory, Param:{JsonSerializer.Serialize(req)}, ErrorCode:'{e.HResult}', ErrorMessage:'{e.Message}'");
+                LogHelper.Info("CategoryService", "UpdateCategory", req, e.HResult, e.Message);
                 return ApiResponse<UpdateCategoryResponse>.Failure(ApiResponseStatus.InternalError);
             }
         }
@@ -234,7 +233,7 @@ namespace Ledgerly.API.Services
                 var getCategory = await _CategoryRepository.GetCategory(req.Id);
                 if (getCategory == null)
                 {
-                    _logger.Error($"CategoryService/DeleteCategory, Param:{JsonSerializer.Serialize(req)}, ErrorCode:'{ApiResponseStatus.NotFound.Value()}', ErrorMessage:'{ApiResponseStatus.NotFound.Description()}'");
+                    LogHelper.Info("CategoryService", "DeleteCategory", req, ApiResponseStatus.NotFound);
                     return ApiResponse<DeleteCategoryResponse>.Failure(ApiResponseStatus.NotFound);
                 }
 
@@ -242,7 +241,7 @@ namespace Ledgerly.API.Services
                 var status = await _globalParamRepository.GetGlobalParamIdByKeyName(EnumGlobalParam.Deleted.ToString(), EnumGlobalParamType.CategoryxxxStatus.ToString());
                 if (getCategory == null)
                 {
-                    _logger.Error($"CategoryService/DeleteCategory, Param:{JsonSerializer.Serialize(req)}, ErrorCode:'{ApiResponseStatus.AlreadyDeleted.Value()}', ErrorMessage:'{ApiResponseStatus.AlreadyDeleted.Description()}'");
+                    LogHelper.Info("CategoryService", "DeleteCategory", req, ApiResponseStatus.AlreadyDeleted);
                     return ApiResponse<DeleteCategoryResponse>.Failure(ApiResponseStatus.AlreadyDeleted);
                 }
 
@@ -250,7 +249,7 @@ namespace Ledgerly.API.Services
                 var userId = _currentUserService.GetUserId();
                 if (userId == null)
                 {
-                    _logger.Error($"CategoryService/DeleteCategory, Param:{JsonSerializer.Serialize(req)}, ErrorCode:'{ApiResponseStatus.Unauthorized.Value()}', ErrorMessage:'{ApiResponseStatus.Unauthorized.Description()}'");
+                    LogHelper.Info("CategoryService", "DeleteCategory", req, ApiResponseStatus.Unauthorized);
                     return ApiResponse<DeleteCategoryResponse>.Failure(ApiResponseStatus.Unauthorized);
                 }
 
@@ -267,7 +266,7 @@ namespace Ledgerly.API.Services
                 var categoryAuditLog = new RecordAuditLog
                 {
                     ControllerName = "Category",
-                    MethodName = "DeleteCategory",
+                    MethodName = "Delete",
                     TransactionId = currentCategory.Id,
                     TransactionNo = currentCategory.Name,
                     Description = await GetAuditDescription(currentCategory.Id),
@@ -281,7 +280,7 @@ namespace Ledgerly.API.Services
             }
             catch (Exception e)
             {
-                _logger.Error($"CategoryService/DeleteCategory, Param:{JsonSerializer.Serialize(req)}, ErrorCode:'{e.HResult}', ErrorMessage:'{e.Message}'");
+                LogHelper.Info("CategoryService", "DeleteCategory", req, e.HResult, e.Message);
                 return ApiResponse<DeleteCategoryResponse>.Failure(ApiResponseStatus.InternalError);
             }
         }

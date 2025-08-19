@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using Ledgerly.API.Helpers;
 using Ledgerly.API.Models.DTOs.TransactionType;
 using Ledgerly.API.Models.DTOs.User;
 using Ledgerly.API.Services.Interfaces;
@@ -40,6 +41,7 @@ namespace Ledgerly.API.Services
                 var identityResult = await _userManager.CreateAsync(identityUser, req.Password);
                 if (!identityResult.Succeeded)
                 {
+                    LogHelper.Info("AuthService", "Register", req, ApiResponseStatus.DuplicateUserName);
                     return ApiResponse<RegisterResponse>.Failure(ApiResponseStatus.DuplicateUserName);
                 }
 
@@ -58,8 +60,7 @@ namespace Ledgerly.API.Services
                 // Remove new user or Rollback
                 await _userManager.DeleteAsync(identityUser);
 
-                // Log Info
-                _logger.Info($"AuthService/Register, Param:{JsonSerializer.Serialize(req)}, ErrorCode:'{e.HResult}', ErrorMessage:'{e.Message}'");
+                LogHelper.Info("AuthService", "Register", req, e.HResult, e.Message);
                 return ApiResponse<RegisterResponse>.Failure(e.HResult, e.Message);
             }
         }
@@ -71,14 +72,14 @@ namespace Ledgerly.API.Services
                 var user = await _userManager.FindByNameAsync(req.Username);
                 if (user == null)
                 {
-                    _logger.Info($"AuthService/LoginResponse, Param:{JsonSerializer.Serialize(req)}, ErrorCode:'{ApiResponseStatus.UserNotExist}', ErrorMessage:'{ApiResponseStatus.UserNotExist.Description()}'");
+                    LogHelper.Info("AuthService", "Login", req, ApiResponseStatus.UserNotExist);
                     return ApiResponse<LoginResponse>.Failure(ApiResponseStatus.UserNotExist);
                 }
 
                 var result = await _signInManager.CheckPasswordSignInAsync(user, req.Password, false);
                 if (!result.Succeeded)
                 {
-                    _logger.Info($"AuthService/LoginResponse, Param:{JsonSerializer.Serialize(req)}, ErrorCode:'{ApiResponseStatus.WrongPassword}', ErrorMessage:'{ApiResponseStatus.WrongPassword.Description()}'");
+                    LogHelper.Info("AuthService", "Login", req, ApiResponseStatus.WrongPassword);
                     return ApiResponse<LoginResponse>.Failure(ApiResponseStatus.WrongPassword);
                 }
 
@@ -97,7 +98,7 @@ namespace Ledgerly.API.Services
             }
             catch (Exception e)
             {
-                _logger.Info($"AuthService/Login, Param:{JsonSerializer.Serialize(req)}, ErrorCode:'{e.HResult}', ErrorMessage:'{e.Message}'");
+                LogHelper.Info("AuthService", "Login", req, e.HResult, e.Message);
                 return ApiResponse<LoginResponse>.Failure(ApiResponseStatus.InternalError);
             }
         }

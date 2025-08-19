@@ -29,7 +29,6 @@ namespace Ledgerly.API.Services
         private readonly ITransactionRepository _transactionRepository = transactionRepository;
         private readonly IMapper _mapper = mapper;
         private readonly LedgerlyDbContext _db = db;
-        private Logger _logger = LogManager.GetCurrentClassLogger();
         private readonly IUserService _currentUserService = currentUserService;
         private readonly IAuditLogService _auditLogService = auditLogService;
         private readonly IGlobalParamRepository _globalParamRepository = globalParamRepository;
@@ -42,7 +41,7 @@ namespace Ledgerly.API.Services
                 var userId = _currentUserService.GetUserId();
                 if (userId == null)
                 {
-                    _logger.Error($"TransactionService/CreateTransaction, Param:{JsonSerializer.Serialize(req)}, ErrorCode:'{ApiResponseStatus.Unauthorized.Value()}', ErrorMessage:'{ApiResponseStatus.Unauthorized.Description()}'");
+                    LogHelper.Info("TransactionService", "CreateTransaction", req, ApiResponseStatus.Unauthorized);
                     return ApiResponse<CreateTransactionResponse>.Failure(ApiResponseStatus.Unauthorized);
                 }
 
@@ -59,7 +58,7 @@ namespace Ledgerly.API.Services
                 var transactionAuditLog = new RecordAuditLog
                 {
                     ControllerName = "Transaction",
-                    MethodName = "CreateTransaction",
+                    MethodName = "Create",
                     TransactionId = newTransaction.Id,
                     TransactionNo = "",
                     Description = await GetAuditDescription(newTransaction.Id),
@@ -73,7 +72,7 @@ namespace Ledgerly.API.Services
             }
             catch (Exception e)
             {
-                _logger.Info($"TransactionService/CreateTransaction, Param:{JsonSerializer.Serialize(req)}, ErrorCode:'{e.HResult}', ErrorMessage:'{e.Message}'");
+                LogHelper.Info("TransactionService", "CreateTransaction", req, e.HResult, e.Message);
                 return ApiResponse<CreateTransactionResponse>.Failure(ApiResponseStatus.InternalError);
             }
         }
@@ -86,7 +85,7 @@ namespace Ledgerly.API.Services
                 var getTransaction = await _transactionRepository.GetTransaction(req.Id);
                 if (getTransaction == null)
                 {
-                    _logger.Error($"TransactionService/GetTransaction, Param:{JsonSerializer.Serialize(req)}, ErrorCode:'{ApiResponseStatus.NotFound.Value()}', ErrorMessage:'{ApiResponseStatus.NotFound.Description()}'");
+                    LogHelper.Info("TransactionService", "GetTransaction", req, ApiResponseStatus.NotFound);
                     return ApiResponse<GetTransactionResponse>.Failure(ApiResponseStatus.NotFound);
                 }
 
@@ -97,7 +96,7 @@ namespace Ledgerly.API.Services
             }
             catch (Exception e)
             {
-                _logger.Info($"TransactionService/GetTransaction, Param:{JsonSerializer.Serialize(req)}, ErrorCode:'{e.HResult}', ErrorMessage:'{e.Message}'");
+                LogHelper.Info("TransactionService", "GetTransaction", req, e.HResult, e.Message);
                 return ApiResponse<GetTransactionResponse>.Failure(ApiResponseStatus.InternalError);
             }
         }
@@ -155,7 +154,7 @@ namespace Ledgerly.API.Services
             }
             catch (Exception e)
             {
-                _logger.Error($"TransactionService/GetTransactions, Param:{JsonSerializer.Serialize(req)}, ErrorCode:'{e.HResult}', ErrorMessage:'{e.Message}'");
+                LogHelper.Info("TransactionService", "GetTransactions", req, e.HResult, e.Message);
                 return ApiResponse<GetTransactionsResponse>.Failure(ApiResponseStatus.InternalError);
             }
         }
@@ -168,7 +167,7 @@ namespace Ledgerly.API.Services
                 var getTransaction = await _transactionRepository.GetTransaction(req.Id);
                 if (getTransaction == null)
                 {
-                    _logger.Error($"TransactionService/UpdateTransaction, Param:{JsonSerializer.Serialize(req)}, ErrorCode:'{ApiResponseStatus.NotFound.Value()}', ErrorMessage:'{ApiResponseStatus.NotFound.Description()}'");
+                    LogHelper.Info("TransactionService", "UpdateTransaction", req, ApiResponseStatus.NotFound);
                     return ApiResponse<UpdateTransactionResponse>.Failure(ApiResponseStatus.NotFound);
                 }
 
@@ -176,7 +175,7 @@ namespace Ledgerly.API.Services
                 var status = await _globalParamRepository.GetGlobalParamIdByKeyName(EnumGlobalParam.Deleted.ToString(), EnumGlobalParamType.TransactionxxxStatus.ToString());
                 if (getTransaction == null)
                 {
-                    _logger.Error($"TransactionService/UpdateTransaction, Param:{JsonSerializer.Serialize(req)}, ErrorCode:'{ApiResponseStatus.AlreadyDeleted.Value()}', ErrorMessage:'{ApiResponseStatus.AlreadyDeleted.Description()}'");
+                    LogHelper.Info("TransactionService", "UpdateTransaction", req, ApiResponseStatus.AlreadyDeleted);
                     return ApiResponse<UpdateTransactionResponse>.Failure(ApiResponseStatus.AlreadyDeleted);
                 }
 
@@ -184,7 +183,7 @@ namespace Ledgerly.API.Services
                 var userId = _currentUserService.GetUserId();
                 if (userId == null)
                 {
-                    _logger.Error($"TransactionService/UpdateTransaction, Param:{JsonSerializer.Serialize(req)}, ErrorCode:'{ApiResponseStatus.Unauthorized.Value()}', ErrorMessage:'{ApiResponseStatus.Unauthorized.Description()}'");
+                    LogHelper.Info("TransactionService", "UpdateTransaction", req, ApiResponseStatus.Unauthorized);
                     return ApiResponse<UpdateTransactionResponse>.Failure(ApiResponseStatus.Unauthorized);
                 }
 
@@ -200,7 +199,7 @@ namespace Ledgerly.API.Services
                 var transactionAuditLog = new RecordAuditLog
                 {
                     ControllerName = "Transaction",
-                    MethodName = "UpdateTransaction",
+                    MethodName = "Update",
                     TransactionId = currentTransaction.Id,
                     TransactionNo = "",
                     Description = await GetAuditDescription(currentTransaction.Id),
@@ -214,7 +213,7 @@ namespace Ledgerly.API.Services
             }
             catch (Exception e)
             {
-                _logger.Error($"TransactionService/UpdateTransaction, Param:{JsonSerializer.Serialize(req)}, ErrorCode:'{e.HResult}', ErrorMessage:'{e.Message}'");
+                LogHelper.Info("TransactionService", "UpdateTransaction", req, e.HResult, e.Message);
                 return ApiResponse<UpdateTransactionResponse>.Failure(ApiResponseStatus.InternalError);
             }
         }
@@ -234,7 +233,7 @@ namespace Ledgerly.API.Services
                 var getTransaction = await _transactionRepository.GetTransaction(req.Id);
                 if (getTransaction == null)
                 {
-                    _logger.Error($"TransactionService/DeleteTransaction, Param:{JsonSerializer.Serialize(req)}, ErrorCode:'{ApiResponseStatus.NotFound.Value()}', ErrorMessage:'{ApiResponseStatus.NotFound.Description()}'");
+                    LogHelper.Info("TransactionService", "UpdateTransaction", req, ApiResponseStatus.NotFound);
                     return ApiResponse<DeleteTransactionResponse>.Failure(ApiResponseStatus.NotFound);
                 }
 
@@ -242,7 +241,7 @@ namespace Ledgerly.API.Services
                 var status = await _globalParamRepository.GetGlobalParamIdByKeyName(EnumGlobalParam.Deleted.ToString(), EnumGlobalParamType.TransactionxxxStatus.ToString());
                 if (getTransaction == null)
                 {
-                    _logger.Error($"TransactionService/DeleteTransaction, Param:{JsonSerializer.Serialize(req)}, ErrorCode:'{ApiResponseStatus.AlreadyDeleted.Value()}', ErrorMessage:'{ApiResponseStatus.AlreadyDeleted.Description()}'");
+                    LogHelper.Info("TransactionService", "UpdateTransaction", req, ApiResponseStatus.AlreadyDeleted);
                     return ApiResponse<DeleteTransactionResponse>.Failure(ApiResponseStatus.AlreadyDeleted);
                 }
 
@@ -250,7 +249,7 @@ namespace Ledgerly.API.Services
                 var userId = _currentUserService.GetUserId();
                 if (userId == null)
                 {
-                    _logger.Error($"TransactionService/DeleteTransaction, Param:{JsonSerializer.Serialize(req)}, ErrorCode:'{ApiResponseStatus.Unauthorized.Value()}', ErrorMessage:'{ApiResponseStatus.Unauthorized.Description()}'");
+                    LogHelper.Info("TransactionService", "UpdateTransaction", req, ApiResponseStatus.Unauthorized);
                     return ApiResponse<DeleteTransactionResponse>.Failure(ApiResponseStatus.Unauthorized);
                 }
 
@@ -267,7 +266,7 @@ namespace Ledgerly.API.Services
                 var transactionAuditLog = new RecordAuditLog
                 {
                     ControllerName = "Transaction",
-                    MethodName = "DeleteTransaction",
+                    MethodName = "Delete",
                     TransactionId = currentTransaction.Id,
                     TransactionNo = "",
                     Description = await GetAuditDescription(currentTransaction.Id),
@@ -281,7 +280,7 @@ namespace Ledgerly.API.Services
             }
             catch (Exception e)
             {
-                _logger.Error($"TransactionService/DeleteTransaction, Param:{JsonSerializer.Serialize(req)}, ErrorCode:'{e.HResult}', ErrorMessage:'{e.Message}'");
+                LogHelper.Info("TransactionService", "DeleteTransaction", req, e.HResult, e.Message);
                 return ApiResponse<DeleteTransactionResponse>.Failure(ApiResponseStatus.InternalError);
             }
         }
