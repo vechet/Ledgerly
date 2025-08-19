@@ -1,3 +1,4 @@
+using Ledgerly.API.Data;
 using Ledgerly.API.Helpers.Permissions;
 using Ledgerly.API.Mappings;
 using Ledgerly.API.Middlewares;
@@ -137,6 +138,13 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
     });
 
 var app = builder.Build();
+
+// Seed roles claims for default role system admin BEFORE app.Run()
+using (var scope = app.Services.CreateScope())
+{
+    var roleManager = scope.ServiceProvider.GetRequiredService<RoleManager<IdentityRole>>();
+    await IdentityDataSeeder.SeedRolesAndClaimsAsync(roleManager);
+}
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())

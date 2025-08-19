@@ -23,7 +23,7 @@ namespace Udemy.Data
             base.OnModelCreating(modelBuilder);
 
             var globalParamCategoryStatusId = 1;
-            var userId = "user-id";
+            var systemAdminRoleId = "role-system-admin-id";
 
             // Set the collation for the entire database
             modelBuilder.UseCollation("SQL_Latin1_General_CP850_BIN");
@@ -48,7 +48,7 @@ namespace Udemy.Data
                     Id = 1,
                     Name = "Main",
                     StatusId = globalParamCategoryStatusId,
-                    UserId = userId,
+                    UserId = systemAdminRoleId,
                     CreatedBy = "1",
                     CreatedDate = new DateTime(2025, 07, 22),
                     IsSystemValue = true,

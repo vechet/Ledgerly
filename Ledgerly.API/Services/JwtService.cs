@@ -13,14 +13,12 @@ using Udemy.Data;
 namespace Ledgerly.Services
 {
     public class JwtService(IConfiguration configuration,
-         LedgerlyAuthDbContext db,
          UserManager<IdentityUser> userManager,
          RoleManager<IdentityRole> roleManager) : IJwtService
     {
         private readonly IConfiguration _configuration = configuration;
         private readonly UserManager<IdentityUser> _userManager = userManager;
         private readonly RoleManager<IdentityRole> _roleManager = roleManager;
-        private readonly LedgerlyAuthDbContext _db = db;
 
         public List<Claim> GetAllClaims(IdentityUser user)
         {

@@ -1,4 +1,5 @@
-﻿using Ledgerly.API.Models;
+﻿using Ledgerly.API.Enums;
+using Ledgerly.API.Models;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
@@ -13,13 +14,16 @@ namespace Udemy.Data
         {
             base.OnModelCreating(builder);
 
-            var adminRoleId = "role-admin-id";
+            var systemAdminRoleId = "role-system-admin-id";
             var userId = "user-id";
+            var roleSystemAdmin = EnumRoles.ROLE_SYSTEM_ADMIN.ToString();
+            var roleAdmin = EnumRoles.ROLE_ADMIN.ToString();
+            var roleUser = EnumRoles.ROLE_USER.ToString();
 
             builder.Entity<IdentityRole>().HasData(
-                new IdentityRole { Id = adminRoleId, Name = "ROLE_SYSTEM_ADMIN", NormalizedName = "ROLE_SYSTEM_ADMIN" },
-                new IdentityRole { Name = "ROLE_ADMIN", NormalizedName = "ROLE_ADMIN" },
-                new IdentityRole { Name = "ROLE_USER", NormalizedName = "ROLE_USER" }
+                new IdentityRole { Id = systemAdminRoleId, Name = roleSystemAdmin, NormalizedName = roleSystemAdmin },
+                new IdentityRole { Name = roleAdmin, NormalizedName = roleAdmin },
+                new IdentityRole { Name = roleUser, NormalizedName = roleUser }
                 );
 
             builder.Entity<IdentityUser>().HasData(
@@ -40,7 +44,7 @@ namespace Udemy.Data
                 new IdentityUserRole<string>
                 {
                     UserId = userId,
-                    RoleId = adminRoleId
+                    RoleId = systemAdminRoleId
                 }
             );
         }
