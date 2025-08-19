@@ -18,5 +18,8 @@ namespace Ledgerly.API.Models.DTOs.User
 
         [Required]
         public List<string> Roles { get; set; } = null!;
+
+        [Required]
+        public List<string> Permissions { get; set; } = null!;
     }
 }

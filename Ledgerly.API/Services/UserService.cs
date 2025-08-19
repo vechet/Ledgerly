@@ -1,4 +1,5 @@
-﻿using Ledgerly.API.Models.DTOs.User;
+﻿using Ledgerly.API.Enums;
+using Ledgerly.API.Models.DTOs.User;
 using Ledgerly.API.Services.Interfaces;
 using System.Security.Claims;
 
@@ -23,6 +24,7 @@ namespace Ledgerly.API.Services
                 Email = getUserInfo.FindFirst(ClaimTypes.Email)?.Value,
                 Phone = getUserInfo.FindFirst(ClaimTypes.MobilePhone)?.Value,
                 Roles = getUserInfo.FindAll(ClaimTypes.Role).Select(c => c.Value).ToList(),
+                Permissions = getUserInfo.FindAll(EnumClaimTypes.PERMISSIONS.ToString()).Select(c => c.Value).ToList()
             };
             return userInfo;
         }

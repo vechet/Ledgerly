@@ -34,6 +34,10 @@ namespace Ledgerly.Services
 
             foreach (var roleName in roles)
             {
+                // Add role claim
+                claims.Add(new Claim(ClaimTypes.Role, roleName));
+
+                // Add permission claims from role
                 var role = _roleManager.FindByNameAsync(roleName).GetAwaiter().GetResult();
                 var roleClaims = _roleManager.GetClaimsAsync(role).GetAwaiter().GetResult();
 
