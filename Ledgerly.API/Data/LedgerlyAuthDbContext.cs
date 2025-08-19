@@ -15,7 +15,7 @@ namespace Udemy.Data
             base.OnModelCreating(builder);
 
             var systemAdminRoleId = "role-system-admin-id";
-            var userId = "user-id";
+            var userId = "system-admin-id";
             var roleSystemAdmin = EnumRoles.ROLE_SYSTEM_ADMIN.ToString();
             var roleAdmin = EnumRoles.ROLE_ADMIN.ToString();
             var roleUser = EnumRoles.ROLE_USER.ToString();
