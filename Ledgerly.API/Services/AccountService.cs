@@ -16,6 +16,7 @@ using Ledgerly.API.Repositories;
 using Ledgerly.API.Models.DTOs.Category;
 using Ledgerly.API.Enums;
 using System.Security.Principal;
+using Ledgerly.API.Models.DTOs.Transaction;
 
 namespace Ledgerly.API.Services
 {
@@ -105,8 +106,17 @@ namespace Ledgerly.API.Services
         {
             try
             {
+                //get userId
+                var userId = _currentUserService.GetUserId();
+                if (userId == null)
+                {
+                    LogHelper.Info("TransactionService", "GetAccounts", req, ApiResponseStatus.Unauthorized);
+                    return ApiResponse<GetAccountsResponse>.Failure(ApiResponseStatus.Unauthorized);
+                }
+
+                var isSystemAdminUser = _currentUserService.IsSystemAdminUser();
                 var status = await _globalParamRepository.GetGlobalParamIdByKeyName(EnumGlobalParam.Normal.ToString(), EnumGlobalParamType.AccountxxxStatus.ToString());
-                var query = _db.Account.Where(x => x.StatusId == status).AsQueryable();
+                var query = _db.Account.Where(x => x.StatusId == status && (x.UserId == userId || isSystemAdminUser)).AsQueryable();
 
                 var filter = req.Filter;
 

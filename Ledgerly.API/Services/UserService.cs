@@ -43,5 +43,10 @@ namespace Ledgerly.API.Services
         {
             return _contextAccessor.HttpContext.User.FindFirst(ClaimTypes.Role).Value;
         }
+
+        public bool IsSystemAdminUser()
+        {
+            return _contextAccessor.HttpContext.User.FindFirst(ClaimTypes.Role).Value == EnumRoles.ROLE_SYSTEM_ADMIN.ToString();
+        }
     }
 }

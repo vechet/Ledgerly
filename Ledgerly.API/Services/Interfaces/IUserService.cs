@@ -8,5 +8,6 @@ namespace Ledgerly.API.Services.Interfaces
         string GetUserId();
         string? GetUserName();
         string GetRole();
+        bool IsSystemAdminUser();
     }
 }

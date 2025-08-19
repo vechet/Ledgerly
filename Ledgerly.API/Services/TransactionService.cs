@@ -105,8 +105,17 @@ namespace Ledgerly.API.Services
         {
             try
             {
+                //get userId
+                var userId = _currentUserService.GetUserId();
+                if (userId == null)
+                {
+                    LogHelper.Info("TransactionService", "GetTransactions", req, ApiResponseStatus.Unauthorized);
+                    return ApiResponse<GetTransactionsResponse>.Failure(ApiResponseStatus.Unauthorized);
+                }
+
+                var isSystemAdminUser = _currentUserService.IsSystemAdminUser();
                 var status = await _globalParamRepository.GetGlobalParamIdByKeyName(EnumGlobalParam.Normal.ToString(), EnumGlobalParamType.TransactionxxxStatus.ToString());
-                var query = _db.Transaction.Where(x => x.StatusId == status).AsQueryable();
+                var query = _db.Transaction.Where(x => x.StatusId == status && (x.UserId == userId || isSystemAdminUser)).AsQueryable();
 
                 var filter = req.Filter;
 
