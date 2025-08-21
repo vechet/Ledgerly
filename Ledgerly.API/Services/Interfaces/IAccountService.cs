@@ -7,15 +7,15 @@ namespace Ledgerly.API.Services.Interfaces
 {
     public interface IAccountService
     {
-        Task<ApiResponse<GetAccountsResponse>> GetAccounts(PaginationRequest req);
+        Task<ApiResponse<GetAccountsResponse>> GetAccountsAsync(PaginationRequest req);
 
-        Task<ApiResponse<GetAccountResponse>> GetAccount(GetAccountRequest req);
+        Task<ApiResponse<GetAccountResponse>> GetAccountAsync(GetAccountRequest req);
 
-        Task<ApiResponse<CreateAccountResponse>> CreateAccount(CreateAccountRequest req);
+        Task<ApiResponse<CreateAccountResponse>> CreateAccountAsync(CreateAccountRequest req);
 
-        Task<ApiResponse<UpdateAccountResponse>> UpdateAccount(UpdateAccountRequest req);
+        Task<ApiResponse<UpdateAccountResponse>> UpdateAccountAsync(UpdateAccountRequest req);
 
-        Task<ApiResponse<DeleteAccountResponse>> DeleteAccount(DeleteAccountRequest req);
+        Task<ApiResponse<DeleteAccountResponse>> DeleteAccountAsync(DeleteAccountRequest req);
 
     }
 }

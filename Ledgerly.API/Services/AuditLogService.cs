@@ -14,10 +14,10 @@ namespace Ledgerly.API.Services
     {
         private readonly IMapper _mapper = mapper;
         private readonly IAuditLogRepository _auditLogRepository = auditLogRepository;
-        public async Task RecordAuditLog(RecordAuditLog log)
+        public async Task RecordAuditLogAsync(RecordAuditLog log)
         {
             var auditLog = _mapper.Map<AuditLog>(log);
-            await _auditLogRepository.CreateAuditLog(auditLog);
+            await _auditLogRepository.CreateAuditLogAsync(auditLog);
         }
     }
 }

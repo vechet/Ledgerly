@@ -14,7 +14,7 @@ namespace Ledgerly.API.Repositories
             _db = db;
         }
 
-        public async Task<Category> CreateCategory(Category req)
+        public async Task<Category> CreateCategoryAsync(Category req)
         {
             await using var transaction = await _db.Database.BeginTransactionAsync();
             try
@@ -31,7 +31,7 @@ namespace Ledgerly.API.Repositories
             }
         }
 
-        public async Task<Category> DeleteCategory(Category req)
+        public async Task<Category> DeleteCategoryAsync(Category req)
         {
             await using var transaction = await _db.Database.BeginTransactionAsync();
             try
@@ -52,7 +52,7 @@ namespace Ledgerly.API.Repositories
             }
         }
 
-        public async Task<List<Category>> GetCategories()
+        public async Task<List<Category>> GetCategoriesAsync()
         {
             try
             {
@@ -68,7 +68,7 @@ namespace Ledgerly.API.Repositories
             }
         }
 
-        public async Task<Category> GetCategory(int id)
+        public async Task<Category> GetCategoryAsync(int id)
         {
             try
             {
@@ -84,7 +84,20 @@ namespace Ledgerly.API.Repositories
             }
         }
 
-        public async Task<Category> UpdateCategory(Category req)
+        public async Task<bool> HasTransactionsLinkedAsync(int id, string userId)
+        {
+            try
+            {
+                var category = await _db.Transaction.AnyAsync(x => x.CategoryId == id && x.Category.UserId == userId && !x.Category.IsSystemValue);
+                return category;
+            }
+            catch (Exception e)
+            {
+                throw;
+            }
+        }
+
+        public async Task<Category> UpdateCategoryAsync(Category req)
         {
             await using var transaction = await _db.Database.BeginTransactionAsync();
             try

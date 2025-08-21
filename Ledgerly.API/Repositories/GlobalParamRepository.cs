@@ -14,7 +14,7 @@ namespace Ledgerly.API.Repositories
             _db = db;
         }
 
-        public async Task<GlobalParam> CreateGlobalParam(GlobalParam req)
+        public async Task<GlobalParam> CreateGlobalParamAsync(GlobalParam req)
         {
             await using var transaction = await _db.Database.BeginTransactionAsync();
             try
@@ -31,7 +31,7 @@ namespace Ledgerly.API.Repositories
             }
         }
 
-        public async Task<GlobalParam> GetGlobalParam(int id)
+        public async Task<GlobalParam> GetGlobalParamAsync(int id)
         {
             try
             {
@@ -44,7 +44,7 @@ namespace Ledgerly.API.Repositories
             }
         }
 
-        public async Task<int> GetGlobalParamIdByKeyName(string keyName, string type)
+        public async Task<int> GetGlobalParamIdByKeyNameAsync(string keyName, string type)
         {
             try
             {
@@ -58,7 +58,7 @@ namespace Ledgerly.API.Repositories
             }
         }
 
-        public async Task<List<GlobalParam>> GetGlobalParams()
+        public async Task<List<GlobalParam>> GetGlobalParamsAsync()
         {
             try
             {
@@ -71,7 +71,7 @@ namespace Ledgerly.API.Repositories
             }
         }
 
-        public async Task<GlobalParam> UpdateGlobalParam(GlobalParam req)
+        public async Task<GlobalParam> UpdateGlobalParamAsync(GlobalParam req)
         {
             await using var transaction = await _db.Database.BeginTransactionAsync();
             try

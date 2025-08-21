@@ -30,7 +30,7 @@ namespace Ledgerly.API.Services
         private readonly IConfiguration _configuration = configuration;
         private readonly IMapper _mapper = mapper;
 
-        public async Task<ApiResponse<RegisterResponse>> Register(RegisterRequest req)
+        public async Task<ApiResponse<RegisterResponse>> RegisterAsync(RegisterRequest req)
         {
             // Mapping entity
             var identityUser = _mapper.Map<IdentityUser>(req);
@@ -65,7 +65,7 @@ namespace Ledgerly.API.Services
             }
         }
 
-        public async Task<ApiResponse<LoginResponse>> Login(LoginRequest req)
+        public async Task<ApiResponse<LoginResponse>> LoginAsync(LoginRequest req)
         {
             try
             {

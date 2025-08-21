@@ -4,14 +4,14 @@ namespace Ledgerly.API.Repositories.Interfaces
 {
     public interface IGlobalParamRepository
     {
-        Task<List<GlobalParam>> GetGlobalParams();
+        Task<List<GlobalParam>> GetGlobalParamsAsync();
 
-        Task<GlobalParam> GetGlobalParam(int id);
+        Task<GlobalParam> GetGlobalParamAsync(int id);
 
-        Task<int> GetGlobalParamIdByKeyName(string keyName, string type);
+        Task<int> GetGlobalParamIdByKeyNameAsync(string keyName, string type);
 
-        Task<GlobalParam> CreateGlobalParam(GlobalParam req);
+        Task<GlobalParam> CreateGlobalParamAsync(GlobalParam req);
 
-        Task<GlobalParam> UpdateGlobalParam(GlobalParam req);
+        Task<GlobalParam> UpdateGlobalParamAsync(GlobalParam req);
     }
 }

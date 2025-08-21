@@ -46,6 +46,15 @@ namespace Ledgerly.API.Helpers
         [Description("Cannot update or delete record that already deleted.")]
         AlreadyDeleted = 422,
 
+        [Description("Cannot delete default cateogry")]
+        CannotDeleteDefaultCategory = 423,
+
+        [Description("Cannot delete other user cateogry")]
+        CannotDeleteOtherUserCategory = 424,
+
+        [Description("Cannot delete this cateogry cause there is any transactions are linked to this category")]
+        HasTransactionsLinkedAsync = 425,
+
         [Description("General Error")]
         GeneralError = 999,
 

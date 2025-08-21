@@ -6,6 +6,6 @@ namespace Ledgerly.API.Services.Interfaces
 {
     public interface IAuditLogService
     {
-        Task RecordAuditLog(RecordAuditLog log);
+        Task RecordAuditLogAsync(RecordAuditLog log);
     }
 }

@@ -14,7 +14,7 @@ namespace Ledgerly.API.Repositories
             _db = db;
         }
 
-        public async Task<AuditLog> CreateAuditLog(AuditLog req)
+        public async Task<AuditLog> CreateAuditLogAsync(AuditLog req)
         {
             await using var transaction = await _db.Database.BeginTransactionAsync();
             try
@@ -31,7 +31,7 @@ namespace Ledgerly.API.Repositories
             }
         }
 
-        public async Task<AuditLog> GetAuditLog(int id)
+        public async Task<AuditLog> GetAuditLogAsync(int id)
         {
             try
             {
@@ -44,7 +44,7 @@ namespace Ledgerly.API.Repositories
             }
         }
 
-        public async Task<List<AuditLog>> GetAuditLogs()
+        public async Task<List<AuditLog>> GetAuditLogsAsync()
         {
             try
             {

@@ -33,7 +33,7 @@ namespace Ledgerly.API.Services
         private readonly IAuditLogService _auditLogService = auditLogService;
         private readonly IGlobalParamRepository _globalParamRepository = globalParamRepository;
 
-        public async Task<ApiResponse<CreateTransactionResponse>> CreateTransaction(CreateTransactionRequest req)
+        public async Task<ApiResponse<CreateTransactionResponse>> CreateTransactionAsync(CreateTransactionRequest req)
         {
             try
             {
@@ -47,11 +47,11 @@ namespace Ledgerly.API.Services
 
                 // add new transaction 
                 var transaction = _mapper.Map<Transaction>(req);
-                transaction.StatusId = await _globalParamRepository.GetGlobalParamIdByKeyName(EnumGlobalParam.Normal.ToString(), EnumGlobalParamType.TransactionxxxStatus.ToString());
+                transaction.StatusId = await _globalParamRepository.GetGlobalParamIdByKeyNameAsync(EnumGlobalParam.Normal.ToString(), EnumGlobalParamType.TransactionxxxStatus.ToString());
                 transaction.UserId = userId;
                 transaction.CreatedBy = userId;
                 transaction.CreatedDate = GlobalFunction.GetCurrentDateTime();
-                var newTransaction = await _transactionRepository.CreateTransaction(transaction);
+                var newTransaction = await _transactionRepository.CreateTransactionAsync(transaction);
                 var transactionRes = _mapper.Map<CreateTransactionResponse>(newTransaction);
 
                 // Add audit log
@@ -61,11 +61,11 @@ namespace Ledgerly.API.Services
                     MethodName = "Create",
                     TransactionId = newTransaction.Id,
                     TransactionNo = "",
-                    Description = await GetAuditDescription(newTransaction.Id),
+                    Description = await GetAuditDescriptionAsync(newTransaction.Id),
                     CreatedBy = userId,
                     CreatedDate = GlobalFunction.GetCurrentDateTime(),
                 };
-                await _auditLogService.RecordAuditLog(transactionAuditLog);
+                await _auditLogService.RecordAuditLogAsync(transactionAuditLog);
 
                 // Response
                 return ApiResponse<CreateTransactionResponse>.Success(transactionRes);
@@ -77,12 +77,12 @@ namespace Ledgerly.API.Services
             }
         }
 
-        public async Task<ApiResponse<GetTransactionResponse>> GetTransaction(GetTransactionRequest req)
+        public async Task<ApiResponse<GetTransactionResponse>> GetTransactionAsync(GetTransactionRequest req)
         {
             try
             {
                 // Check if account exists
-                var getTransaction = await _transactionRepository.GetTransaction(req.Id);
+                var getTransaction = await _transactionRepository.GetTransactionAsync(req.Id);
                 if (getTransaction == null)
                 {
                     LogHelper.Info("TransactionService", "GetTransaction", req, ApiResponseStatus.NotFound);
@@ -101,7 +101,7 @@ namespace Ledgerly.API.Services
             }
         }
 
-        public async Task<ApiResponse<GetTransactionsResponse>> GetTransactions(PaginationRequest req)
+        public async Task<ApiResponse<GetTransactionsResponse>> GetTransactionsAsync(PaginationRequest req)
         {
             try
             {
@@ -114,7 +114,7 @@ namespace Ledgerly.API.Services
                 }
 
                 var isSystemAdminUser = _currentUserService.IsSystemAdminUser();
-                var status = await _globalParamRepository.GetGlobalParamIdByKeyName(EnumGlobalParam.Normal.ToString(), EnumGlobalParamType.TransactionxxxStatus.ToString());
+                var status = await _globalParamRepository.GetGlobalParamIdByKeyNameAsync(EnumGlobalParam.Normal.ToString(), EnumGlobalParamType.TransactionxxxStatus.ToString());
                 var query = _db.Transaction.Where(x => x.StatusId == status && (x.UserId == userId || isSystemAdminUser)).AsQueryable();
 
                 var filter = req.Filter;
@@ -168,12 +168,12 @@ namespace Ledgerly.API.Services
             }
         }
 
-        public async Task<ApiResponse<UpdateTransactionResponse>> UpdateTransaction(UpdateTransactionRequest req)
+        public async Task<ApiResponse<UpdateTransactionResponse>> UpdateTransactionAsync(UpdateTransactionRequest req)
         {
             try
             {
                 // Check if account exists
-                var getTransaction = await _transactionRepository.GetTransaction(req.Id);
+                var getTransaction = await _transactionRepository.GetTransactionAsync(req.Id);
                 if (getTransaction == null)
                 {
                     LogHelper.Info("TransactionService", "UpdateTransaction", req, ApiResponseStatus.NotFound);
@@ -181,7 +181,7 @@ namespace Ledgerly.API.Services
                 }
 
                 // Check if the account record is already deleted
-                var status = await _globalParamRepository.GetGlobalParamIdByKeyName(EnumGlobalParam.Deleted.ToString(), EnumGlobalParamType.TransactionxxxStatus.ToString());
+                var status = await _globalParamRepository.GetGlobalParamIdByKeyNameAsync(EnumGlobalParam.Deleted.ToString(), EnumGlobalParamType.TransactionxxxStatus.ToString());
                 if (getTransaction == null)
                 {
                     LogHelper.Info("TransactionService", "UpdateTransaction", req, ApiResponseStatus.AlreadyDeleted);
@@ -201,7 +201,7 @@ namespace Ledgerly.API.Services
                 transaction.UserId = userId;
                 transaction.ModifiedBy = userId;
                 transaction.ModifiedDate = GlobalFunction.GetCurrentDateTime();
-                var currentTransaction = await _transactionRepository.UpdateTransaction(transaction);
+                var currentTransaction = await _transactionRepository.UpdateTransactionAsync(transaction);
                 var transactionRes = _mapper.Map<UpdateTransactionResponse>(currentTransaction);
 
                 // Add audit log
@@ -211,11 +211,11 @@ namespace Ledgerly.API.Services
                     MethodName = "Update",
                     TransactionId = currentTransaction.Id,
                     TransactionNo = "",
-                    Description = await GetAuditDescription(currentTransaction.Id),
+                    Description = await GetAuditDescriptionAsync(currentTransaction.Id),
                     CreatedBy = userId,
                     CreatedDate = GlobalFunction.GetCurrentDateTime(),
                 };
-                await _auditLogService.RecordAuditLog(transactionAuditLog);
+                await _auditLogService.RecordAuditLogAsync(transactionAuditLog);
 
                 // Response
                 return ApiResponse<UpdateTransactionResponse>.Success(transactionRes);
@@ -227,19 +227,19 @@ namespace Ledgerly.API.Services
             }
         }
 
-        public async Task<string> GetAuditDescription(int id)
+        public async Task<string> GetAuditDescriptionAsync(int id)
         {
-            var transaction = await _transactionRepository.GetTransaction(id);
+            var transaction = await _transactionRepository.GetTransactionAsync(id);
             var recordAuditLogTransaction = _mapper.Map<RecordAuditLogTransaction>(transaction);
             return JsonSerializer.Serialize(recordAuditLogTransaction);
         }
 
-        public async Task<ApiResponse<DeleteTransactionResponse>> DeleteTransaction(DeleteTransactionRequest req)
+        public async Task<ApiResponse<DeleteTransactionResponse>> DeleteTransactionAsync(DeleteTransactionRequest req)
         {
             try
             {
                 // Check if account exists
-                var getTransaction = await _transactionRepository.GetTransaction(req.Id);
+                var getTransaction = await _transactionRepository.GetTransactionAsync(req.Id);
                 if (getTransaction == null)
                 {
                     LogHelper.Info("TransactionService", "UpdateTransaction", req, ApiResponseStatus.NotFound);
@@ -247,7 +247,7 @@ namespace Ledgerly.API.Services
                 }
 
                 // Check if the account record is already deleted
-                var status = await _globalParamRepository.GetGlobalParamIdByKeyName(EnumGlobalParam.Deleted.ToString(), EnumGlobalParamType.TransactionxxxStatus.ToString());
+                var status = await _globalParamRepository.GetGlobalParamIdByKeyNameAsync(EnumGlobalParam.Deleted.ToString(), EnumGlobalParamType.TransactionxxxStatus.ToString());
                 if (getTransaction == null)
                 {
                     LogHelper.Info("TransactionService", "UpdateTransaction", req, ApiResponseStatus.AlreadyDeleted);
@@ -264,11 +264,11 @@ namespace Ledgerly.API.Services
 
                 // update transaction 
                 var transaction = _mapper.Map<Transaction>(req);
-                transaction.StatusId = await _globalParamRepository.GetGlobalParamIdByKeyName(EnumGlobalParam.Deleted.ToString(), EnumGlobalParamType.TransactionxxxStatus.ToString());
+                transaction.StatusId = await _globalParamRepository.GetGlobalParamIdByKeyNameAsync(EnumGlobalParam.Deleted.ToString(), EnumGlobalParamType.TransactionxxxStatus.ToString());
                 transaction.UserId = userId;
                 transaction.ModifiedBy = userId;
                 transaction.ModifiedDate = GlobalFunction.GetCurrentDateTime();
-                var currentTransaction = await _transactionRepository.DeleteTransaction(transaction);
+                var currentTransaction = await _transactionRepository.DeleteTransactionAsync(transaction);
                 var transactionRes = _mapper.Map<DeleteTransactionResponse>(currentTransaction);
 
                 // Add audit log
@@ -278,11 +278,11 @@ namespace Ledgerly.API.Services
                     MethodName = "Delete",
                     TransactionId = currentTransaction.Id,
                     TransactionNo = "",
-                    Description = await GetAuditDescription(currentTransaction.Id),
+                    Description = await GetAuditDescriptionAsync(currentTransaction.Id),
                     CreatedBy = userId,
                     CreatedDate = GlobalFunction.GetCurrentDateTime(),
                 };
-                await _auditLogService.RecordAuditLog(transactionAuditLog);
+                await _auditLogService.RecordAuditLogAsync(transactionAuditLog);
 
                 // Response
                 return ApiResponse<DeleteTransactionResponse>.Success(transactionRes);

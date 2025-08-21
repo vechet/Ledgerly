@@ -4,14 +4,14 @@ namespace Ledgerly.API.Repositories.Interfaces
 {
     public interface IAccountRepository
     {
-        Task<List<Account>> GetAccounts();
+        Task<List<Account>> GetAccountsAsync();
 
-        Task<Account> GetAccount(int id);
+        Task<Account> GetAccountAsync(int id);
 
-        Task<Account> CreateAccount(Account req);
+        Task<Account> CreateAccountAsync(Account req);
 
-        Task<Account> UpdateAccount(Account req);
+        Task<Account> UpdateAccountAsync(Account req);
 
-        Task<Account> DeleteAccount(Account req);
+        Task<Account> DeleteAccountAsync(Account req);
     }
 }

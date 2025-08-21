@@ -14,7 +14,7 @@ namespace Ledgerly.API.Repositories
             _db = db;
         }
 
-        public async Task<Transaction> CreateTransaction(Transaction req)
+        public async Task<Transaction> CreateTransactionAsync(Transaction req)
         {
             await using var transaction = await _db.Database.BeginTransactionAsync();
             try
@@ -31,7 +31,7 @@ namespace Ledgerly.API.Repositories
             }
         }
 
-        public async Task<Transaction> DeleteTransaction(Transaction req)
+        public async Task<Transaction> DeleteTransactionAsync(Transaction req)
         {
             await using var transaction = await _db.Database.BeginTransactionAsync();
             try
@@ -52,7 +52,7 @@ namespace Ledgerly.API.Repositories
             }
         }
 
-        public async Task<Transaction> GetTransaction(int id)
+        public async Task<Transaction> GetTransactionAsync(int id)
         {
             try
             {
@@ -69,7 +69,7 @@ namespace Ledgerly.API.Repositories
             }
         }
 
-        public async Task<List<Transaction>> GetTransactions()
+        public async Task<List<Transaction>> GetTransactionsAsync()
         {
             try
             {
@@ -86,7 +86,7 @@ namespace Ledgerly.API.Repositories
             }
         }
 
-        public async Task<Transaction> UpdateTransaction(Transaction req)
+        public async Task<Transaction> UpdateTransactionAsync(Transaction req)
         {
             await using var transaction = await _db.Database.BeginTransactionAsync();
             try

@@ -4,10 +4,10 @@ namespace Ledgerly.API.Repositories.Interfaces
 {
     public interface IAuditLogRepository
     {
-        Task<List<AuditLog>> GetAuditLogs();
+        Task<List<AuditLog>> GetAuditLogsAsync();
 
-        Task<AuditLog> GetAuditLog(int id);
+        Task<AuditLog> GetAuditLogAsync(int id);
 
-        Task<AuditLog> CreateAuditLog(AuditLog req);
+        Task<AuditLog> CreateAuditLogAsync(AuditLog req);
     }
 }

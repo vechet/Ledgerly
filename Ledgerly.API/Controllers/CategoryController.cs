@@ -21,37 +21,37 @@ namespace Ledgerly.API.Controllers
 
         [Authorize(Policy = nameof(EnumPermissions.CATEGORY_CREATE))]
         [HttpPost("v1/category/create-category")]
-        public async Task<ApiResponse<CreateCategoryResponse>> CreateCategory([FromBody] CreateCategoryRequest req)
+        public async Task<ApiResponse<CreateCategoryResponse>> CreateCategoryAsync([FromBody] CreateCategoryRequest req)
         {
-            return await _categoryService.CreateCategory(req);
+            return await _categoryService.CreateCategoryAsync(req);
         }
 
         [Authorize(Policy = nameof(EnumPermissions.CATEGORY_VIEW))]
         [HttpPost("v1/category/get-categories")]
-        public async Task<ApiResponse<GetCategoriesResponse>> GetCategories([FromBody] PaginationRequest req)
+        public async Task<ApiResponse<GetCategoriesResponse>> GetCategoriesAsync([FromBody] PaginationRequest req)
         {
-            return await _categoryService.GetCategories(req);
+            return await _categoryService.GetCategoriesAsync(req);
         }
 
         [Authorize(Policy = nameof(EnumPermissions.CATEGORY_UPDATE))]
         [HttpPost("v1/category/update-category")]
-        public async Task<ApiResponse<UpdateCategoryResponse>> UpdateCategory([FromBody] UpdateCategoryRequest req)
+        public async Task<ApiResponse<UpdateCategoryResponse>> UpdateCategoryAsync([FromBody] UpdateCategoryRequest req)
         {
-            return await _categoryService.UpdateCategory(req);
+            return await _categoryService.UpdateCategoryAsync(req);
         }
 
         [Authorize(Policy = nameof(EnumPermissions.CATEGORY_VIEW))]
         [HttpPost("v1/category/get-category")]
-        public async Task<ApiResponse<GetCategoryResponse>> GetCategory([FromBody] GetCategoryRequest req)
+        public async Task<ApiResponse<GetCategoryResponse>> GetCategoryAsync([FromBody] GetCategoryRequest req)
         {
-            return await _categoryService.GetCategory(req);
+            return await _categoryService.GetCategoryAsync(req);
         }
 
         [Authorize(Policy = nameof(EnumPermissions.CATEGORY_UPDATE))]
         [HttpPost("v1/category/delete-category")]
-        public async Task<ApiResponse<DeleteCategoryResponse>> DeleteCategory([FromBody] DeleteCategoryRequest req)
+        public async Task<ApiResponse<DeleteCategoryResponse>> DeleteCategoryAsync([FromBody] DeleteCategoryRequest req)
         {
-            return await _categoryService.DeleteCategory(req);
+            return await _categoryService.DeleteCategoryAsync(req);
         }
     }
 }

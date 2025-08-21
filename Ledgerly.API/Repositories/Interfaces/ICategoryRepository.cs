@@ -4,14 +4,17 @@ namespace Ledgerly.API.Repositories.Interfaces
 {
     public interface ICategoryRepository
     {
-        Task<List<Category>> GetCategories();
+        Task<List<Category>> GetCategoriesAsync();
 
-        Task<Category> GetCategory(int id);
+        Task<Category> GetCategoryAsync(int id);
 
-        Task<Category> CreateCategory(Category req);
+        Task<Category> CreateCategoryAsync(Category req);
 
-        Task<Category> UpdateCategory(Category req);
+        Task<Category> UpdateCategoryAsync(Category req);
 
-        Task<Category> DeleteCategory(Category req);
+        Task<Category> DeleteCategoryAsync(Category req);
+
+        Task<bool> HasTransactionsLinkedAsync(int id, string userId);
+
     }
 }

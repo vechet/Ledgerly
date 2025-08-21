@@ -23,37 +23,37 @@ namespace Ledgerly.API.Controllers
 
         [Authorize(Policy = nameof(EnumPermissions.ACCOUNT_CREATE))]
         [HttpPost("v1/account/create-account")]
-        public async Task<ApiResponse<CreateAccountResponse>> CreateAccount([FromBody] CreateAccountRequest req)
+        public async Task<ApiResponse<CreateAccountResponse>> CreateAccountAsync([FromBody] CreateAccountRequest req)
         {
-            return await _accountService.CreateAccount(req);
+            return await _accountService.CreateAccountAsync(req);
         }
 
         [Authorize(Policy = nameof(EnumPermissions.ACCOUNT_VIEW))]
         [HttpPost("v1/account/get-accounts")]
-        public async Task<ApiResponse<GetAccountsResponse>> GetAccounts([FromBody] PaginationRequest req)
+        public async Task<ApiResponse<GetAccountsResponse>> GetAccountsAsync([FromBody] PaginationRequest req)
         {
-            return await _accountService.GetAccounts(req);
+            return await _accountService.GetAccountsAsync(req);
         }
 
         [Authorize(Policy = nameof(EnumPermissions.ACCOUNT_UPDATE))]
         [HttpPost("v1/account/update-account")]
-        public async Task<ApiResponse<UpdateAccountResponse>> UpdateAccount([FromBody] UpdateAccountRequest req)
+        public async Task<ApiResponse<UpdateAccountResponse>> UpdateAccountAsync([FromBody] UpdateAccountRequest req)
         {
-            return await _accountService.UpdateAccount(req);
+            return await _accountService.UpdateAccountAsync(req);
         }
 
         [Authorize(Policy = nameof(EnumPermissions.ACCOUNT_VIEW))]
         [HttpPost("v1/account/get-account")]
-        public async Task<ApiResponse<GetAccountResponse>> GetAccount([FromBody] GetAccountRequest req)
+        public async Task<ApiResponse<GetAccountResponse>> GetAccountAsync([FromBody] GetAccountRequest req)
         {
-            return await _accountService.GetAccount(req);
+            return await _accountService.GetAccountAsync(req);
         }
 
         [Authorize(Policy = nameof(EnumPermissions.ACCOUNT_DELETE))]
         [HttpPost("v1/account/delete-account")]
-        public async Task<ApiResponse<DeleteAccountResponse>> DeleteAccount([FromBody] DeleteAccountRequest req)
+        public async Task<ApiResponse<DeleteAccountResponse>> DeleteAccountAsync([FromBody] DeleteAccountRequest req)
         {
-            return await _accountService.DeleteAccount(req);
+            return await _accountService.DeleteAccountAsync(req);
         }
     }
 }

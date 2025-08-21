@@ -7,8 +7,8 @@ namespace Ledgerly.API.Services
 {
     public interface IAuthService
     {
-        Task<ApiResponse<RegisterResponse>> Register(RegisterRequest req);
-        Task<ApiResponse<LoginResponse>> Login(LoginRequest req);
+        Task<ApiResponse<RegisterResponse>> RegisterAsync(RegisterRequest req);
+        Task<ApiResponse<LoginResponse>> LoginAsync(LoginRequest req);
 
     }
 }

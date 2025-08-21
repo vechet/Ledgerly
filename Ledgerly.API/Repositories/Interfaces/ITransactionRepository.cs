@@ -4,14 +4,14 @@ namespace Ledgerly.API.Repositories.Interfaces
 {
     public interface ITransactionRepository
     {
-        Task<List<Transaction>> GetTransactions();
+        Task<List<Transaction>> GetTransactionsAsync();
 
-        Task<Transaction> GetTransaction(int id);
+        Task<Transaction> GetTransactionAsync(int id);
 
-        Task<Transaction> CreateTransaction(Transaction req);
+        Task<Transaction> CreateTransactionAsync(Transaction req);
 
-        Task<Transaction> UpdateTransaction(Transaction req);
+        Task<Transaction> UpdateTransactionAsync(Transaction req);
 
-        Task<Transaction> DeleteTransaction(Transaction req);
+        Task<Transaction> DeleteTransactionAsync(Transaction req);
     }
 }

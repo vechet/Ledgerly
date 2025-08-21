@@ -22,37 +22,37 @@ namespace Ledgerly.API.Controllers
 
         [Authorize(Policy = nameof(EnumPermissions.TRANSACTION_CREATE))]
         [HttpPost("v1/transaction/create-transaction")]
-        public async Task<ApiResponse<CreateTransactionResponse>> CreateTransaction([FromBody] CreateTransactionRequest req)
+        public async Task<ApiResponse<CreateTransactionResponse>> CreateTransactionAsync([FromBody] CreateTransactionRequest req)
         {
-            return await _transactionService.CreateTransaction(req);
+            return await _transactionService.CreateTransactionAsync(req);
         }
 
         [Authorize(Policy = nameof(EnumPermissions.TRANSACTION_VIEW))]
         [HttpPost("v1/transaction/get-transactions")]
-        public async Task<ApiResponse<GetTransactionsResponse>> GetTransactions([FromBody] PaginationRequest req)
+        public async Task<ApiResponse<GetTransactionsResponse>> GetTransactionsAsync([FromBody] PaginationRequest req)
         {
-            return await _transactionService.GetTransactions(req);
+            return await _transactionService.GetTransactionsAsync(req);
         }
 
         [Authorize(Policy = nameof(EnumPermissions.TRANSACTION_UPDATE))]
         [HttpPost("v1/transaction/update-transaction")]
-        public async Task<ApiResponse<UpdateTransactionResponse>> UpdateTransaction([FromBody] UpdateTransactionRequest req)
+        public async Task<ApiResponse<UpdateTransactionResponse>> UpdateTransactionAsync([FromBody] UpdateTransactionRequest req)
         {
-            return await _transactionService.UpdateTransaction(req);
+            return await _transactionService.UpdateTransactionAsync(req);
         }
 
         [Authorize(Policy = nameof(EnumPermissions.TRANSACTION_VIEW))]
         [HttpPost("v1/transaction/get-transaction")]
-        public async Task<ApiResponse<GetTransactionResponse>> GetTransaction([FromBody] GetTransactionRequest req)
+        public async Task<ApiResponse<GetTransactionResponse>> GetTransactionAsync([FromBody] GetTransactionRequest req)
         {
-            return await _transactionService.GetTransaction(req);
+            return await _transactionService.GetTransactionAsync(req);
         }
 
         [Authorize(Policy = nameof(EnumPermissions.TRANSACTION_DELETE))]
         [HttpPost("v1/transaction/delete-transaction")]
-        public async Task<ApiResponse<DeleteTransactionResponse>> DeleteTransaction([FromBody] DeleteTransactionRequest req)
+        public async Task<ApiResponse<DeleteTransactionResponse>> DeleteTransactionAsync([FromBody] DeleteTransactionRequest req)
         {
-            return await _transactionService.DeleteTransaction(req);
+            return await _transactionService.DeleteTransactionAsync(req);
         }
     }
 }

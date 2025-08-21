@@ -6,15 +6,15 @@ namespace Ledgerly.API.Services.Interfaces
 {
     public interface ITransactionService
     {
-        Task<ApiResponse<GetTransactionsResponse>> GetTransactions(PaginationRequest req);
+        Task<ApiResponse<GetTransactionsResponse>> GetTransactionsAsync(PaginationRequest req);
 
-        Task<ApiResponse<GetTransactionResponse>> GetTransaction(GetTransactionRequest req);
+        Task<ApiResponse<GetTransactionResponse>> GetTransactionAsync(GetTransactionRequest req);
 
-        Task<ApiResponse<CreateTransactionResponse>> CreateTransaction(CreateTransactionRequest req);
+        Task<ApiResponse<CreateTransactionResponse>> CreateTransactionAsync(CreateTransactionRequest req);
 
-        Task<ApiResponse<UpdateTransactionResponse>> UpdateTransaction(UpdateTransactionRequest req);
+        Task<ApiResponse<UpdateTransactionResponse>> UpdateTransactionAsync(UpdateTransactionRequest req);
 
-        Task<ApiResponse<DeleteTransactionResponse>> DeleteTransaction(DeleteTransactionRequest req);
+        Task<ApiResponse<DeleteTransactionResponse>> DeleteTransactionAsync(DeleteTransactionRequest req);
 
     }
 }
