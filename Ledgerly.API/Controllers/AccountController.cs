@@ -15,17 +15,20 @@ namespace Ledgerly.API.Controllers
     public class AccountController : ControllerBase
     {
         private readonly IAccountService _accountService;
+        private readonly IBrandService _brandService;
 
-        public AccountController(IAccountService accountService)
+        public AccountController(IAccountService accountService, IBrandService brandService)
         {
             _accountService = accountService;
+            _brandService = brandService;
         }
 
         [Authorize(Policy = nameof(EnumPermissions.ACCOUNT_CREATE))]
         [HttpPost("v1/account/create-account")]
         public async Task<ApiResponse<CreateAccountResponse>> CreateAccountAsync([FromBody] CreateAccountRequest req)
         {
-            return await _accountService.CreateAccountAsync(req);
+            //return await _accountService.CreateAccountAsync(req);
+            return await _brandService.CreateAccountAsync(req);
         }
 
         [Authorize(Policy = nameof(EnumPermissions.ACCOUNT_VIEW))]
