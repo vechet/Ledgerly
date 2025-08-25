@@ -16,40 +16,18 @@ namespace Ledgerly.API.Repositories
 
         public async Task<Category> CreateCategoryAsync(Category req)
         {
-            await using var transaction = await _db.Database.BeginTransactionAsync();
-            try
-            {
-                var newCategory = await _db.Category.AddAsync(req);
-                await _db.SaveChangesAsync();
-                await transaction.CommitAsync();
-                return newCategory.Entity;
-            }
-            catch (Exception e)
-            {
-                await transaction.RollbackAsync();
-                throw;
-            }
+            var newCategory = await _db.Category.AddAsync(req);
+            return newCategory.Entity;
         }
 
         public async Task<Category> DeleteCategoryAsync(Category req)
         {
-            await using var transaction = await _db.Database.BeginTransactionAsync();
-            try
-            {
-                var currentCategory = await _db.Category.FindAsync(req.Id);
-                currentCategory.UserId = req.UserId;
-                currentCategory.StatusId = req.StatusId;
-                currentCategory.ModifiedBy = req.ModifiedBy;
-                currentCategory.ModifiedDate = req.ModifiedDate;
-                await _db.SaveChangesAsync();
-                await transaction.CommitAsync();
-                return currentCategory;
-            }
-            catch (Exception e)
-            {
-                await transaction.RollbackAsync();
-                throw;
-            }
+            var currentCategory = await _db.Category.FindAsync(req.Id);
+            currentCategory.UserId = req.UserId;
+            currentCategory.StatusId = req.StatusId;
+            currentCategory.ModifiedBy = req.ModifiedBy;
+            currentCategory.ModifiedDate = req.ModifiedDate;
+            return currentCategory;
         }
 
         public async Task<List<Category>> GetCategoriesAsync()
@@ -99,25 +77,14 @@ namespace Ledgerly.API.Repositories
 
         public async Task<Category> UpdateCategoryAsync(Category req)
         {
-            await using var transaction = await _db.Database.BeginTransactionAsync();
-            try
-            {
-                var currentCategory = await _db.Category.FindAsync(req.Id);
-                currentCategory.ParentId = req.ParentId;
-                currentCategory.Name = req.Name;
-                currentCategory.Memo = req.Memo;
-                currentCategory.UserId = req.UserId;
-                currentCategory.ModifiedBy = req.ModifiedBy;
-                currentCategory.ModifiedDate = req.ModifiedDate;
-                await _db.SaveChangesAsync();
-                await transaction.CommitAsync();
-                return currentCategory;
-            }
-            catch (Exception e)
-            {
-                await transaction.RollbackAsync();
-                throw;
-            }
+            var currentCategory = await _db.Category.FindAsync(req.Id);
+            currentCategory.ParentId = req.ParentId;
+            currentCategory.Name = req.Name;
+            currentCategory.Memo = req.Memo;
+            currentCategory.UserId = req.UserId;
+            currentCategory.ModifiedBy = req.ModifiedBy;
+            currentCategory.ModifiedDate = req.ModifiedDate;
+            return currentCategory;
         }
     }
 }

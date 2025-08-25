@@ -1,5 +1,4 @@
-﻿using Ledgerly.API.Models.DTOs.TransactionType;
-using Ledgerly.API.Models.DTOs.User;
+﻿using Ledgerly.API.Models.DTOs.User;
 using Ledgerly.API.Services;
 using Ledgerly.API.Services.Interfaces;
 using Ledgerly.Helpers;

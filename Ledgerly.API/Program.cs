@@ -83,16 +83,13 @@ builder.Services.AddScoped<ICategoryRepository, CategoryRepository>();
 builder.Services.AddScoped<ITransactionRepository, TransactionRepository>();
 builder.Services.AddScoped<IAccountRepository, AccountRepository>();
 builder.Services.AddScoped<IGlobalParamRepository, GlobalParamRepository>();
-builder.Services.AddScoped<IBrandRepository, BrandRepository>();
 
 //services
-builder.Services.AddScoped<IBrandService, BrandService>();
 builder.Services.AddScoped<ICategoryService, CategoryService>();
 builder.Services.AddScoped<IJwtService, JwtService>();
 builder.Services.AddScoped<ITransactionService, TransactionService>();
 builder.Services.AddScoped<IAuthService, AuthService>();
 builder.Services.AddScoped<IUserService, UserService>();
-builder.Services.AddScoped<IAuditLogService, AuditLogService>();
 builder.Services.AddScoped<IAccountService, AccountService>();
 builder.Services.AddHttpContextAccessor(); // required for IHttpContextAccessor
 builder.Services.AddSingleton<IAuthorizationPolicyProvider, DynamicAuthorizationPolicyProvider>();
@@ -102,7 +99,6 @@ builder.Services.AddScoped<IAuthorizationHandler, PermissionHandler>(); // Your 
 builder.Services.AddAutoMapper(
     typeof(TransactionProfile),
     typeof(AuthProfile),
-    typeof(AuditLogProfile),
     typeof(CategoryProfile),
     typeof(AccountProfile));
 

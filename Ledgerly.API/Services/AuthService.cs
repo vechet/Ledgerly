@@ -1,6 +1,5 @@
 ﻿using AutoMapper;
 using Ledgerly.API.Helpers;
-using Ledgerly.API.Models.DTOs.TransactionType;
 using Ledgerly.API.Models.DTOs.User;
 using Ledgerly.API.Services.Interfaces;
 using Ledgerly.Helpers;
@@ -49,10 +48,8 @@ namespace Ledgerly.API.Services
                 var defaultUserRole = _configuration["UserSetting:DefaultUserRole"];
                 identityResult = await _userManager.AddToRolesAsync(identityUser, [defaultUserRole]);
 
-                // Mapping dto
-                var res = _mapper.Map<RegisterResponse>(identityUser);
-
                 //response
+                var res = _mapper.Map<RegisterResponse>(identityUser);
                 return ApiResponse<RegisterResponse>.Success(res);
             }
             catch (Exception e)
@@ -87,13 +84,12 @@ namespace Ledgerly.API.Services
                 var roles = await _userManager.GetRolesAsync(user);
                 var jwtToken = _tokenService.GenerateToken(user, roles.ToList());
 
+                // Response
                 var res = new LoginResponse
                 {
                     AccessToken = jwtToken.AccessToken,
                     ExpiresIn = jwtToken.ExpiresIn
                 };
-
-                // Response
                 return ApiResponse<LoginResponse>.Success(res);
             }
             catch (Exception e)

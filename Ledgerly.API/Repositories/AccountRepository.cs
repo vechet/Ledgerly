@@ -16,40 +16,18 @@ namespace Ledgerly.API.Repositories
 
         public async Task<Account> CreateAccountAsync(Account req)
         {
-            await using var transaction = await _db.Database.BeginTransactionAsync();
-            try
-            {
-                var newAccount = await _db.Account.AddAsync(req);
-                await _db.SaveChangesAsync();
-                await transaction.CommitAsync();
-                return newAccount.Entity;
-            }
-            catch (Exception e)
-            {
-                await transaction.RollbackAsync();
-                throw;
-            }
+            var newAccount = await _db.Account.AddAsync(req);
+            return newAccount.Entity;
         }
 
         public async Task<Account> DeleteAccountAsync(Account req)
         {
-            await using var transaction = await _db.Database.BeginTransactionAsync();
-            try
-            {
-                var currentAccount = await _db.Account.FindAsync(req.Id);
-                currentAccount.UserId = req.UserId;
-                currentAccount.StatusId = req.StatusId;
-                currentAccount.ModifiedBy = req.ModifiedBy;
-                currentAccount.ModifiedDate = req.ModifiedDate;
-                await _db.SaveChangesAsync();
-                await transaction.CommitAsync();
-                return currentAccount;
-            }
-            catch (Exception e)
-            {
-                await transaction.RollbackAsync();
-                throw;
-            }
+            var currentAccount = await _db.Account.FindAsync(req.Id);
+            currentAccount.UserId = req.UserId;
+            currentAccount.StatusId = req.StatusId;
+            currentAccount.ModifiedBy = req.ModifiedBy;
+            currentAccount.ModifiedDate = req.ModifiedDate;
+            return currentAccount;
         }
 
         public async Task<Account> GetAccountAsync(int id)
@@ -84,25 +62,14 @@ namespace Ledgerly.API.Repositories
 
         public async Task<Account> UpdateAccountAsync(Account req)
         {
-            await using var transaction = await _db.Database.BeginTransactionAsync();
-            try
-            {
-                var currentAccount = await _db.Account.FindAsync(req.Id);
-                currentAccount.Name = req.Name;
-                currentAccount.Currency = req.Currency;
-                currentAccount.Memo = req.Memo;
-                currentAccount.UserId = req.UserId;
-                currentAccount.ModifiedBy = req.ModifiedBy;
-                currentAccount.ModifiedDate = req.ModifiedDate;
-                await _db.SaveChangesAsync();
-                await transaction.CommitAsync();
-                return currentAccount;
-            }
-            catch (Exception e)
-            {
-                await transaction.RollbackAsync();
-                throw;
-            }
+            var currentAccount = await _db.Account.FindAsync(req.Id);
+            currentAccount.Name = req.Name;
+            currentAccount.Currency = req.Currency;
+            currentAccount.Memo = req.Memo;
+            currentAccount.UserId = req.UserId;
+            currentAccount.ModifiedBy = req.ModifiedBy;
+            currentAccount.ModifiedDate = req.ModifiedDate;
+            return currentAccount;
         }
     }
 }

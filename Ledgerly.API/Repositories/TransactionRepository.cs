@@ -16,40 +16,18 @@ namespace Ledgerly.API.Repositories
 
         public async Task<Transaction> CreateTransactionAsync(Transaction req)
         {
-            await using var transaction = await _db.Database.BeginTransactionAsync();
-            try
-            {
-                var newTransaction = await _db.Transaction.AddAsync(req);
-                await _db.SaveChangesAsync();
-                await transaction.CommitAsync();
-                return newTransaction.Entity;
-            }
-            catch (Exception e)
-            {
-                await transaction.RollbackAsync();
-                throw;
-            }
+            var newTransaction = await _db.Transaction.AddAsync(req);
+            return newTransaction.Entity;
         }
 
         public async Task<Transaction> DeleteTransactionAsync(Transaction req)
         {
-            await using var transaction = await _db.Database.BeginTransactionAsync();
-            try
-            {
-                var currentTransaction = await _db.Transaction.FindAsync(req.Id);
-                currentTransaction.UserId = req.UserId;
-                currentTransaction.StatusId = req.StatusId;
-                currentTransaction.ModifiedBy = req.ModifiedBy;
-                currentTransaction.ModifiedDate = req.ModifiedDate;
-                await _db.SaveChangesAsync();
-                await transaction.CommitAsync();
-                return currentTransaction;
-            }
-            catch (Exception e)
-            {
-                await transaction.RollbackAsync();
-                throw;
-            }
+            var currentTransaction = await _db.Transaction.FindAsync(req.Id);
+            currentTransaction.UserId = req.UserId;
+            currentTransaction.StatusId = req.StatusId;
+            currentTransaction.ModifiedBy = req.ModifiedBy;
+            currentTransaction.ModifiedDate = req.ModifiedDate;
+            return currentTransaction;
         }
 
         public async Task<Transaction> GetTransactionAsync(int id)
@@ -88,28 +66,17 @@ namespace Ledgerly.API.Repositories
 
         public async Task<Transaction> UpdateTransactionAsync(Transaction req)
         {
-            await using var transaction = await _db.Database.BeginTransactionAsync();
-            try
-            {
-                var currentTransaction = await _db.Transaction.FindAsync(req.Id);
-                currentTransaction.AccountId = req.AccountId;
-                currentTransaction.CategoryId = req.CategoryId;
-                currentTransaction.Amount = req.Amount;
-                currentTransaction.TransactionDate = req.TransactionDate;
-                currentTransaction.Memo = req.Memo;
-                currentTransaction.Type = req.Type;
-                currentTransaction.UserId = req.UserId;
-                currentTransaction.ModifiedBy = req.ModifiedBy;
-                currentTransaction.ModifiedDate = req.ModifiedDate;
-                await _db.SaveChangesAsync();
-                await transaction.CommitAsync();
-                return currentTransaction;
-            }
-            catch (Exception e)
-            {
-                await transaction.RollbackAsync();
-                throw;
-            }
+            var currentTransaction = await _db.Transaction.FindAsync(req.Id);
+            currentTransaction.AccountId = req.AccountId;
+            currentTransaction.CategoryId = req.CategoryId;
+            currentTransaction.Amount = req.Amount;
+            currentTransaction.TransactionDate = req.TransactionDate;
+            currentTransaction.Memo = req.Memo;
+            currentTransaction.Type = req.Type;
+            currentTransaction.UserId = req.UserId;
+            currentTransaction.ModifiedBy = req.ModifiedBy;
+            currentTransaction.ModifiedDate = req.ModifiedDate;
+            return currentTransaction;
         }
     }
 }

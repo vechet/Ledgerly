@@ -16,19 +16,8 @@ namespace Ledgerly.API.Repositories
 
         public async Task<AuditLog> CreateAuditLogAsync(AuditLog req)
         {
-            await using var transaction = await _db.Database.BeginTransactionAsync();
-            try
-            {
-                var newAuditLog = await _db.AuditLog.AddAsync(req);
-                await _db.SaveChangesAsync();
-                await transaction.CommitAsync();
-                return newAuditLog.Entity;
-            }
-            catch (Exception e)
-            {
-                await transaction.RollbackAsync();
-                throw;
-            }
+            var newAuditLog = await _db.AuditLog.AddAsync(req);
+            return newAuditLog.Entity;
         }
 
         public async Task<AuditLog> GetAuditLogAsync(int id)

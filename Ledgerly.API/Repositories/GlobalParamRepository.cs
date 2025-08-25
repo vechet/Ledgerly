@@ -16,19 +16,8 @@ namespace Ledgerly.API.Repositories
 
         public async Task<GlobalParam> CreateGlobalParamAsync(GlobalParam req)
         {
-            await using var transaction = await _db.Database.BeginTransactionAsync();
-            try
-            {
-                var newGlobalParam = await _db.GlobalParam.AddAsync(req);
-                await _db.SaveChangesAsync();
-                await transaction.CommitAsync();
-                return newGlobalParam.Entity;
-            }
-            catch (Exception e)
-            {
-                await transaction.RollbackAsync();
-                throw;
-            }
+            var newGlobalParam = await _db.GlobalParam.AddAsync(req);
+            return newGlobalParam.Entity;
         }
 
         public async Task<GlobalParam> GetGlobalParamAsync(int id)
@@ -73,23 +62,12 @@ namespace Ledgerly.API.Repositories
 
         public async Task<GlobalParam> UpdateGlobalParamAsync(GlobalParam req)
         {
-            await using var transaction = await _db.Database.BeginTransactionAsync();
-            try
-            {
-                var currentGlobalParam = await _db.GlobalParam.FindAsync(req.Id);
-                currentGlobalParam.Name = req.Name;
-                currentGlobalParam.KeyName = req.KeyName;
-                currentGlobalParam.Type = req.Type;
-                currentGlobalParam.Memo = req.Memo;
-                await _db.SaveChangesAsync();
-                await transaction.CommitAsync();
-                return currentGlobalParam;
-            }
-            catch (Exception e)
-            {
-                await transaction.RollbackAsync();
-                throw;
-            }
+            var currentGlobalParam = await _db.GlobalParam.FindAsync(req.Id);
+            currentGlobalParam.Name = req.Name;
+            currentGlobalParam.KeyName = req.KeyName;
+            currentGlobalParam.Type = req.Type;
+            currentGlobalParam.Memo = req.Memo;
+            return currentGlobalParam;
         }
     }
 }
